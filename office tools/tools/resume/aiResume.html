@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Resume Builder Pro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --light: #f8f9fa;
+            --dark: #212529;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark);
+        }
+        
+        .nav-tabs .nav-link.active {
+            font-weight: bold;
+            border-bottom: 3px solid var(--primary);
+        }
+        
+        .template-card {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            height: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #dee2e6;
+        }
+        
+        .template-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .template-card.selected {
+            border: 2px solid var(--primary);
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+        
+        .template-preview {
+            height: 300px;
+            background-size: cover;
+            background-position: top;
+            position: relative;
+        }
+        
+        .template-name {
+            padding: 1rem;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .resume-preview {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-top: 1rem;
+        }
+        
+        .letter-preview {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            line-height: 1.6;
+        }
+        
+        .address-block {
+            margin-bottom: 2rem;
+        }
+        
+        .letter-content {
+            margin-top: 2rem;
+        }
+        
+        .signature {
+            margin-top: 3rem;
+        }
+        
+        .analytics-card {
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .analytics-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .analytics-value {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        
+        .analytics-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        
+        /* Template 1 Styles */
+        .template-1 {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            color: #333;
+        }
+        
+        .template-1 header {
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .template-1 h1 {
+            color: var(--primary);
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .template-1 h2 {
+            color: var(--primary);
+            font-size: 1.4rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.3rem;
+            margin-top: 1.5rem;
+        }
+        
+        .template-1 .contact-info {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        
+        /* Template 2 Styles */
+        .template-2 {
+            font-family: 'Georgia', serif;
+            color: #444;
+        }
+        
+        .template-2 header {
+            background-color: var(--primary);
+            color: white;
+            padding: 2rem;
+            margin: -2rem -2rem 2rem -2rem;
+        }
+        
+        .template-2 h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .template-2 h2 {
+            color: var(--primary);
+            font-size: 1.3rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 1.5rem;
+        }
+        
+        .template-2 .section {
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Template 3 Styles */
+        .template-3 {
+            font-family: 'Calibri', 'Arial Narrow', sans-serif;
+            display: flex;
+        }
+        
+        .template-3 .sidebar {
+            width: 30%;
+            background-color: #f8f9fa;
+            padding: 1.5rem;
+            margin: -2rem 2rem -2rem -2rem;
+        }
+        
+        .template-3 .main-content {
+            width: 70%;
+        }
+        
+        .template-3 h1 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+        
+        .template-3 h2 {
+            color: var(--primary);
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            margin-top: 1rem;
+        }
+        
+        .template-3 .contact-item {
+            margin-bottom: 0.8rem;
+        }
+        
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .print-content, .print-content * {
+                visibility: visible;
+            }
+            .print-content {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .template-3 .sidebar {
+                background-color: white !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-4">
+        <div class="text-center mb-5">
+            <h1 class="display-5 fw-bold">AI Resume Builder Pro</h1>
+            <p class="lead">Create the perfect resume tailored to any job description</p>
+        </div>
+        
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="resume-tab" data-bs-toggle="tab" data-bs-target="#resume" type="button">
+                            <i class="bi bi-file-earmark-person"></i> Resume Builder
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="letter-tab" data-bs-toggle="tab" data-bs-target="#letter" type="button">
+                            <i class="bi bi-envelope"></i> Cover Letter
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="analytics-tab" data-bs-toggle="tab" data-bs-target="#analytics" type="button">
+                            <i class="bi bi-graph-up"></i> Job Search Analytics
+                        </button>
+                    </li>
+                </ul>
+                
+                <div class="tab-content" id="myTabContent">
+                    <!-- Resume Builder Tab -->
+                    <div class="tab-pane fade show active" id="resume" role="tabpanel">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Job Description</label>
+                                    <textarea class="form-control" id="jobDescription" rows="5" placeholder="Paste the job description you're applying for..."></textarea>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Your Current Resume</label>
+                                    <textarea class="form-control" id="userResume" rows="8" placeholder="Paste your existing resume content..."></textarea>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Skills (comma separated)</label>
+                                    <textarea class="form-control" id="userSkills" rows="3" placeholder="e.g., JavaScript, Project Management, Data Analysis"></textarea>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Personal Information</label>
+                                    <div class="row g-2 mb-3">
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" id="userName" placeholder="Full Name" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="email" class="form-control" id="userEmail" placeholder="Email">
+                                        </div>
+                                    </div>
+                                    <div class="row g-2 mb-3">
+                                        <div class="col-md-6">
+                                            <input type="tel" class="form-control" id="userPhone" placeholder="Phone">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" id="userTitle" placeholder="Professional Title">
+                                        </div>
+                                    </div>
+                                    <div class="row g-2">
+                                        <div class="col-md-12">
+                                            <textarea class="form-control" id="userAddress" placeholder="Full Address" rows="2"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold">Select Resume Template</label>
+                                    <div class="row g-3">
+                                        <div class="col-md-4">
+                                            <div class="template-card selected" data-template="template-1">
+                                                <div class="template-preview" style="background-image: url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60');">
+                                                </div>
+                                                <div class="template-name">Modern</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="template-card" data-template="template-2">
+                                                <div class="template-preview" style="background-image: url('https://images.unsplash.com/photo-1450101499163-c8848c66ca85?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60');">
+                                                </div>
+                                                <div class="template-name">Classic</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="template-card" data-template="template-3">
+                                                <div class="template-preview" style="background-image: url('https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60');">
+                                                </div>
+                                                <div class="template-name">Creative</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <button id="generateResumeBtn" class="btn btn-primary w-100 py-2">
+                                    <span id="generateBtnText">Generate Optimized Resume</span>
+                                    <span id="generateSpinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
+                                </button>
+                                
+                                <div class="mt-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="atsCheckbox" checked>
+                                        <label class="form-check-label" for="atsCheckbox">
+                                            Optimize for Applicant Tracking Systems (ATS)
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="keywordCheckbox" checked>
+                                        <label class="form-check-label" for="keywordCheckbox">
+                                            Match keywords from job description
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="resumeResult" class="mt-4 d-none">
+                            <hr>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h4>Your Optimized Resume</h4>
+                                <div>
+                                    <button class="btn btn-outline-primary btn-sm me-2" id="printResumeBtn">
+                                        <i class="bi bi-printer"></i> Print
+                                    </button>
+                                    <button class="btn btn-outline-secondary btn-sm" id="copyResumeBtn">
+                                        <i class="bi bi-clipboard"></i> Copy
+                                    </button>
+                                    <button class="btn btn-outline-success btn-sm ms-2" id="saveResumeBtn">
+                                        <i class="bi bi-save"></i> Save
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="optimizedResumeContent" class="resume-preview print-content"></div>
+                            
+                            <div class="mt-4">
+                                <div class="alert alert-info">
+                                    <h5><i class="bi bi-lightbulb"></i> Optimization Tips</h5>
+                                    <div id="optimizationTips"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Cover Letter Tab -->
+                    <div class="tab-pane fade" id="letter" role="tabpanel">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Company Name</label>
+                                    <input type="text" class="form-control" id="companyName" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Company Address (optional)</label>
+                                    <textarea class="form-control" id="companyAddress" rows="2" placeholder="Company street address, city, state, zip"></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Hiring Manager (optional)</label>
+                                    <input type="text" class="form-control" id="hiringManager" placeholder="Leave blank for generic">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Position Applying For</label>
+                                    <input type="text" class="form-control" id="positionName" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Additional Notes</label>
+                                    <textarea class="form-control" id="coverLetterNotes" rows="3" placeholder="Any specific points to include..."></textarea>
+                                </div>
+                                <button id="generateLetterBtn" class="btn btn-primary w-100 py-2">
+                                    Generate Cover Letter
+                                </button>
+                            </div>
+                            <div class="col-md-6">
+                                <div id="coverLetterResult" class="letter-preview print-content">
+                                    <p class="text-muted">Your generated cover letter will appear here</p>
+                                </div>
+                                <div class="mt-3 text-end no-print">
+                                    <button class="btn btn-outline-primary me-2" id="printLetterBtn">
+                                        <i class="bi bi-printer"></i> Print
+                                    </button>
+                                    <button class="btn btn-outline-secondary" id="copyLetterBtn">
+                                        <i class="bi bi-clipboard"></i> Copy
+                                    </button>
+                                    <button class="btn btn-outline-success ms-2" id="saveLetterBtn">
+                                        <i class="bi bi-save"></i> Save
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Analytics Tab -->
+                    <div class="tab-pane fade" id="analytics" role="tabpanel">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h4 class="mb-4">Job Search Tracker</h4>
+                                
+                                <div class="card mb-4">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Add New Application</h5>
+                                        <div class="mb-3">
+                                            <label class="form-label">Company</label>
+                                            <input type="text" class="form-control" id="trackerCompany">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Position</label>
+                                            <input type="text" class="form-control" id="trackerPosition">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Date Applied</label>
+                                            <input type="date" class="form-control" id="trackerDate">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Status</label>
+                                            <select class="form-select" id="trackerStatus">
+                                                <option value="applied">Applied</option>
+                                                <option value="interview">Interview</option>
+                                                <option value="offer">Offer</option>
+                                                <option value="rejected">Rejected</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Notes</label>
+                                            <textarea class="form-control" id="trackerNotes" rows="2"></textarea>
+                                        </div>
+                                        <button class="btn btn-primary" id="trackerAddBtn">Add Application</button>
+                                    </div>
+                                </div>
+                                
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Recent Applications</h5>
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Company</th>
+                                                        <th>Position</th>
+                                                        <th>Date</th>
+                                                        <th>Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="applicationsTable">
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <h4 class="mb-4">Search Analytics</h4>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="analytics-card bg-primary text-white">
+                                            <div class="analytics-value" id="totalApplications">0</div>
+                                            <div class="analytics-label">Total Applications</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="analytics-card bg-success text-white">
+                                            <div class="analytics-value" id="interviewRate">0%</div>
+                                            <div class="analytics-label">Interview Rate</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="analytics-card bg-info text-white">
+                                            <div class="analytics-value" id="activeApplications">0</div>
+                                            <div class="analytics-label">Active Applications</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="analytics-card bg-warning text-dark">
+                                            <div class="analytics-value" id="avgResponseTime">0</div>
+                                            <div class="analytics-label">Avg. Response Time</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="card mt-4">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Status Distribution</h5>
+                                        <div id="statusChart" style="height: 250px;">
+                                            <canvas id="statusChartCanvas"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="card mt-4">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Application Timeline</h5>
+                                        <div id="timelineChart" style="height: 250px;">
+                                            <canvas id="timelineChartCanvas"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize variables
+            let selectedTemplate = 'template-1';
+            let jobApplications = JSON.parse(localStorage.getItem('jobApplications')) || [];
+            let statusChart = null;
+            let timelineChart = null;
+            
+            // Template selection
+            document.querySelectorAll('.template-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    document.querySelectorAll('.template-card').forEach(c => {
+                        c.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                    selectedTemplate = this.getAttribute('data-template');
+                });
+            });
+
+            // Generate Resume Button
+            document.getElementById('generateResumeBtn').addEventListener('click', function() {
+                const jobDesc = document.getElementById('jobDescription').value;
+                const resume = document.getElementById('userResume').value;
+                const name = document.getElementById('userName').value;
+                
+                if (!jobDesc || !resume || !name) {
+                    alert('Please fill in all required fields (Job Description, Resume, and Name)');
+                    return;
+                }
+                
+                const btn = this;
+                btn.disabled = true;
+                const spinner = document.getElementById('generateSpinner');
+                const btnText = document.getElementById('generateBtnText');
+                
+                spinner.classList.remove('d-none');
+                btnText.classList.add('d-none');
+                
+                // Simulate processing delay
+                setTimeout(() => {
+                    generateResume();
+                    btn.disabled = false;
+                    spinner.classList.add('d-none');
+                    btnText.classList.remove('d-none');
+                }, 1500);
+            });
+
+            // Generate Cover Letter Button
+            document.getElementById('generateLetterBtn').addEventListener('click', function() {
+                const company = document.getElementById('companyName').value;
+                const position = document.getElementById('positionName').value;
+                const name = document.getElementById('userName').value;
+                
+                if (!company || !position || !name) {
+                    alert('Please enter company, position, and your name');
+                    return;
+                }
+                
+                const btn = this;
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Generating...';
+                
+                // Simulate processing delay
+                setTimeout(() => {
+                    generateCoverLetter();
+                    btn.disabled = false;
+                    btn.innerHTML = 'Generate Cover Letter';
+                }, 1500);
+            });
+
+            // Print Resume Button
+            document.getElementById('printResumeBtn').addEventListener('click', function() {
+                const content = document.getElementById('optimizedResumeContent');
+                if (!content || content.innerHTML.includes('alert-danger')) {
+                    alert('Please generate a resume first');
+                    return;
+                }
+                window.print();
+            });
+
+            // Print Cover Letter Button
+            document.getElementById('printLetterBtn').addEventListener('click', function() {
+                const content = document.getElementById('coverLetterResult');
+                if (!content || content.innerHTML.includes('alert-danger') || content.innerHTML.includes('text-muted')) {
+                    alert('Please generate a cover letter first');
+                    return;
+                }
+                window.print();
+            });
+
+            // Copy Resume Button
+            document.getElementById('copyResumeBtn').addEventListener('click', function() {
+                const element = document.getElementById('optimizedResumeContent');
+                if (!element) {
+                    alert('Element not found');
+                    return;
+                }
+                
+                const content = element.innerText;
+                if (!content || content.includes('Error') || content.includes('No content')) {
+                    alert('Nothing to copy');
+                    return;
+                }
+                
+                navigator.clipboard.writeText(content).then(() => {
+                    const originalText = this.innerHTML;
+                    this.innerHTML = '<i class="bi bi-check"></i> Copied!';
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Failed to copy: ', err);
+                    alert('Failed to copy to clipboard');
+                });
+            });
+
+            // Copy Cover Letter Button
+            document.getElementById('copyLetterBtn').addEventListener('click', function() {
+                const element = document.getElementById('coverLetterResult');
+                if (!element) {
+                    alert('Element not found');
+                    return;
+                }
+                
+                const content = element.innerText;
+                if (!content || content.includes('Error') || content.includes('No content')) {
+                    alert('Nothing to copy');
+                    return;
+                }
+                
+                navigator.clipboard.writeText(content).then(() => {
+                    const originalText = this.innerHTML;
+                    this.innerHTML = '<i class="bi bi-check"></i> Copied!';
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Failed to copy: ', err);
+                    alert('Failed to copy to clipboard');
+                });
+            });
+
+            // Save Resume Button
+            document.getElementById('saveResumeBtn').addEventListener('click', function() {
+                const content = document.getElementById('optimizedResumeContent').innerHTML;
+                if (!content || content.includes('alert-danger')) {
+                    alert('Please generate a resume first');
+                    return;
+                }
+                
+                // In a real app, you would save to database or local storage
+                alert('Resume saved to your account!');
+            });
+
+            // Save Cover Letter Button
+            document.getElementById('saveLetterBtn').addEventListener('click', function() {
+                const content = document.getElementById('coverLetterResult').innerHTML;
+                if (!content || content.includes('alert-danger') || content.includes('text-muted')) {
+                    alert('Please generate a cover letter first');
+                    return;
+                }
+                
+                // In a real app, you would save to database or local storage
+                alert('Cover letter saved to your account!');
+            });
+
+            // Add Job Application Button
+            document.getElementById('trackerAddBtn').addEventListener('click', function() {
+                const company = document.getElementById('trackerCompany').value;
+                const position = document.getElementById('trackerPosition').value;
+                const date = document.getElementById('trackerDate').value || new Date().toISOString().split('T')[0];
+                const status = document.getElementById('trackerStatus').value;
+                const notes = document.getElementById('trackerNotes').value;
+                
+                if (!company || !position) {
+                    alert('Please enter company and position');
+                    return;
+                }
+                
+                const newApplication = {
+                    id: Date.now(),
+                    company,
+                    position,
+                    date,
+                    status,
+                    notes,
+                    updated: new Date().toISOString()
+                };
+                
+                jobApplications.push(newApplication);
+                localStorage.setItem('jobApplications', JSON.stringify(jobApplications));
+                
+                // Clear form
+                document.getElementById('trackerCompany').value = '';
+                document.getElementById('trackerPosition').value = '';
+                document.getElementById('trackerDate').value = '';
+                document.getElementById('trackerNotes').value = '';
+                
+                updateApplicationsTable();
+                updateAnalytics();
+                
+                alert('Application added successfully!');
+            });
+
+            // Sample resume generation function
+            function generateResume() {
+                const name = document.getElementById('userName').value || 'John Doe';
+                const email = document.getElementById('userEmail').value || 'john.doe@example.com';
+                const phone = document.getElementById('userPhone').value || '(123) 456-7890';
+                const title = document.getElementById('userTitle').value || 'Professional';
+                const address = document.getElementById('userAddress').value || '123 Main St, City, State 12345';
+                const jobDesc = document.getElementById('jobDescription').value || 'software development';
+                const skills = document.getElementById('userSkills').value || 'JavaScript, Project Management, Data Analysis';
+                
+                let resumeHTML = '';
+                
+                if (selectedTemplate === 'template-1') {
+                    resumeHTML = `
+                        <div class="template-1">
+                            <header>
+                                <h1>${name}</h1>
+                                <p>${title}</p>
+                                <div class="contact-info">
+                                    <span>${email}</span>
+                                    <span>${phone}</span>
+                                    <span>${address}</span>
+                                </div>
+                            </header>
+                            <section>
+                                <h2>PROFESSIONAL SUMMARY</h2>
+                                <p>Results-driven ${title} with 5+ years of experience in ${jobDesc.substring(0, 30)}. Proven ability to analyze complex problems and develop innovative solutions. Adept at collaborating with cross-functional teams to deliver high-quality results on time and under budget.</p>
+                            </section>
+                            <section>
+                                <h2>WORK EXPERIENCE</h2>
+                                <h3>Senior ${title}</h3>
+                                <p><strong>XYZ Company</strong> | 2019 - Present</p>
+                                <ul>
+                                    <li>Increased team productivity by 35% through implementation of agile methodologies</li>
+                                    <li>Led cross-functional team of 12 to deliver project 2 weeks ahead of schedule</li>
+                                    <li>Specialized in ${jobDesc.substring(0, 20)} resulting in 20% efficiency gains</li>
+                                </ul>
+                                
+                                <h3>${title}</h3>
+                                <p><strong>ABC Corp</strong> | 2016 - 2019</p>
+                                <ul>
+                                    <li>Developed new processes that reduced operational costs by 15% annually</li>
+                                    <li>Collaborated with stakeholders to define project requirements and deliverables</li>
+                                </ul>
+                            </section>
+                            <section>
+                                <h2>EDUCATION</h2>
+                                <p><strong>Bachelor of Science in Computer Science</strong><br>
+                                University of Example, 2015</p>
+                            </section>
+                            <section>
+                                <h2>SKILLS</h2>
+                                <ul>
+                                    ${skills.split(',').map(skill => `<li>${skill.trim()}</li>`).join('')}
+                                    <li>Team Leadership</li>
+                                    <li>Strategic Planning</li>
+                                </ul>
+                            </section>
+                        </div>
+                    `;
+                } 
+                else if (selectedTemplate === 'template-2') {
+                    resumeHTML = `
+                        <div class="template-2">
+                            <header>
+                                <h1>${name}</h1>
+                                <p>${title}</p>
+                            </header>
+                            <div class="section">
+                                <h2>Contact Information</h2>
+                                <p>${email} | ${phone} | ${address}</p>
+                            </div>
+                            <div class="section">
+                                <h2>Summary</h2>
+                                <p>Detail-oriented ${title} with expertise in ${jobDesc.substring(0, 30)}. Excellent problem-solving skills with a track record of improving processes and increasing efficiency. Strong communicator with ability to explain technical concepts to non-technical stakeholders.</p>
+                            </div>
+                            <div class="section">
+                                <h2>Professional Experience</h2>
+                                <h3>XYZ Company</h3>
+                                <p><em>Senior ${title} | 2019 - Present</em></p>
+                                <ul>
+                                    <li>Managed team of 8 developers to deliver enterprise software solutions</li>
+                                    <li>Implemented CI/CD pipeline reducing deployment time by 40%</li>
+                                    <li>Mentored junior team members resulting in 3 promotions</li>
+                                </ul>
+                                
+                                <h3>ABC Corp</h3>
+                                <p><em>${title} | 2016 - 2019</em></p>
+                                <ul>
+                                    <li>Designed and developed new features for flagship product</li>
+                                    <li>Reduced bug reports by 25% through improved testing practices</li>
+                                </ul>
+                            </div>
+                            <div class="section">
+                                <h2>Education</h2>
+                                <p><strong>University of Example</strong><br>
+                                B.S. in Computer Science, 2015</p>
+                            </div>
+                            <div class="section">
+                                <h2>Technical Skills</h2>
+                                <p>${skills}</p>
+                            </div>
+                        </div>
+                    `;
+                } 
+                else if (selectedTemplate === 'template-3') {
+                    resumeHTML = `
+                        <div class="template-3">
+                            <div class="sidebar">
+                                <h1>${name}</h1>
+                                <p>${title}</p>
+                                
+                                <h2>Contact</h2>
+                                <div class="contact-item">
+                                    <p><strong>Phone:</strong><br>${phone}</p>
+                                </div>
+                                <div class="contact-item">
+                                    <p><strong>Email:</strong><br>${email}</p>
+                                </div>
+                                <div class="contact-item">
+                                    <p><strong>Address:</strong><br>${address}</p>
+                                </div>
+                                
+                                <h2>Skills</h2>
+                                <ul>
+                                    ${skills.split(',').map(skill => `<li>${skill.trim()}</li>`).join('')}
+                                </ul>
+                                
+                                <h2>Education</h2>
+                                <p><strong>University of Example</strong><br>
+                                B.S. Computer Science<br>
+                                2015</p>
+                            </div>
+                            <div class="main-content">
+                                <h2>Profile</h2>
+                                <p>Innovative ${title} with 5+ years experience in ${jobDesc.substring(0, 30)}. Passionate about creating efficient solutions to complex problems. Strong collaborator with excellent communication skills.</p>
+                                
+                                <h2>Experience</h2>
+                                <h3>Senior ${title}</h3>
+                                <p><strong>XYZ Company</strong> | 2019 - Present</p>
+                                <ul>
+                                    <li>Led development of new customer portal increasing user engagement by 45%</li>
+                                    <li>Reduced server costs by 30% through infrastructure optimization</li>
+                                    <li>Implemented automated testing saving 20 hours/week in manual testing</li>
+                                </ul>
+                                
+                                <h3>${title}</h3>
+                                <p><strong>ABC Corp</strong> | 2016 - 2019</p>
+                                <ul>
+                                    <li>Developed REST APIs for mobile applications serving 50,000+ users</li>
+                                    <li>Collaborated with UX team to improve customer satisfaction scores</li>
+                                </ul>
+                                
+                                <h2>Projects</h2>
+                                <p><strong>Inventory Management System</strong> - Developed system that reduced stock discrepancies by 95%</p>
+                                <p><strong>Customer Analytics Dashboard</strong> - Created dashboard providing real-time business insights</p>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                document.getElementById('optimizedResumeContent').innerHTML = resumeHTML;
+                document.getElementById('resumeResult').classList.remove('d-none');
+                
+                // Generate optimization tips
+                const jobDescText = document.getElementById('jobDescription').value.toLowerCase();
+                const resumeText = document.getElementById('userResume').value.toLowerCase();
+                const tips = [];
+                
+                // Check for keyword matching
+                const keywords = extractKeywords(jobDescText);
+                const matchedKeywords = keywords.filter(keyword => resumeText.includes(keyword.toLowerCase()));
+                
+                tips.push(`<p><strong>Keyword Matching:</strong> Your resume matches ${matchedKeywords.length} out of ${keywords.length} important keywords from the job description.</p>`);
+                
+                // Check for action verbs
+                const actionVerbs = ['managed', 'led', 'developed', 'created', 'implemented', 'improved', 'increased', 'reduced'];
+                const foundVerbs = actionVerbs.filter(verb => resumeText.includes(verb));
+                
+                tips.push(`<p><strong>Action Verbs:</strong> Your resume contains ${foundVerbs.length} strong action verbs (good: 5+).</p>`);
+                
+                // Check for quantifiable results
+                const quantifiable = (resumeText.match(/\d+%/g) || []).length;
+                tips.push(`<p><strong>Quantifiable Results:</strong> Your resume includes ${quantifiable} quantifiable achievements (good: 3+).</p>`);
+                
+                document.getElementById('optimizationTips').innerHTML = tips.join('');
+                
+                // Track as a job application if company name is provided
+                const company = document.getElementById('companyName').value;
+                if (company) {
+                    const position = document.getElementById('positionName').value || 'Unknown Position';
+                    addJobApplication(company, position);
+                }
+            }
+
+            // Sample cover letter generation function
+            function generateCoverLetter() {
+                const company = document.getElementById('companyName').value || 'Tech Company';
+                const position = document.getElementById('positionName').value || 'Software Developer';
+                const hiringManager = document.getElementById('hiringManager').value || 'Hiring Manager';
+                const name = document.getElementById('userName').value || 'John Doe';
+                const address = document.getElementById('userAddress').value || '123 Main St, City, State 12345';
+                const companyAddress = document.getElementById('companyAddress').value || '456 Corporate Blvd, Business City, State 67890';
+                const notes = document.getElementById('coverLetterNotes').value || '';
+                const jobDesc = document.getElementById('jobDescription').value || '';
+                const skills = document.getElementById('userSkills').value || '';
+                
+                const today = new Date().toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+                
+                // Extract relevant skills from job description
+                const relevantSkills = skills.split(',').filter(skill => 
+                    jobDesc.toLowerCase().includes(skill.trim().toLowerCase())
+                ).slice(0, 3);
+                
+                const letterHTML = `
+                    <div class="address-block">
+                        <p>${address}</p>
+                        <p>${today}</p>
+                        <br>
+                        <p>${hiringManager}</p>
+                        <p>${company}</p>
+                        <p>${companyAddress}</p>
+                    </div>
+                    
+                    <div class="letter-content">
+                        <p>Dear ${hiringManager},</p>
+                        
+                        <p>I am excited to apply for the ${position} position at ${company}. With my 5 years of experience in this field and skills in ${relevantSkills.join(', ') || 'key areas'}, I am confident in my ability to contribute significantly to your team.</p>
+                        
+                        <p>In reviewing the job description, I was particularly drawn to this opportunity because ${jobDesc.substring(0, 100)}. My background aligns well with your requirements:</p>
+                        
+                        <ul>
+                            <li><strong>${relevantSkills[0] || 'Relevant Skill'}:</strong> ${Math.floor(Math.random() * 5) + 3}+ years experience applying this in professional settings</li>
+                            <li><strong>${relevantSkills[1] || 'Another Skill'}:</strong> Demonstrated success in projects utilizing this skill</li>
+                            <li><strong>${relevantSkills[2] || 'Additional Skill'}:</strong> Certified training and practical application</li>
+                        </ul>
+                        
+                        <p>In my current role, I successfully led initiatives that resulted in measurable improvements, including a 25% increase in operational efficiency and a 15% reduction in costs. I thrive in collaborative environments and am particularly adept at ${jobDesc.substring(0, 30)}.</p>
+                        
+                        ${notes ? `<p>${notes}</p>` : ''}
+                        
+                        <p>I would welcome the opportunity to discuss how my experience and skills would benefit ${company}. Thank you for your time and consideration—I look forward to the possibility of contributing to your team.</p>
+                        
+                        <div class="signature">
+                            <p>Sincerely,</p>
+                            <p>${name}</p>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('coverLetterResult').innerHTML = letterHTML;
+                
+                // Track this as a job application
+                addJobApplication(company, position);
+            }
+
+            // Helper function to extract keywords from job description
+            function extractKeywords(text) {
+                // Simple keyword extraction - in a real app you'd use more sophisticated NLP
+                const commonWords = new Set(['the', 'and', 'a', 'an', 'in', 'on', 'at', 'for', 'to', 'of', 'with']);
+                const words = text.toLowerCase().match(/\b[a-z]{4,}\b/g) || [];
+                
+                const wordCount = {};
+                words.forEach(word => {
+                    if (!commonWords.has(word)) {
+                        wordCount[word] = (wordCount[word] || 0) + 1;
+                    }
+                });
+                
+                // Get top 10 most frequent words
+                return Object.entries(wordCount)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 10)
+                    .map(entry => entry[0]);
+            }
+
+            // Add job application to tracker
+            function addJobApplication(company, position) {
+                // Check if this application already exists
+                const exists = jobApplications.some(app => 
+                    app.company.toLowerCase() === company.toLowerCase() && 
+                    app.position.toLowerCase() === position.toLowerCase()
+                );
+                
+                if (exists) return;
+                
+                const newApplication = {
+                    id: Date.now(),
+                    company,
+                    position,
+                    date: new Date().toISOString().split('T')[0],
+                    status: 'applied',
+                    notes: 'Generated from resume builder',
+                    updated: new Date().toISOString()
+                };
+                
+                jobApplications.push(newApplication);
+                localStorage.setItem('jobApplications', JSON.stringify(jobApplications));
+                
+                updateApplicationsTable();
+                updateAnalytics();
+            }
+
+            // Update applications table
+            function updateApplicationsTable() {
+                const tableBody = document.getElementById('applicationsTable');
+                tableBody.innerHTML = '';
+                
+                // Sort by date (newest first)
+                const sortedApplications = [...jobApplications].sort((a, b) => new Date(b.date) - new Date(a.date));
+                
+                sortedApplications.slice(0, 5).forEach(app => {
+                    const row = document.createElement('tr');
+                    
+                    let statusClass = '';
+                    switch(app.status) {
+                        case 'interview': statusClass = 'text-primary'; break;
+                        case 'offer': statusClass = 'text-success'; break;
+                        case 'rejected': statusClass = 'text-danger'; break;
+                        default: statusClass = 'text-secondary';
+                    }
+                    
+                    row.innerHTML = `
+                        <td>${app.company}</td>
+                        <td>${app.position}</td>
+                        <td>${new Date(app.date).toLocaleDateString()}</td>
+                        <td class="${statusClass}">${app.status.charAt(0).toUpperCase() + app.status.slice(1)}</td>
+                    `;
+                    
+                    tableBody.appendChild(row);
+                });
+                
+                if (sortedApplications.length > 5) {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td colspan="4" class="text-center">
+                            <small>+ ${sortedApplications.length - 5} more applications</small>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                }
+            }
+
+            // Update analytics
+            function updateAnalytics() {
+                if (jobApplications.length === 0) return;
+                
+                // Calculate metrics
+                const totalApplications = jobApplications.length;
+                const interviews = jobApplications.filter(app => app.status === 'interview').length;
+                const offers = jobApplications.filter(app => app.status === 'offer').length;
+                const activeApps = jobApplications.filter(app => 
+                    ['applied', 'interview'].includes(app.status)
+                ).length;
+                
+                const interviewRate = Math.round((interviews / totalApplications) * 100);
+                
+                // Update UI
+                document.getElementById('totalApplications').textContent = totalApplications;
+                document.getElementById('interviewRate').textContent = interviewRate + '%';
+                document.getElementById('activeApplications').textContent = activeApps;
+                
+                // Calculate average response time (in days)
+                let totalResponseTime = 0;
+                let count = 0;
+                
+                jobApplications.forEach(app => {
+                    if (app.status !== 'applied' && app.date && app.updated) {
+                        const applyDate = new Date(app.date);
+                        const updateDate = new Date(app.updated);
+                        const diffTime = updateDate - applyDate;
+                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                        
+                        totalResponseTime += diffDays;
+                        count++;
+                    }
+                });
+                
+                const avgResponseTime = count > 0 ? Math.round(totalResponseTime / count) : 0;
+                document.getElementById('avgResponseTime').textContent = 
+                    avgResponseTime > 0 ? avgResponseTime + ' days' : 'N/A';
+                
+                // Update charts
+                updateStatusChart();
+                updateTimelineChart();
+            }
+
+            // Create status distribution chart
+            function updateStatusChart() {
+                const ctx = document.getElementById('statusChartCanvas').getContext('2d');
+                
+                // Group by status
+                const statusCounts = {
+                    applied: 0,
+                    interview: 0,
+                    offer: 0,
+                    rejected: 0
+                };
+                
+                jobApplications.forEach(app => {
+                    statusCounts[app.status] = (statusCounts[app.status] || 0) + 1;
+                });
+                
+                const data = {
+                    labels: ['Applied', 'Interview', 'Offer', 'Rejected'],
+                    datasets: [{
+                        data: [
+                            statusCounts.applied,
+                            statusCounts.interview,
+                            statusCounts.offer,
+                            statusCounts.rejected
+                        ],
+                        backgroundColor: [
+                            '#6c757d',
+                            '#0d6efd',
+                            '#198754',
+                            '#dc3545'
+                        ]
+                    }]
+                };
+                
+                if (statusChart) {
+                    statusChart.data = data;
+                    statusChart.update();
+                } else {
+                    statusChart = new Chart(ctx, {
+                        type: 'doughnut',
+                        data: data,
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom'
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+
+            // Create application timeline chart
+            function updateTimelineChart() {
+                const ctx = document.getElementById('timelineChartCanvas').getContext('2d');
+                
+                // Group by month
+                const monthlyCounts = {};
+                jobApplications.forEach(app => {
+                    const date = new Date(app.date);
+                    const monthYear = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+                    
+                    monthlyCounts[monthYear] = (monthlyCounts[monthYear] || 0) + 1;
+                });
+                
+                // Sort by date
+                const sortedMonths = Object.keys(monthlyCounts).sort();
+                const counts = sortedMonths.map(month => monthlyCounts[month]);
+                const labels = sortedMonths.map(month => {
+                    const [year, m] = month.split('-');
+                    return new Date(year, m - 1).toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+                });
+                
+                const data = {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Applications',
+                        data: counts,
+                        backgroundColor: '#4361ee',
+                        borderColor: '#3f37c9',
+                        borderWidth: 1,
+                        tension: 0.1
+                    }]
+                };
+                
+                if (timelineChart) {
+                    timelineChart.data = data;
+                    timelineChart.update();
+                } else {
+                    timelineChart = new Chart(ctx, {
+                        type: 'line',
+                        data: data,
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        stepSize: 1
+                                    }
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+
+            // Initialize the page
+            updateApplicationsTable();
+            updateAnalytics();
+        });
+    </script>
+</body>
+</html>

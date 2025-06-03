@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Compressor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>PDF Compressor</h1>
+        <div class="upload-area" id="dropArea">
+            <input type="file" id="fileInput" accept=".pdf">
+            <p>Drag & drop your PDF here or click to browse</p>
+            <div class="file-info" id="fileInfo"></div>
+        </div>
+        
+        <div class="controls">
+            <div class="compression-options">
+                <h3>Compression Options</h3>
+                
+                <div class="option">
+                    <label>
+                        <input type="checkbox" id="removeMetadata" checked>
+                        Remove metadata
+                    </label>
+                </div>
+                
+                <div class="option">
+                    <label>
+                        <input type="checkbox" id="flattenAnnotations" checked>
+                        Flatten annotations
+                    </label>
+                </div>
+                
+                <div class="option">
+                    <label>
+                        <input type="checkbox" id="optimizeImages" checked>
+                        Optimize images
+                    </label>
+                </div>
+                
+                <div class="option">
+                    <label for="quality">Image Quality:</label>
+                    <input type="range" id="quality" min="10" max="100" value="75">
+                    <span id="qualityValue">75%</span>
+                </div>
+            </div>
+            
+            <button id="compressBtn" disabled>Compress PDF</button>
+        </div>
+        
+        <div class="results" id="results" style="display:none;">
+            <h3>Compression Results</h3>
+            <div class="result-stats">
+                <div>
+                    <span class="stat-label">Original Size:</span>
+                    <span id="originalSize">-</span>
+                </div>
+                <div>
+                    <span class="stat-label">Compressed Size:</span>
+                    <span id="compressedSize">-</span>
+                </div>
+                <div>
+                    <span class="stat-label">Reduction:</span>
+                    <span id="reduction">-</span>
+                </div>
+            </div>
+            <a id="downloadLink" class="download-link">Download Compressed PDF</a>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

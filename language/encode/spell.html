@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Spell & Grammar Checker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      padding: 2rem;
+      max-width: 800px;
+      margin: auto;
+    }
+
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+
+    textarea {
+      width: 100%;
+      height: 200px;
+      font-size: 16px;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      margin-bottom: 1rem;
+    }
+
+    button {
+      background: #3498db;
+      color: white;
+      padding: 10px 20px;
+      margin: 10px 5px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #2980b9;
+    }
+
+    #output {
+      margin-top: 1rem;
+      background: #fff;
+      padding: 1rem;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      white-space: pre-wrap;
+    }
+
+    .highlight {
+      background: #ffcccc;
+      padding: 2px;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Spell & Grammar Checker</h1>
+
+<textarea id="inputText" placeholder="Type or paste text here..."></textarea><br>
+
+<button onclick="checkGrammar()">Check Grammar</button>
+<button onclick="copyText()">Copy</button>
+
+<div id="output"></div>
+
+<script>
+  async function checkGrammar() {
+    const text = document.getElementById("inputText").value;
+    const res = await fetch("https://api.languagetoolplus.com/v2/check", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        text,
+        language: "en-US"
+      })
+    });
+
+    const data = await res.json();
+
+    let highlighted = text;
+    let offset = 0;
+
+    data.matches.forEach(match => {
+      const start = match.offset + offset;
+      const end = start + match.length;
+      const mistake = highlighted.slice(start, end);
+      const replacement = `<span class="highlight" title="${match.message}">${mistake}</span>`;
+      highlighted = highlighted.slice(0, start) + replacement + highlighted.slice(end);
+      offset += replacement.length - match.length;
+    });
+
+    document.getElementById("output").innerHTML = highlighted || "✅ No major issues found!";
+  }
+
+  function copyText() {
+    const temp = document.createElement("textarea");
+    temp.value = document.getElementById("inputText").value;
+    document.body.appendChild(temp);
+    temp.select();
+    document.execCommand("copy");
+    document.body.removeChild(temp);
+    alert("Copied!");
+  }
+</script>
+
+</body>
+</html>

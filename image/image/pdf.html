@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Image to PDF Converter</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #4361ee;
+      --primary-dark: #3a56d4;
+      --secondary: #3f37c9;
+      --text: #2b2d42;
+      --text-light: #6c757d;
+      --background: #f8f9fa;
+      --card: #ffffff;
+      --border: #e9ecef;
+      --success: #4cc9f0;
+      --error: #f72585;
+      --warning: #ff9e00;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: var(--background);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+    
+    .container {
+      background: var(--card);
+      padding: 2.5rem;
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      width: 100%;
+      max-width: 520px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .container:hover {
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
+    }
+    
+    h1 {
+      margin-bottom: 1.5rem;
+      text-align: center;
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 1.75rem;
+    }
+    
+    .upload-area {
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .upload-area:hover {
+      border-color: var(--primary);
+      background: rgba(67, 97, 238, 0.03);
+    }
+    
+    .upload-area.active {
+      border-color: var(--primary);
+      background: rgba(67, 97, 238, 0.05);
+    }
+    
+    .upload-icon {
+      font-size: 2.5rem;
+      color: var(--primary);
+      margin-bottom: 0.75rem;
+    }
+    
+    .upload-text {
+      font-size: 1rem;
+      color: var(--text-light);
+      margin-bottom: 0.5rem;
+    }
+    
+    .upload-text strong {
+      color: var(--primary);
+      font-weight: 600;
+    }
+    
+    .upload-subtext {
+      font-size: 0.875rem;
+      color: var(--text-light);
+    }
+    
+    #imageInput {
+      display: none;
+    }
+    
+    .file-list {
+      max-height: 200px;
+      overflow-y: auto;
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.5rem;
+      display: none;
+    }
+    
+    .file-item {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .file-item:last-child {
+      border-bottom: none;
+    }
+    
+    .file-icon {
+      color: var(--primary);
+      margin-right: 0.75rem;
+      font-size: 1.25rem;
+    }
+    
+    .file-info {
+      flex: 1;
+      text-align: left;
+    }
+    
+    .file-name {
+      font-weight: 500;
+      font-size: 0.875rem;
+      margin-bottom: 0.25rem;
+    }
+    
+    .file-size {
+      font-size: 0.75rem;
+      color: var(--text-light);
+    }
+    
+    .file-remove {
+      color: var(--error);
+      cursor: pointer;
+      margin-left: 0.5rem;
+    }
+    
+    button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 0.875rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      transition: all 0.2s ease;
+    }
+    
+    button:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+    
+    button:disabled {
+      background: var(--border);
+      color: var(--text-light);
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .progress-container {
+      margin-top: 1.5rem;
+      width: 100%;
+      background-color: var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      height: 8px;
+      display: none;
+    }
+    
+    .progress-bar {
+      height: 100%;
+      background-color: var(--primary);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+    
+    .status-container {
+      margin-top: 1rem;
+      padding: 0.75rem;
+      border-radius: 8px;
+      display: none;
+    }
+    
+    .status-container.success {
+      background: rgba(76, 201, 240, 0.1);
+      color: var(--success);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .status-container.error {
+      background: rgba(247, 37, 133, 0.1);
+      color: var(--error);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .status-container.warning {
+      background: rgba(255, 158, 0, 0.1);
+      color: var(--warning);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .status-icon {
+      font-size: 1.25rem;
+    }
+    
+    .status-text {
+      flex: 1;
+      font-size: 0.875rem;
+    }
+    
+    .options {
+      margin-bottom: 1.5rem;
+      display: grid;
+      gap: 1rem;
+    }
+    
+    .option-group {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .option-label {
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    
+    .option-control {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .checkbox {
+      position: relative;
+      width: 40px;
+      height: 20px;
+    }
+    
+    .checkbox input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--border);
+      transition: .4s;
+      border-radius: 20px;
+    }
+    
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 2px;
+      bottom: 2px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    
+    input:checked + .slider {
+      background-color: var(--primary);
+    }
+    
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+    
+    @media (max-width: 480px) {
+      .container {
+        padding: 1.5rem;
+      }
+      
+      h1 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1><i class="fas fa-file-pdf" style="margin-right: 10px;"></i> Image to PDF Converter</h1>
+    
+    <div class="upload-area" id="uploadArea">
+      <div class="upload-icon">
+        <i class="fas fa-cloud-upload-alt"></i>
+      </div>
+      <p class="upload-text"><strong>Click to upload</strong> or drag and drop</p>
+      <p class="upload-subtext">Supports JPG, PNG, WEBP (Max 20 files)</p>
+      <input type="file" id="imageInput" accept="image/*" multiple />
+    </div>
+    
+    <div class="file-list" id="fileList"></div>
+    
+    <div class="options">
+      <div class="option-group">
+        <span class="option-label">Add filename as title</span>
+        <div class="option-control">
+          <label class="checkbox">
+            <input type="checkbox" id="addFilename" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+      <div class="option-group">
+        <span class="option-label">Center images vertically</span>
+        <div class="option-control">
+          <label class="checkbox">
+            <input type="checkbox" id="centerImages" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+    
+    <button id="convertBtn" disabled>
+      <i class="fas fa-file-export"></i>
+      <span id="btnText">Convert to PDF</span>
+    </button>
+    
+    <div class="progress-container" id="progressContainer">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+    
+    <div class="status-container" id="statusContainer">
+      <i class="fas fa-check-circle status-icon" id="statusIcon"></i>
+      <div class="status-text" id="statusText"></div>
+    </div>
+  </div>
+
+  <script>
+    const { jsPDF } = window.jspdf;
+    const convertBtn = document.getElementById("convertBtn");
+    const btnText = document.getElementById("btnText");
+    const progressContainer = document.getElementById("progressContainer");
+    const progressBar = document.getElementById("progressBar");
+    const statusContainer = document.getElementById("statusContainer");
+    const statusIcon = document.getElementById("statusIcon");
+    const statusText = document.getElementById("statusText");
+    const fileList = document.getElementById("fileList");
+    const uploadArea = document.getElementById("uploadArea");
+    const imageInput = document.getElementById("imageInput");
+    const addFilenameCheckbox = document.getElementById("addFilename");
+    const centerImagesCheckbox = document.getElementById("centerImages");
+
+    let files = [];
+    const MAX_FILES = 20;
+
+    // Event listeners
+    uploadArea.addEventListener('click', () => imageInput.click());
+    uploadArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadArea.classList.add('active');
+    });
+    uploadArea.addEventListener('dragleave', () => {
+      uploadArea.classList.remove('active');
+    });
+    uploadArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadArea.classList.remove('active');
+      if (e.dataTransfer.files.length) {
+        imageInput.files = e.dataTransfer.files;
+        handleFiles();
+      }
+    });
+    
+    imageInput.addEventListener('change', handleFiles);
+    convertBtn.addEventListener('click', convertToPDF);
+
+    function handleFiles() {
+      const newFiles = Array.from(imageInput.files);
+      
+      // Check if total files exceed limit
+      if (files.length + newFiles.length > MAX_FILES) {
+        showStatus(`You can only upload up to ${MAX_FILES} files`, 'warning');
+        return;
+      }
+      
+      // Add new files to our array
+      files = [...files, ...newFiles];
+      
+      // Update UI
+      updateFileList();
+      convertBtn.disabled = files.length === 0;
+      
+      if (files.length > 0) {
+        showStatus(`Added ${newFiles.length} file(s). Ready to convert!`, 'success');
+      }
+    }
+
+    function updateFileList() {
+      if (files.length === 0) {
+        fileList.style.display = 'none';
+        return;
+      }
+      
+      fileList.style.display = 'block';
+      fileList.innerHTML = '';
+      
+      files.forEach((file, index) => {
+        const fileItem = document.createElement('div');
+        fileItem.className = 'file-item';
+        
+        fileItem.innerHTML = `
+          <i class="fas fa-file-image file-icon"></i>
+          <div class="file-info">
+            <div class="file-name">${file.name}</div>
+            <div class="file-size">${formatFileSize(file.size)}</div>
+          </div>
+          <i class="fas fa-times file-remove" data-index="${index}"></i>
+        `;
+        
+        fileList.appendChild(fileItem);
+      });
+      
+      // Add event listeners to remove buttons
+      document.querySelectorAll('.file-remove').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const index = parseInt(e.target.getAttribute('data-index'));
+          files.splice(index, 1);
+          updateFileList();
+          convertBtn.disabled = files.length === 0;
+          
+          if (files.length === 0) {
+            statusContainer.style.display = 'none';
+          } else {
+            showStatus(`Removed file. ${files.length} file(s) remaining.`, 'success');
+          }
+        });
+      });
+    }
+
+    async function convertToPDF() {
+      if (files.length === 0) {
+        showStatus("Please select image(s) first.", 'error');
+        return;
+      }
+
+      // Show loading state
+      convertBtn.disabled = true;
+      btnText.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Processing...`;
+      progressContainer.style.display = 'block';
+      showStatus(`Processing ${files.length} image(s)...`, 'success');
+
+      const pdf = new jsPDF();
+      const addFilename = addFilenameCheckbox.checked;
+      const centerImages = centerImagesCheckbox.checked;
+      let processedCount = 0;
+
+      try {
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          
+          // Update progress
+          processedCount++;
+          const progress = Math.round((processedCount / files.length) * 100);
+          progressBar.style.width = `${progress}%`;
+          statusText.textContent = `Processing ${file.name} (${processedCount} of ${files.length})`;
+          
+          const imgData = await toBase64(file);
+          
+          await new Promise((resolve) => {
+            const img = new Image();
+            img.onload = function() {
+              if (i > 0) pdf.addPage();
+              
+              // Add filename as title if enabled
+              if (addFilename) {
+                pdf.setFontSize(10);
+                pdf.setTextColor(100);
+                pdf.text(file.name, 10, 10);
+              }
+              
+              // Calculate image dimensions to fit page
+              const pageWidth = pdf.internal.pageSize.getWidth();
+              const pageHeight = pdf.internal.pageSize.getHeight();
+              const imgWidth = pageWidth - 20; // 10mm margins on each side
+              const imgHeight = (img.height * imgWidth) / img.width;
+              
+              // Calculate y position
+              let y = 20;
+              if (centerImages && imgHeight < (pageHeight - 30)) {
+                y = (pageHeight - imgHeight) / 2;
+                if (addFilename) y = Math.max(y, 20); // Don't overlap with filename
+              }
+              
+              pdf.addImage(img, "JPEG", 10, y, imgWidth, imgHeight);
+              resolve();
+            };
+            img.src = imgData;
+          });
+        }
+
+        // Complete progress
+        progressBar.style.width = '100%';
+        statusText.textContent = 'Generating PDF...';
+        
+        // Generate filename with timestamp
+        const date = new Date().toISOString().slice(0,19).replace(/[:T]/g, "-");
+        const filename = `images-${date}.pdf`;
+        
+        // Save PDF
+        pdf.save(filename);
+        showStatus(`Download complete: ${filename}`, 'success');
+        
+      } catch (error) {
+        console.error("Conversion error:", error);
+        showStatus(`Error: ${error.message}`, 'error');
+      } finally {
+        // Reset button state
+        convertBtn.disabled = false;
+        btnText.innerHTML = '<i class="fas fa-file-export"></i> Convert to PDF';
+      }
+    }
+
+    function toBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function formatFileSize(bytes) {
+      if (bytes === 0) return '0 Bytes';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    function showStatus(message, type) {
+      statusContainer.className = `status-container ${type}`;
+      statusIcon.className = `fas ${
+        type === 'success' ? 'fa-check-circle' : 
+        type === 'error' ? 'fa-times-circle' : 'fa-exclamation-circle'
+      } status-icon`;
+      statusText.textContent = message;
+      statusContainer.style.display = 'flex';
+    }
+  </script>
+
+</body>
+</html>

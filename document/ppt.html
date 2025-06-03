@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF to PowerPoint Converter</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #6d28d9;
+      --primary-dark: #5b21b6;
+      --accent: #8b5cf6;
+      --light: #f9fafb;
+      --dark: #1f2937;
+      --success: #10b981;
+      --error: #ef4444;
+      --border-radius: 12px;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f3f4f6;
+      color: var(--dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: white;
+      box-shadow: var(--shadow);
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .navbar {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      color: var(--primary);
+      font-size: 1.8rem;
+    }
+
+    .logo-text {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    main {
+      flex: 1;
+      padding: 2rem 0;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .converter-card {
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      padding: 2rem;
+      margin-bottom: 2rem;
+      border: 1px solid #e5e7eb;
+    }
+
+    .drop-area {
+      border: 2px dashed #d1d5db;
+      border-radius: var(--border-radius);
+      padding: 3rem;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-bottom: 1.5rem;
+      background: #f9fafb;
+    }
+
+    .drop-area:hover {
+      border-color: var(--primary);
+      background: rgba(109, 40, 217, 0.05);
+    }
+
+    .drop-icon {
+      font-size: 3rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+
+    .file-preview {
+      display: none;
+      margin-top: 1rem;
+      border: 1px solid #e5e7eb;
+      border-radius: var(--border-radius);
+      padding: 1rem;
+      background: white;
+    }
+
+    .preview-container {
+      display: flex;
+      gap: 1rem;
+      overflow-x: auto;
+      padding: 1rem 0;
+    }
+
+    .preview-slide {
+      min-width: 200px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .preview-slide img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--border-radius);
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    .btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .progress-container {
+      display: none;
+      margin: 1.5rem 0;
+    }
+
+    .result-container {
+      display: none;
+      text-align: center;
+      padding: 2rem;
+      background: rgba(16, 185, 129, 0.1);
+      border-radius: var(--border-radius);
+    }
+
+    @media (max-width: 768px) {
+      .converter-card {
+        padding: 1.5rem;
+      }
+      .drop-area {
+        padding: 2rem 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <a href="#" class="logo">
+        <i class="fas fa-file-powerpoint logo-icon"></i>
+        <span class="logo-text">PDF to PPT</span>
+      </a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="container">
+      <div class="converter-card">
+        <h1 style="text-align: center; margin-bottom: 1rem;">PDF to PowerPoint Converter</h1>
+        <p style="text-align: center; color: #6b7280; margin-bottom: 2rem;">
+          Convert PDF pages to PowerPoint slides
+        </p>
+
+        <div id="dropArea" class="drop-area">
+          <i class="fas fa-cloud-upload-alt drop-icon"></i>
+          <p class="drop-text">Drag & drop your PDF here</p>
+          <p class="drop-hint">or click to select a file</p>
+          <input type="file" id="fileInput" accept=".pdf" style="display: none;">
+        </div>
+
+        <div id="filePreview" class="file-preview">
+          <h3 style="margin-bottom: 1rem;">Preview</h3>
+          <div class="preview-container" id="previewContainer"></div>
+        </div>
+
+        <div style="text-align: center; margin-top: 1.5rem;">
+          <button id="convertBtn" class="btn btn-primary" disabled>
+            <i class="fas fa-file-powerpoint"></i> Convert to PPTX
+          </button>
+        </div>
+
+        <div id="progressContainer" class="progress-container">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span id="progressText">Processing...</span>
+            <span id="progressPercent">0%</span>
+          </div>
+          <div style="height: 8px; background: #e5e7eb; border-radius: 4px;">
+            <div id="progressBar" style="height: 100%; background: var(--primary); width: 0%; transition: width 0.3s;"></div>
+          </div>
+        </div>
+
+        <div id="resultContainer" class="result-container">
+          <i class="fas fa-check-circle" style="font-size: 3rem; color: var(--success); margin-bottom: 1rem;"></i>
+          <p style="font-size: 1.2rem; margin-bottom: 1.5rem;">Your PowerPoint is ready!</p>
+          <button id="downloadBtn" class="btn btn-primary">
+            <i class="fas fa-download"></i> Download Presentation
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- PDF.js for PDF rendering -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+  
+  <!-- JSZip for creating PPTX files -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  
+  <!-- FileSaver.js for saving files -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+  <script>
+    // Initialize PDF.js
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+
+    // DOM Elements
+    const dropArea = document.getElementById('dropArea');
+    const fileInput = document.getElementById('fileInput');
+    const convertBtn = document.getElementById('convertBtn');
+    const filePreview = document.getElementById('filePreview');
+    const previewContainer = document.getElementById('previewContainer');
+    const progressContainer = document.getElementById('progressContainer');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const progressPercent = document.getElementById('progressPercent');
+    const resultContainer = document.getElementById('resultContainer');
+    const downloadBtn = document.getElementById('downloadBtn');
+
+    let pdfFile = null;
+    let pptxBlob = null;
+    let pdfImages = [];
+
+    // Event Listeners
+    dropArea.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', handleFileSelect);
+    
+    ['dragenter', 'dragover'].forEach(event => {
+      dropArea.addEventListener(event, highlight, false);
+    });
+    
+    ['dragleave', 'drop'].forEach(event => {
+      dropArea.addEventListener(event, unhighlight, false);
+    });
+    
+    dropArea.addEventListener('drop', handleDrop, false);
+    convertBtn.addEventListener('click', convertToPPT);
+    downloadBtn.addEventListener('click', downloadPPT);
+
+    // Functions
+    function highlight(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      dropArea.style.borderColor = 'var(--primary)';
+      dropArea.style.background = 'rgba(109, 40, 217, 0.1)';
+    }
+
+    function unhighlight(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      dropArea.style.borderColor = '#d1d5db';
+      dropArea.style.background = '#f9fafb';
+    }
+
+    function handleDrop(e) {
+      e.preventDefault();
+      const dt = e.dataTransfer;
+      const file = dt.files[0];
+      if (file) handleFile(file);
+    }
+
+    function handleFileSelect(e) {
+      const file = e.target.files[0];
+      if (file) handleFile(file);
+    }
+
+    async function handleFile(file) {
+      // Validate PDF
+      if (!file.type.includes('pdf') && !file.name.toLowerCase().endsWith('.pdf')) {
+        alert('Please select a PDF file');
+        return;
+      }
+
+      pdfFile = file;
+      convertBtn.disabled = false;
+      
+      // Show preview
+      try {
+        await renderPdfPreview(file);
+        filePreview.style.display = 'block';
+      } catch (error) {
+        console.error('Error rendering PDF preview:', error);
+        alert('Error loading PDF file. Please try another file.');
+      }
+    }
+
+    async function renderPdfPreview(file) {
+      previewContainer.innerHTML = '';
+      pdfImages = [];
+      
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
+      
+      // Render first 3 pages as preview
+      const pageCount = Math.min(3, pdf.numPages);
+      
+      for (let i = 1; i <= pageCount; i++) {
+        try {
+          const page = await pdf.getPage(i);
+          const viewport = page.getViewport({ scale: 0.5 });
+          
+          const canvas = document.createElement('canvas');
+          const context = canvas.getContext('2d');
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+          
+          await page.render({
+            canvasContext: context,
+            viewport: viewport
+          }).promise;
+          
+          const imageData = canvas.toDataURL('image/png');
+          pdfImages.push(imageData);
+          
+          const slideDiv = document.createElement('div');
+          slideDiv.className = 'preview-slide';
+          slideDiv.innerHTML = `<img src="${imageData}" alt="Page ${i}">`;
+          previewContainer.appendChild(slideDiv);
+        } catch (error) {
+          console.error(`Error rendering page ${i}:`, error);
+        }
+      }
+    }
+
+    async function convertToPPT() {
+      if (!pdfFile) return;
+      
+      // UI Updates
+      convertBtn.disabled = true;
+      progressContainer.style.display = 'block';
+      updateProgress(10, 'Processing PDF...');
+      
+      try {
+        const arrayBuffer = await pdfFile.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
+        
+        // Clear previous images
+        pdfImages = [];
+        
+        // Process each page
+        for (let i = 1; i <= pdf.numPages; i++) {
+          try {
+            updateProgress(10 + (i/pdf.numPages)*80, `Converting page ${i} of ${pdf.numPages}...`);
+            
+            const page = await pdf.getPage(i);
+            const viewport = page.getViewport({ scale: 1.5 });
+            
+            // Render page to canvas
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+            
+            await page.render({
+              canvasContext: context,
+              viewport: viewport
+            }).promise;
+            
+            // Store image data
+            pdfImages.push(canvas.toDataURL('image/png'));
+          } catch (error) {
+            console.error(`Error converting page ${i}:`, error);
+            continue; // Skip this page but continue with others
+          }
+        }
+        
+        // Generate the PPTX
+        updateProgress(95, 'Finalizing presentation...');
+        await generatePPTX();
+        
+        // Show result
+        updateProgress(100, 'Done!');
+        resultContainer.style.display = 'block';
+        
+      } catch (error) {
+        console.error('Conversion error:', error);
+        alert('Conversion failed: ' + error.message);
+        convertBtn.disabled = false;
+        progressContainer.style.display = 'none';
+      }
+    }
+
+    async function generatePPTX() {
+      // Create a new ZIP file for the PPTX
+      const zip = new JSZip();
+      
+      // Add required Office Open XML files
+      zip.file("[Content_Types].xml", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+  <Default Extension="xml" ContentType="application/xml"/>
+  <Default Extension="jpeg" ContentType="image/jpeg"/>
+  <Default Extension="png" ContentType="image/png"/>
+  <Override PartName="/ppt/presentation.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml"/>
+  <Override PartName="/ppt/slides/slide1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>
+  <Override PartName="/ppt/slides/_rels/slide1.xml.rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+  <Override PartName="/ppt/_rels/presentation.xml.rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+  <Override PartName="/ppt/slideLayouts/slideLayout1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideLayout+xml"/>
+  <Override PartName="/ppt/slideLayouts/_rels/slideLayout1.xml.rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+  <Override PartName="/ppt/slideMasters/slideMaster1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideMaster+xml"/>
+  <Override PartName="/ppt/slideMasters/_rels/slideMaster1.xml.rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+  <Override PartName="/ppt/theme/theme1.xml" ContentType="application/vnd.openxmlformats-officedocument.theme+xml"/>
+</Types>`);
+
+      // Add _rels folder
+      const relsFolder = zip.folder("_rels");
+      relsFolder.file(".rels", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="ppt/presentation.xml"/>
+</Relationships>`);
+
+      // Add ppt folder structure
+      const pptFolder = zip.folder("ppt");
+      
+      // Add presentation.xml
+      pptFolder.file("presentation.xml", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<p:presentation xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <p:sldMasterIdLst>
+    <p:sldMasterId id="2147483648" r:id="rId1"/>
+  </p:sldMasterIdLst>
+  <p:sldIdLst>
+    ${pdfImages.map((_, i) => `<p:sldId id="${256 + i}" r:id="rId${i + 2}"/>`).join('')}
+  </p:sldIdLst>
+  <p:sldSz cx="9144000" cy="6858000"/>
+  <p:notesSz cx="6858000" cy="9144000"/>
+</p:presentation>`);
+
+      // Add presentation.xml.rels
+      const pptRelsFolder = pptFolder.folder("_rels");
+      pptRelsFolder.file("presentation.xml.rels", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster" Target="slideMasters/slideMaster1.xml"/>
+  ${pdfImages.map((_, i) => `<Relationship Id="rId${i + 2}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide" Target="slides/slide${i + 1}.xml"/>`).join('')}
+</Relationships>`);
+
+      // Add slide masters
+      const slideMastersFolder = pptFolder.folder("slideMasters");
+      slideMastersFolder.file("slideMaster1.xml", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<p:sldMaster xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <p:cSld>
+    <p:bg>
+      <p:bgRef idx="1001">
+        <a:schemeClr val="bg1"/>
+      </p:bgRef>
+    </p:bg>
+    <p:spTree>
+      <p:nvGrpSpPr>
+        <p:cNvPr id="1" name=""/>
+        <p:cNvGrpSpPr/>
+        <p:nvPr/>
+      </p:nvGrpSpPr>
+      <p:grpSpPr>
+        <a:xfrm>
+          <a:off x="0" y="0"/>
+          <a:ext cx="0" cy="0"/>
+          <a:chOff x="0" y="0"/>
+          <a:chExt cx="0" cy="0"/>
+        </a:xfrm>
+      </p:grpSpPr>
+    </p:spTree>
+  </p:cSld>
+</p:sldMaster>`);
+
+      const slideMastersRelsFolder = slideMastersFolder.folder("_rels");
+      slideMastersRelsFolder.file("slideMaster1.xml.rels", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" Target="../theme/theme1.xml"/>
+</Relationships>`);
+
+      // Add theme
+      const themeFolder = pptFolder.folder("theme");
+      themeFolder.file("theme1.xml", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<a:theme xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" name="Office Theme">
+  <a:themeElements>
+    <a:clrScheme name="Office">
+      <a:dk1>
+        <a:sysClr val="windowText" lastClr="000000"/>
+      </a:dk1>
+      <a:lt1>
+        <a:sysClr val="window" lastClr="FFFFFF"/>
+      </a:lt1>
+      <a:dk2>
+        <a:srgbClr val="1F497D"/>
+      </a:dk2>
+      <a:lt2>
+        <a:srgbClr val="EEECE1"/>
+      </a:lt2>
+      <a:accent1>
+        <a:srgbClr val="4F81BD"/>
+      </a:accent1>
+      <a:accent2>
+        <a:srgbClr val="C0504D"/>
+      </a:accent2>
+      <a:accent3>
+        <a:srgbClr val="9BBB59"/>
+      </a:accent3>
+      <a:accent4>
+        <a:srgbClr val="8064A2"/>
+      </a:accent4>
+      <a:accent5>
+        <a:srgbClr val="4BACC6"/>
+      </a:accent5>
+      <a:accent6>
+        <a:srgbClr val="F79646"/>
+      </a:accent6>
+      <a:hlink>
+        <a:srgbClr val="0000FF"/>
+      </a:hlink>
+      <a:folHlink>
+        <a:srgbClr val="800080"/>
+      </a:folHlink>
+    </a:clrScheme>
+  </a:themeElements>
+</a:theme>`);
+
+      // Add slides
+      const slidesFolder = pptFolder.folder("slides");
+      const slidesRelsFolder = slidesFolder.folder("_rels");
+
+      for (let i = 0; i < pdfImages.length; i++) {
+        const imageData = pdfImages[i];
+        const imageBase64 = imageData.split(',')[1];
+        const imageBinary = atob(imageBase64);
+        const imageUint8Array = new Uint8Array(imageBinary.length);
+        for (let j = 0; j < imageBinary.length; j++) {
+          imageUint8Array[j] = imageBinary.charCodeAt(j);
+        }
+        
+        // Add image to ZIP
+        pptFolder.file(`media/image${i + 1}.png`, imageUint8Array, { binary: true });
+        
+        // Add slide XML
+        slidesFolder.file(`slide${i + 1}.xml`, `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<p:sld xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">
+  <p:cSld>
+    <p:spTree>
+      <p:nvGrpSpPr>
+        <p:cNvPr id="1" name=""/>
+        <p:cNvGrpSpPr/>
+        <p:nvPr/>
+      </p:nvGrpSpPr>
+      <p:grpSpPr>
+        <a:xfrm>
+          <a:off x="0" y="0"/>
+          <a:ext cx="0" cy="0"/>
+          <a:chOff x="0" y="0"/>
+          <a:chExt cx="0" cy="0"/>
+        </a:xfrm>
+      </p:grpSpPr>
+      <p:pic>
+        <p:nvPicPr>
+          <p:cNvPr id="2" name="Picture ${i + 1}"/>
+          <p:cNvPicPr>
+            <a:picLocks noChangeAspect="1" noChangeArrowheads="1"/>
+          </p:cNvPicPr>
+          <p:nvPr/>
+        </p:nvPicPr>
+        <p:blipFill>
+          <a:blip r:embed="rId1">
+            <a:extLst>
+              <a:ext uri="{28A0092B-C50C-407E-A947-70E740481C1C}">
+                <a14:useLocalDpi xmlns:a14="http://schemas.microsoft.com/office/drawing/2010/main" val="0"/>
+              </a:ext>
+            </a:extLst>
+          </a:blip>
+          <a:stretch>
+            <a:fillRect/>
+          </a:stretch>
+        </p:blipFill>
+        <p:spPr>
+          <a:xfrm>
+            <a:off x="0" y="0"/>
+            <a:ext cx="9144000" cy="6858000"/>
+          </a:xfrm>
+          <a:prstGeom prst="rect">
+            <a:avLst/>
+          </a:prstGeom>
+        </p:spPr>
+      </p:pic>
+    </p:spTree>
+  </p:cSld>
+</p:sld>`);
+
+        // Add slide relationships
+        slidesRelsFolder.file(`slide${i + 1}.xml.rels`, `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/image${i + 1}.png" TargetMode="Internal"/>
+</Relationships>`);
+      }
+
+      // Generate the PPTX file
+      const content = await zip.generateAsync({ type: 'blob' });
+      pptxBlob = content;
+    }
+
+    function downloadPPT() {
+      if (!pptxBlob) return;
+      
+      const url = URL.createObjectURL(pptxBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = pdfFile.name.replace('.pdf', '.pptx');
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function updateProgress(percent, message) {
+      progressBar.style.width = `${percent}%`;
+      progressPercent.textContent = `${Math.round(percent)}%`;
+      progressText.textContent = message;
+    }
+  </script>
+</body>
+</html>

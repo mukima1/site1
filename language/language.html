@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Language & Code Tools - AllFileConverter</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f2f5;
+      color: #333;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    header {
+      width: 100%;
+      max-width: 960px;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+    header a {
+      text-decoration: none;
+      color: #2980b9;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    header a:hover { text-decoration: underline; }
+    h1 {
+      flex-grow: 1;
+      text-align: center;
+      color: #2c3e50;
+      font-size: 1.8rem;
+      font-weight: bold;
+    }
+    select {
+      padding: 0.4rem 0.6rem;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    .grid {
+      display: grid;
+      gap: 1.5rem;
+      width: 100%;
+      max-width: 960px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+    .card {
+      background: white;
+      padding: 1.8rem 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      transition: 0.2s ease;
+      cursor: pointer;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+    .icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+    .card h2 {
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+      color: #34495e;
+    }
+    .card p {
+      font-size: 1rem;
+      color: #555;
+    }
+    footer {
+      margin-top: 3rem;
+      font-size: 0.9rem;
+      color: #888;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="../index.html" id="homeLink">&#8592; Home</a>
+    <h1 id="mainTitle">Language & Code Tools</h1>
+    <select id="languageSelect" onchange="changeLanguage(this.value)">
+      <option value="en">🌐 English</option>
+      <option value="es">🇪🇸 Español</option>
+      <option value="fr">🇫🇷 Français</option>
+      <option value="hi">🇮🇳 हिंदी</option>
+      <option value="sw">🌍 Kiswahili</option>
+    </select>
+  </header>
+
+  <main class="grid">
+    <div class="card" onclick="navigateTo('text-encoding')">
+      <div class="icon">🔡</div>
+      <h2 id="card1Title">Encoding Converter</h2>
+      <p id="card1Desc">Convert between UTF-8, ASCII, and ANSI formats</p>
+    </div>
+
+    <div class="card" onclick="navigateTo('code-formatter')">
+      <div class="icon">💻</div>
+      <h2 id="card2Title">Code Formatter</h2>
+      <p id="card2Desc">Format HTML, JS, and Python for readability</p>
+    </div>
+
+    <div class="card" onclick="navigateTo('spell-check')">
+      <div class="icon">🔍</div>
+      <h2 id="card3Title">Spell & Grammar Check</h2>
+      <p id="card3Desc">Improve writing for emails, blogs, and documents</p>
+    </div>
+  </main>
+
+  <footer id="footerText">
+    &copy; 2025 AllFileConverter — Free Tools for Everyone
+  </footer>
+
+  <script>
+    function navigateTo(tool) {
+  const toolPaths = {
+    'text-encoding': 'encode/encode.html',
+    'code-formatter': 'encode/codeFormates.html',
+    'spell-check': 'encode/spell.html',
+  };
+
+  const path = toolPaths[tool];
+  if (path) {
+    window.location.href = path;
+  } else {
+    console.warn("Tool not found:", tool);
+  }
+}
+
+
+    const translations = {
+      en: {
+        mainTitle: "Language & Code Tools",
+        homeLink: "← Home",
+        card1Title: "Encoding Converter",
+        card1Desc: "Convert between UTF-8, ASCII, and ANSI formats",
+        card2Title: "Code Formatter",
+        card2Desc: "Format HTML, JS, and Python for readability",
+        card3Title: "Spell & Grammar Check",
+        card3Desc: "Improve writing for emails, blogs, and documents",
+        footerText: "© 2025 AllFileConverter — Free Tools for Everyone"
+      },
+      es: {
+        mainTitle: "Herramientas de Lenguaje y Código",
+        homeLink: "← Inicio",
+        card1Title: "Convertidor de Codificación",
+        card1Desc: "Convierte entre UTF-8, ASCII y ANSI",
+        card2Title: "Formateador de Código",
+        card2Desc: "Da formato a HTML, JS y Python",
+        card3Title: "Corrección Ortográfica y Gramática",
+        card3Desc: "Mejora textos para correos, blogs y documentos",
+        footerText: "© 2025 AllFileConverter — Herramientas Gratuitas"
+      },
+      fr: {
+        mainTitle: "Outils de Langage et Code",
+        homeLink: "← Accueil",
+        card1Title: "Convertisseur d'Encodage",
+        card1Desc: "Convertir entre UTF-8, ASCII et ANSI",
+        card2Title: "Formateur de Code",
+        card2Desc: "Formater HTML, JS et Python",
+        card3Title: "Correction Orthographique et Grammaticale",
+        card3Desc: "Améliorez vos textes pour mails, blogs, documents",
+        footerText: "© 2025 AllFileConverter — Outils Gratuits"
+      },
+      hi: {
+        mainTitle: "भाषा और कोड उपकरण",
+        homeLink: "← होम",
+        card1Title: "एन्कोडिंग कन्वर्टर",
+        card1Desc: "UTF-8, ASCII और ANSI में बदलें",
+        card2Title: "कोड फ़ॉर्मेटर",
+        card2Desc: "HTML, JS और Python को व्यवस्थित करें",
+        card3Title: "वर्तनी और व्याकरण जांच",
+        card3Desc: "ईमेल, ब्लॉग और दस्तावेज़ों के लिए लेखन सुधारें",
+        footerText: "© 2025 AllFileConverter — सभी के लिए मुफ़्त उपकरण"
+      },
+      sw: {
+        mainTitle: "Zana za Lugha na Msimbo",
+        homeLink: "← Nyumbani",
+        card1Title: "Kibadilishaji cha Ukodishaji",
+        card1Desc: "Badilisha kati ya UTF-8, ASCII na ANSI",
+        card2Title: "Mpangaji wa Nambari",
+        card2Desc: "Panga HTML, JS na Python kwa usomekaji bora",
+        card3Title: "Ukaguzi wa Sarufi na Tahajia",
+        card3Desc: "Boresha maandishi ya barua pepe, blogi, na nyaraka",
+        footerText: "© 2025 AllFileConverter — Zana Bure kwa Wote"
+      }
+    };
+
+    function changeLanguage(lang) {
+      const t = translations[lang] || translations.en;
+      document.getElementById('mainTitle').textContent = t.mainTitle;
+      document.getElementById('homeLink').textContent = t.homeLink;
+      document.getElementById('card1Title').textContent = t.card1Title;
+      document.getElementById('card1Desc').textContent = t.card1Desc;
+      document.getElementById('card2Title').textContent = t.card2Title;
+      document.getElementById('card2Desc').textContent = t.card2Desc;
+      document.getElementById('card3Title').textContent = t.card3Title;
+      document.getElementById('card3Desc').textContent = t.card3Desc;
+      document.getElementById('footerText').textContent = t.footerText;
+    }
+  </script>
+
+</body>
+</html>

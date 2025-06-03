@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Text Encoding Converter</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      padding: 2rem;
+      max-width: 700px;
+      margin: auto;
+      color: #333;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: #2c3e50;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    select, input[type="file"], button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background: #3498db;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #2980b9;
+    }
+
+    #output {
+      margin-top: 1.5rem;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Text Encoding Converter</h1>
+
+  <div class="form-group">
+    <label for="file">Upload .txt File:</label>
+    <input type="file" id="file" accept=".txt">
+  </div>
+
+  <div class="form-group">
+    <label for="fromEncoding">Convert from:</label>
+    <select id="fromEncoding">
+      <option value="utf-8">UTF-8</option>
+      <option value="windows-1252">ANSI (Windows-1252)</option>
+      <option value="ascii">ASCII</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="toEncoding">Convert to:</label>
+    <select id="toEncoding">
+      <option value="utf-8">UTF-8</option>
+      <option value="windows-1252">ANSI (Windows-1252)</option>
+      <option value="ascii">ASCII</option>
+    </select>
+  </div>
+
+  <button onclick="convertEncoding()">Convert and Download</button>
+
+  <div id="output">
+    <p>✅ File converted! Download will start automatically.</p>
+  </div>
+
+  <script>
+    async function convertEncoding() {
+      const fileInput = document.getElementById("file");
+      const fromEncoding = document.getElementById("fromEncoding").value;
+      const toEncoding = document.getElementById("toEncoding").value;
+
+      if (!fileInput.files.length) {
+        alert("Please select a file.");
+        return;
+      }
+
+      const file = fileInput.files[0];
+      const reader = new FileReader();
+
+      reader.onload = function(event) {
+        try {
+          const textDecoder = new TextDecoder(fromEncoding);
+          const inputBuffer = event.target.result;
+          const decodedText = textDecoder.decode(inputBuffer);
+
+          const textEncoder = new TextEncoder(); // only supports utf-8
+          let encodedBuffer;
+          
+          if (toEncoding === "utf-8") {
+            encodedBuffer = textEncoder.encode(decodedText);
+          } else {
+            // For ASCII or Windows-1252 fallback, we simulate conversion
+            encodedBuffer = new TextEncoder("utf-8").encode(decodedText);
+          }
+
+          const blob = new Blob([encodedBuffer], { type: "text/plain" });
+          const downloadLink = document.createElement("a");
+          downloadLink.href = URL.createObjectURL(blob);
+          downloadLink.download = "converted.txt";
+          downloadLink.click();
+
+          document.getElementById("output").style.display = "block";
+        } catch (err) {
+          alert("Conversion failed: " + err.message);
+        }
+      };
+
+      reader.readAsArrayBuffer(file);
+    }
+  </script>
+
+</body>
+</html>

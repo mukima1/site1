@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced PDF to Word Converter</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #4361ee;
+      --secondary-color: #3f37c9;
+      --accent-color: #4895ef;
+      --light-color: #f8f9fa;
+      --dark-color: #212529;
+      --success-color: #4bb543;
+      --error-color: #ff3333;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      line-height: 1.6;
+      color: var(--dark-color);
+      background-color: #f5f7ff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background-color: white;
+      box-shadow: var(--box-shadow);
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .navbar {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      color: var(--primary-color);
+      font-size: 1.8rem;
+    }
+
+    .logo-text {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--dark-color);
+    }
+
+    main {
+      flex: 1;
+      padding: 2rem 0;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .page-title {
+      font-size: 2.2rem;
+      margin-bottom: 0.5rem;
+      color: var(--dark-color);
+    }
+
+    .page-description {
+      color: #6c757d;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .converter-card {
+      background-color: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .card-header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-title {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-subtitle {
+      color: #6c757d;
+    }
+
+    .drop-area {
+      border: 2px dashed #ced4da;
+      border-radius: var(--border-radius);
+      padding: 3rem 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-bottom: 1.5rem;
+      position: relative;
+      background-color: #f8f9fa;
+    }
+
+    .drop-area:hover {
+      border-color: var(--primary-color);
+      background-color: rgba(67, 97, 238, 0.05);
+    }
+
+    .drop-area.active {
+      border-color: var(--primary-color);
+      background-color: rgba(67, 97, 238, 0.1);
+    }
+
+    .drop-icon {
+      font-size: 3rem;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+    }
+
+    .drop-text {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .drop-hint {
+      color: #6c757d;
+      font-size: 0.9rem;
+    }
+
+    .file-input {
+      display: none;
+    }
+
+    .file-info {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #f1f3ff;
+      border-radius: var(--border-radius);
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .file-details {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .file-icon {
+      font-size: 1.8rem;
+      color: var(--primary-color);
+    }
+
+    .file-meta h4 {
+      margin-bottom: 0.2rem;
+      font-size: 1rem;
+    }
+
+    .file-meta p {
+      color: #6c757d;
+      font-size: 0.8rem;
+    }
+
+    .remove-file {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #6c757d;
+      font-size: 1.2rem;
+      transition: var(--transition);
+    }
+
+    .remove-file:hover {
+      color: var(--error-color);
+    }
+
+    .conversion-options {
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      background-color: #f8f9fa;
+      border-radius: var(--border-radius);
+    }
+
+    .option-group {
+      margin-bottom: 1rem;
+    }
+
+    .option-title {
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .option-checkbox {
+      margin-right: 0.5rem;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: var(--border-radius);
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--secondary-color);
+    }
+
+    .btn-secondary {
+      background-color: #e9ecef;
+      color: var(--dark-color);
+    }
+
+    .btn-secondary:hover {
+      background-color: #dee2e6;
+    }
+
+    .btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .btn-icon {
+      font-size: 1rem;
+    }
+
+    .progress-container {
+      display: none;
+      margin-bottom: 1.5rem;
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+
+    .progress-text {
+      font-weight: 500;
+    }
+
+    .progress-percent {
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+
+    .progress-bar {
+      height: 8px;
+      background-color: #e9ecef;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background-color: var(--primary-color);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .result-container {
+      display: none;
+      text-align: center;
+      padding: 2rem;
+      background-color: rgba(75, 181, 67, 0.1);
+      border-radius: var(--border-radius);
+      margin-bottom: 1.5rem;
+    }
+
+    .result-icon {
+      font-size: 3rem;
+      color: var(--success-color);
+      margin-bottom: 1rem;
+    }
+
+    .result-text {
+      font-size: 1.2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .download-btn {
+      text-decoration: none;
+    }
+
+    .error-message {
+      color: var(--error-color);
+      text-align: center;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    footer {
+      background-color: var(--dark-color);
+      color: white;
+      padding: 2rem 0;
+      margin-top: auto;
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      text-decoration: none;
+    }
+
+    .footer-logo-icon {
+      font-size: 1.5rem;
+      color: white;
+    }
+
+    .footer-logo-text {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: white;
+    }
+
+    .footer-copyright {
+      color: #adb5bd;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+      .page-title {
+        font-size: 1.8rem;
+      }
+
+      .converter-card {
+        padding: 1.5rem;
+      }
+
+      .btn-group {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <a href="#" class="logo">
+        <i class="fas fa-file-alt logo-icon"></i>
+        <span class="logo-text">PDF to Word Converter</span>
+      </a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="container">
+      <div class="page-header">
+        <h1 class="page-title">PDF to Word Converter</h1>
+        <p class="page-description">
+          Convert your PDF documents to editable Word files while preserving formatting, images, and fonts.
+          Our converter maintains the original structure and appearance of your documents.
+        </p>
+      </div>
+
+      <div class="converter-card">
+        <div class="card-header">
+          <h2 class="card-title">Convert PDF to DOCX</h2>
+          <p class="card-subtitle">High-quality conversion with layout preservation</p>
+        </div>
+
+        <div id="errorMessage" class="error-message"></div>
+
+        <form id="conversionForm">
+          <div id="dropArea" class="drop-area">
+            <i class="fas fa-cloud-upload-alt drop-icon"></i>
+            <p class="drop-text">Drag & drop your PDF file here</p>
+            <p class="drop-hint">or click to browse files (max 25MB)</p>
+            <input type="file" id="fileInput" class="file-input" accept=".pdf">
+          </div>
+
+          <div id="fileInfo" class="file-info">
+            <div class="file-details">
+              <i class="fas fa-file-pdf file-icon"></i>
+              <div class="file-meta">
+                <h4 id="fileName">Document.pdf</h4>
+                <p id="fileSize">2.5 MB</p>
+              </div>
+            </div>
+            <button type="button" id="removeFile" class="remove-file" title="Remove file">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+
+          <div class="conversion-options">
+            <div class="option-group">
+              <span class="option-title">Conversion Options:</span>
+              <label>
+                <input type="checkbox" id="preserveLayout" class="option-checkbox" checked>
+                Preserve original layout
+              </label>
+              <label>
+                <input type="checkbox" id="extractImages" class="option-checkbox" checked>
+                Extract images
+              </label>
+              <label>
+                <input type="checkbox" id="preserveFonts" class="option-checkbox" checked>
+                Preserve original fonts
+              </label>
+            </div>
+          </div>
+
+          <div id="progressContainer" class="progress-container">
+            <div class="progress-header">
+              <span id="progressText" class="progress-text">Processing...</span>
+              <span id="progressPercent" class="progress-percent">0%</span>
+            </div>
+            <div class="progress-bar">
+              <div id="progressBar" class="progress-fill"></div>
+            </div>
+          </div>
+
+          <div id="resultContainer" class="result-container">
+            <i class="fas fa-check-circle result-icon"></i>
+            <p class="result-text">Your document has been successfully converted!</p>
+            <a id="downloadBtn" href="#" class="btn btn-primary download-btn">
+              <i class="fas fa-download btn-icon"></i>
+              Download Word File
+            </a>
+          </div>
+
+          <div class="btn-group">
+            <button type="button" id="convertBtn" class="btn btn-primary" disabled>
+              <span id="convertText">Convert to Word</span>
+              <i id="convertSpinner" class="fas fa-spinner fa-spin btn-icon" style="display: none;"></i>
+            </button>
+            <button type="button" id="clearBtn" class="btn btn-secondary">
+              <i class="fas fa-trash-alt btn-icon"></i>
+              Clear
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <a href="#" class="footer-logo">
+        <i class="fas fa-file-alt footer-logo-icon"></i>
+        <span class="footer-logo-text">PDF to Word Converter</span>
+      </a>
+      <p class="footer-copyright">© 2025 PDF to Word Converter. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docx@7.8.2/build/index.js"></script>
+  <script>
+    // Set PDF.js worker path
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+    
+    // DOM Elements
+    const dropArea = document.getElementById('dropArea');
+    const fileInput = document.getElementById('fileInput');
+    const convertBtn = document.getElementById('convertBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const removeFile = document.getElementById('removeFile');
+    const fileInfo = document.getElementById('fileInfo');
+    const fileName = document.getElementById('fileName');
+    const fileSize = document.getElementById('fileSize');
+    const progressContainer = document.getElementById('progressContainer');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const progressPercent = document.getElementById('progressPercent');
+    const resultContainer = document.getElementById('resultContainer');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const convertText = document.getElementById('convertText');
+    const convertSpinner = document.getElementById('convertSpinner');
+    const errorMessage = document.getElementById('errorMessage');
+    const preserveLayoutCheckbox = document.getElementById('preserveLayout');
+    const extractImagesCheckbox = document.getElementById('extractImages');
+    const preserveFontsCheckbox = document.getElementById('preserveFonts');
+
+    // Constants
+    const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25MB
+    let pdfFile = null;
+
+    // Event Listeners
+    dropArea.addEventListener('click', () => fileInput.click());
+    
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files.length) {
+        handleFileSelection(e.target.files[0]);
+      }
+    });
+
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      dropArea.addEventListener(eventName, preventDefaults, false);
+    });
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropArea.addEventListener(eventName, highlight, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropArea.addEventListener(eventName, unhighlight, false);
+    });
+
+    dropArea.addEventListener('drop', handleDrop, false);
+
+    convertBtn.addEventListener('click', startConversion);
+    clearBtn.addEventListener('click', resetForm);
+    removeFile.addEventListener('click', resetForm);
+
+    // Functions
+    function preventDefaults(e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    function highlight() {
+      dropArea.classList.add('active');
+    }
+
+    function unhighlight() {
+      dropArea.classList.remove('active');
+    }
+
+    function handleDrop(e) {
+      const dt = e.dataTransfer;
+      const file = dt.files[0];
+      handleFileSelection(file);
+    }
+
+    function handleFileSelection(file) {
+      if (!file) return;
+      
+      // Check if file is PDF
+      if (!file.type.includes('pdf') && !file.name.toLowerCase().endsWith('.pdf')) {
+        showError('Please select a PDF file');
+        return;
+      }
+      
+      // Check file size
+      if (file.size > MAX_FILE_SIZE) {
+        showError('File size exceeds 25MB limit');
+        return;
+      }
+      
+      // Set file and update UI
+      pdfFile = file;
+      updateFileInfo(file);
+      hideError();
+    }
+
+    function updateFileInfo(file) {
+      fileName.textContent = file.name;
+      fileSize.textContent = formatFileSize(file.size);
+      fileInfo.style.display = 'flex';
+      convertBtn.disabled = false;
+    }
+
+    function formatFileSize(bytes) {
+      if (bytes === 0) return '0 Bytes';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    function showError(message) {
+      errorMessage.textContent = message;
+      errorMessage.style.display = 'block';
+    }
+
+    function hideError() {
+      errorMessage.style.display = 'none';
+    }
+
+    function updateProgress(percent, message) {
+      progressBar.style.width = `${percent}%`;
+      progressPercent.textContent = `${percent}%`;
+      progressText.textContent = message;
+    }
+
+    function resetForm() {
+      fileInput.value = '';
+      pdfFile = null;
+      fileInfo.style.display = 'none';
+      progressContainer.style.display = 'none';
+      resultContainer.style.display = 'none';
+      convertBtn.disabled = true;
+      convertText.textContent = 'Convert to Word';
+      convertSpinner.style.display = 'none';
+      hideError();
+    }
+
+    // Function to convert canvas to blob
+    function canvasToBlob(canvas) {
+      return new Promise((resolve) => {
+        canvas.toBlob((blob) => {
+          resolve(blob);
+        }, 'image/png');
+      });
+    }
+
+    // Function to convert blob to base64
+    function blobToBase64(blob) {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.readAsDataURL(blob);
+      });
+    }
+
+    async function startConversion() {
+      if (!pdfFile) return;
+      
+      // Prepare UI
+      convertBtn.disabled = true;
+      convertText.textContent = 'Converting...';
+      convertSpinner.style.display = 'inline-block';
+      progressContainer.style.display = 'block';
+      fileInfo.style.display = 'none';
+      resultContainer.style.display = 'none';
+      
+      updateProgress(5, 'Reading PDF file...');
+      
+      try {
+        const arrayBuffer = await pdfFile.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
+        
+        // Extract content from each page with better formatting
+        const pageCount = pdf.numPages;
+        const docChildren = [];
+        const preserveLayout = preserveLayoutCheckbox.checked;
+        const extractImages = extractImagesCheckbox.checked;
+        const preserveFonts = preserveFontsCheckbox.checked;
+        
+        // Track used fonts
+        const usedFonts = new Set();
+        
+        updateProgress(10, `Processing ${pageCount} pages...`);
+        
+        // Add title as heading
+        docChildren.push(
+          new docx.Paragraph({
+            text: pdfFile.name.replace('.pdf', ''),
+            heading: docx.HeadingLevel.HEADING_1,
+            spacing: {
+              after: 200,
+            }
+          })
+        );
+
+        for (let i = 1; i <= pageCount; i++) {
+          const page = await pdf.getPage(i);
+          const textContent = await page.getTextContent();
+          
+          // Extract images if enabled
+          if (extractImages) {
+            updateProgress(10 + Math.floor((i / pageCount) * 40), `Extracting images from page ${i}...`);
+            
+            const viewport = page.getViewport({ scale: 2.0 });
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+            
+            await page.render({
+              canvasContext: context,
+              viewport: viewport
+            }).promise;
+            
+            // Convert canvas to image and add to document
+            const blob = await canvasToBlob(canvas);
+            const base64Image = await blobToBase64(blob);
+            
+            docChildren.push(
+              new docx.Paragraph({
+                children: [
+                  new docx.ImageRun({
+                    data: base64Image,
+                    transformation: {
+                      width: 400,
+                      height: 400 * (viewport.height / viewport.width),
+                    },
+                  })
+                ],
+                spacing: {
+                  after: 200,
+                }
+              })
+            );
+          }
+          
+          // Process text content
+          updateProgress(50 + Math.floor((i / pageCount) * 40), `Processing text from page ${i}...`);
+          
+          // Group text items by their Y position (for layout preservation)
+          const lineGroups = {};
+          
+          textContent.items.forEach(item => {
+            // Track font usage
+            if (preserveFonts && item.fontName) {
+              usedFonts.add(item.fontName);
+            }
+            
+            // Use transform matrix to get Y position (approximate line)
+            const y = Math.round(item.transform[5] * 10) / 10;
+            if (!lineGroups[y]) {
+              lineGroups[y] = [];
+            }
+            lineGroups[y].push(item);
+          });
+          
+          // Sort lines from top to bottom
+          const sortedLines = Object.keys(lineGroups).sort((a, b) => b - a);
+          
+          // Process each line
+          for (const y of sortedLines) {
+            const lineItems = lineGroups[y];
+            
+            // Sort items from left to right
+            lineItems.sort((a, b) => a.transform[4] - b.transform[4]);
+            
+            let lineText = '';
+            let lastX = 0;
+            let currentFont = null;
+            const textRuns = [];
+            
+            // Build the line text with proper font runs
+            for (const item of lineItems) {
+              // Add spaces if there's a significant X gap (for layout preservation)
+              if (preserveLayout && item.transform[4] - lastX > 10) {
+                lineText += ' ';
+              }
+              
+              // Check if font changed
+              if (preserveFonts && item.fontName !== currentFont) {
+                if (lineText.length > 0) {
+                  textRuns.push(
+                    new docx.TextRun({
+                      text: lineText,
+                      font: currentFont || undefined
+                    })
+                  );
+                  lineText = '';
+                }
+                currentFont = item.fontName;
+              }
+              
+              lineText += item.str;
+              lastX = item.transform[4] + item.width;
+            }
+            
+            // Add the last text run
+            if (lineText.length > 0) {
+              textRuns.push(
+                new docx.TextRun({
+                  text: lineText,
+                  font: currentFont || undefined
+                })
+              );
+            }
+            
+            // Create paragraph for this line
+            docChildren.push(
+              new docx.Paragraph({
+                children: textRuns,
+                spacing: {
+                  after: 100,
+                }
+              })
+            );
+          }
+          
+          // Add page break if preserving layout and not last page
+          if (preserveLayout && i < pageCount) {
+            docChildren.push(
+              new docx.Paragraph({
+                children: [
+                  new docx.TextRun({
+                    text: "",
+                    break: 1
+                  })
+                ]
+              })
+            );
+          }
+        }
+        
+        // Create Word document with better structure
+        updateProgress(95, 'Creating Word document...');
+        
+        // Prepare font declarations if preserving fonts
+        const fonts = preserveFonts ? {
+          complexScript: {
+            name: "Times New Roman",
+            hint: "cs"
+          },
+          ascii: {
+            name: "Times New Roman",
+            hint: "ascii"
+          },
+          hAnsi: {
+            name: "Times New Roman",
+            hint: "hAnsi"
+          },
+          eastAsia: {
+            name: "SimSun",
+            hint: "eastAsia"
+          }
+        } : undefined;
+        
+        const doc = new docx.Document({
+          styles: {
+            paragraphStyles: [
+              {
+                id: "Normal",
+                name: "Normal",
+                run: {
+                  size: 24, // 12pt
+                },
+                paragraph: {
+                  spacing: {
+                    line: 276, // 1.15 line spacing
+                  }
+                }
+              },
+              {
+                id: "Heading1",
+                name: "Heading 1",
+                basedOn: "Normal",
+                next: "Normal",
+                run: {
+                  bold: true,
+                  size: 48, // 24pt
+                  color: "2A2A2A",
+                },
+                paragraph: {
+                  spacing: {
+                    before: 240,
+                    after: 120,
+                  }
+                }
+              }
+            ]
+          },
+          fonts,
+          sections: [{
+            properties: {
+              page: {
+                margin: {
+                  top: 1440, // 1 inch
+                  right: 1440,
+                  bottom: 1440,
+                  left: 1440,
+                }
+              }
+            },
+            children: docChildren
+          }]
+        });
+        
+        // Generate blob and download link
+        updateProgress(98, 'Finalizing document...');
+        
+        const blob = await docx.Packer.toBlob(doc);
+        const url = URL.createObjectURL(blob);
+        
+        // Update UI with download link
+        updateProgress(100, 'Conversion complete!');
+        
+        setTimeout(() => {
+          progressContainer.style.display = 'none';
+          resultContainer.style.display = 'block';
+          downloadBtn.href = url;
+          downloadBtn.download = pdfFile.name.replace('.pdf', '.docx');
+          
+          // Reset convert button
+          convertText.textContent = 'Convert to Word';
+          convertSpinner.style.display = 'none';
+        }, 500);
+        
+      } catch (error) {
+        console.error('Conversion error:', error);
+        showError(`Conversion failed: ${error.message}`);
+        resetForm();
+      }
+    }
+  </script>
+</body>
+</html>

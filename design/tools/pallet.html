@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palette Generator</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --primary-light: #6366f1;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #e2e8f0;
+            --border-radius: 12px;
+            --card-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            --hover-shadow: 0 15px 35px rgba(0,0,0,0.12);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 90%;
+            margin: 0 auto;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 2.5rem;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            box-shadow: var(--hover-shadow);
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            color: var(--dark);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .description {
+            color: #64748b;
+            font-size: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn i {
+            font-size: 1rem;
+        }
+
+        .upload-area {
+            border: 2px dashed #cbd5e1;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary-light);
+            background: #f8fafc;
+        }
+
+        .upload-icon {
+            font-size: 2rem;
+            color: #94a3b8;
+            margin-bottom: 1rem;
+        }
+
+        .color-palette {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 2rem;
+            justify-content: center;
+        }
+
+        .color-swatch {
+            width: 60px;
+            height: 60px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .color-swatch:hover {
+            transform: scale(1.05);
+        }
+
+        .color-value {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            font-size: 0.7rem;
+            padding: 0.2rem;
+            text-align: center;
+            font-family: 'Fira Code', monospace;
+        }
+
+        footer {
+            text-align: center;
+            padding-top: 2rem;
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 1.5rem;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>Palette Generator</h1>
+            <p class="description">Create beautiful color schemes from images or base colors</p>
+            
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">
+                    <i class="fas fa-image"></i>
+                </div>
+                <p>Upload an image to extract colors</p>
+                <input type="file" id="fileInput" accept="image/*" style="display: none;">
+            </div>
+            
+            <button class="btn" id="generateBtn">
+                <i class="fas fa-palette"></i> Generate Palette
+            </button>
+            
+            <div class="color-palette" id="colorPalette">
+                <!-- Color swatches will be generated here -->
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>All processing happens in your browser - no data is sent to servers</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.getElementById('fileInput');
+            const generateBtn = document.getElementById('generateBtn');
+            const colorPalette = document.getElementById('colorPalette');
+            
+            let selectedImage = null;
+            
+            // Event Listeners
+            uploadArea.addEventListener('click', function() {
+                fileInput.click();
+            });
+            
+            fileInput.addEventListener('change', function(e) {
+                if (e.target.files && e.target.files[0]) {
+                    selectedImage = e.target.files[0];
+                    uploadArea.innerHTML = `
+                        <div class="upload-icon">
+                            <i class="fas fa-check" style="color: #10b981;"></i>
+                        </div>
+                        <p>${selectedImage.name}</p>
+                        <small>Click to change image</small>
+                    `;
+                }
+            });
+            
+            generateBtn.addEventListener('click', function() {
+                if (!selectedImage) {
+                    alert('Please upload an image first');
+                    return;
+                }
+                
+                generatePalette(selectedImage);
+            });
+            
+            // Functions
+            function generatePalette(imageFile) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.src = e.target.result;
+                    
+                    img.onload = function() {
+                        // Create canvas to analyze image
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        ctx.drawImage(img, 0, 0);
+                        
+                        // Get image data
+                        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+                        
+                        // Extract prominent colors (simplified algorithm)
+                        const colors = extractColors(imageData);
+                        
+                        // Display colors
+                        displayColors(colors);
+                    };
+                };
+                
+                reader.readAsDataURL(imageFile);
+            }
+            
+            function extractColors(imageData) {
+                // Simplified color extraction algorithm
+                // In a real app, you might use more sophisticated methods
+                const colorMap = {};
+                const step = 100; // Sample every 100th pixel for performance
+                
+                for (let i = 0; i < imageData.length; i += 4 * step) {
+                    const r = imageData[i];
+                    const g = imageData[i + 1];
+                    const b = imageData[i + 2];
+                    const hex = rgbToHex(r, g, b);
+                    
+                    colorMap[hex] = (colorMap[hex] || 0) + 1;
+                }
+                
+                // Sort by frequency and get top 5 colors
+                return Object.entries(colorMap)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 5)
+                    .map(item => item[0]);
+            }
+            
+            function displayColors(colors) {
+                colorPalette.innerHTML = '';
+                
+                colors.forEach(color => {
+                    const swatch = document.createElement('div');
+                    swatch.className = 'color-swatch';
+                    swatch.style.backgroundColor = color;
+                    swatch.innerHTML = `<div class="color-value">${color}</div>`;
+                    
+                    swatch.addEventListener('click', function() {
+                        navigator.clipboard.writeText(color);
+                        const originalText = swatch.querySelector('.color-value').textContent;
+                        swatch.querySelector('.color-value').textContent = 'Copied!';
+                        setTimeout(() => {
+                            swatch.querySelector('.color-value').textContent = originalText;
+                        }, 1000);
+                    });
+                    
+                    colorPalette.appendChild(swatch);
+                });
+            }
+            
+            function rgbToHex(r, g, b) {
+                return '#' + [r, g, b].map(x => {
+                    const hex = x.toString(16);
+                    return hex.length === 1 ? '0' + hex : hex;
+                }).join('');
+            }
+        });
+    </script>
+</body>
+</html>

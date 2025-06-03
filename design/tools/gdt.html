@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Gradient Generator</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #e2e8f0;
+            --border-radius: 12px;
+            --card-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            --hover-shadow: 0 15px 35px rgba(0,0,0,0.12);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        .description {
+            color: #64748b;
+            font-size: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .gradient-preview {
+            width: 100%;
+            height: 200px;
+            border-radius: var(--border-radius);
+            margin-bottom: 2rem;
+            border: 1px solid var(--gray);
+            background: linear-gradient(90deg, #6366f1, #8b5cf6);
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .control-group {
+            margin-bottom: 1rem;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        select, input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--gray);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .color-stops {
+            margin-top: 2rem;
+        }
+
+        .color-stop {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: var(--light);
+            border-radius: var(--border-radius);
+        }
+
+        .color-picker {
+            width: 50px;
+            height: 50px;
+            border: 1px solid var(--gray);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+        }
+
+        .color-position {
+            flex: 1;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--light);
+            color: var(--dark);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray);
+        }
+
+        .btn i {
+            font-size: 1rem;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .code-output {
+            margin-top: 2rem;
+            background: #1e293b;
+            color: #f8fafc;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            font-family: 'Fira Code', monospace;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .copy-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            margin-top: 1rem;
+            gap: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .copy-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .copy-notification {
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            background: var(--primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            font-size: 0.9rem;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: var(--transition);
+            pointer-events: none;
+            box-shadow: var(--card-shadow);
+        }
+
+        .copy-notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        footer {
+            text-align: center;
+            padding-top: 2rem;
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-top: 2rem;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>CSS Gradient Generator</h1>
+            <p class="description">Build perfect CSS gradients with custom colors and directions</p>
+            
+            <div class="gradient-preview" id="gradientPreview"></div>
+            
+            <div class="controls">
+                <div>
+                    <div class="control-group">
+                        <label for="gradientType">Gradient Type</label>
+                        <select id="gradientType">
+                            <option value="linear">Linear</option>
+                            <option value="radial">Radial</option>
+                        </select>
+                    </div>
+                    
+                    <div class="control-group" id="directionControl">
+                        <label for="gradientDirection">Direction</label>
+                        <select id="gradientDirection">
+                            <option value="to right">Horizontal (to right)</option>
+                            <option value="to bottom">Vertical (to bottom)</option>
+                            <option value="to right bottom">Diagonal (to bottom right)</option>
+                            <option value="to left bottom">Diagonal (to bottom left)</option>
+                            <option value="45deg">45deg</option>
+                            <option value="90deg">90deg</option>
+                            <option value="135deg">135deg</option>
+                            <option value="180deg">180deg</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div>
+                    <div class="control-group">
+                        <label>Color Stops</label>
+                        <div class="color-stops" id="colorStops">
+                            <!-- Color stops will be added here -->
+                        </div>
+                        <button class="btn btn-secondary" id="addColorStop">
+                            <i class="fas fa-plus"></i> Add Color Stop
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="code-output">
+                <div class="copy-notification" id="copyNotification">CSS Copied!</div>
+                <pre id="cssCode">background: linear-gradient(90deg, #6366f1, #8b5cf6);</pre>
+                <button class="copy-btn" id="copyCode">
+                    <i class="fas fa-copy"></i> Copy CSS
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>All processing happens in your browser - no data is sent to servers</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const gradientPreview = document.getElementById('gradientPreview');
+            const gradientType = document.getElementById('gradientType');
+            const gradientDirection = document.getElementById('gradientDirection');
+            const directionControl = document.getElementById('directionControl');
+            const colorStops = document.getElementById('colorStops');
+            const addColorStop = document.getElementById('addColorStop');
+            const cssCode = document.getElementById('cssCode');
+            const copyCode = document.getElementById('copyCode');
+            const copyNotification = document.getElementById('copyNotification');
+            
+            let stops = [
+                { color: '#6366f1', position: 0 },
+                { color: '#8b5cf6', position: 100 }
+            ];
+            
+            // Initialize
+            renderColorStops();
+            updateGradient();
+            
+            // Event Listeners
+            gradientType.addEventListener('change', function() {
+                if (this.value === 'radial') {
+                    directionControl.style.display = 'none';
+                } else {
+                    directionControl.style.display = 'block';
+                }
+                updateGradient();
+            });
+            
+            gradientDirection.addEventListener('change', updateGradient);
+            
+            addColorStop.addEventListener('click', function() {
+                // Add a new stop in the middle
+                const newPosition = Math.floor((stops[stops.length - 1].position + stops[stops.length - 2].position) / 2);
+                stops.splice(stops.length - 1, 0, { 
+                    color: getRandomColor(), 
+                    position: newPosition 
+                });
+                renderColorStops();
+                updateGradient();
+            });
+            
+            copyCode.addEventListener('click', function() {
+                const textToCopy = cssCode.textContent;
+                
+                // Fallback for browsers that don't support clipboard API
+                if (!navigator.clipboard) {
+                    fallbackCopyText(textToCopy);
+                    return;
+                }
+                
+                navigator.clipboard.writeText(textToCopy)
+                    .then(() => {
+                        showCopySuccess();
+                    })
+                    .catch(err => {
+                        console.error('Failed to copy text: ', err);
+                        showCopyError();
+                    });
+            });
+            
+            // Functions
+            function renderColorStops() {
+                colorStops.innerHTML = '';
+                
+                stops.forEach((stop, index) => {
+                    const stopElement = document.createElement('div');
+                    stopElement.className = 'color-stop';
+                    
+                    stopElement.innerHTML = `
+                        <input type="color" class="color-picker" value="${stop.color}" data-index="${index}">
+                        <input type="range" class="color-position" min="0" max="100" value="${stop.position}" data-index="${index}">
+                        <span>${stop.position}%</span>
+                        <button class="btn btn-secondary remove-stop" data-index="${index}" ${stops.length <= 2 ? 'disabled' : ''}>
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    
+                    colorStops.appendChild(stopElement);
+                });
+                
+                // Add event listeners to new elements
+                document.querySelectorAll('.color-picker').forEach(picker => {
+                    picker.addEventListener('input', function() {
+                        const index = parseInt(this.dataset.index);
+                        stops[index].color = this.value;
+                        updateGradient();
+                    });
+                });
+                
+                document.querySelectorAll('.color-position').forEach(slider => {
+                    slider.addEventListener('input', function() {
+                        const index = parseInt(this.dataset.index);
+                        stops[index].position = parseInt(this.value);
+                        this.nextElementSibling.textContent = `${this.value}%`;
+                        updateGradient();
+                    });
+                });
+                
+                document.querySelectorAll('.remove-stop').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const index = parseInt(this.dataset.index);
+                        stops.splice(index, 1);
+                        renderColorStops();
+                        updateGradient();
+                    });
+                });
+            }
+            
+            function updateGradient() {
+                const type = gradientType.value;
+                const direction = gradientDirection.value;
+                
+                let gradientCSS;
+                
+                if (type === 'linear') {
+                    const stopsText = stops.map(stop => `${stop.color} ${stop.position}%`).join(', ');
+                    gradientCSS = `linear-gradient(${direction}, ${stopsText})`;
+                    gradientPreview.style.backgroundImage = gradientCSS;
+                } else {
+                    const stopsText = stops.map(stop => `${stop.color} ${stop.position}%`).join(', ');
+                    gradientCSS = `radial-gradient(circle, ${stopsText})`;
+                    gradientPreview.style.backgroundImage = gradientCSS;
+                }
+                
+                cssCode.textContent = `background: ${gradientCSS};`;
+            }
+            
+            function getRandomColor() {
+                const letters = '0123456789ABCDEF';
+                let color = '#';
+                for (let i = 0; i < 6; i++) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
+            }
+            
+            function showCopySuccess() {
+                // Show notification
+                copyNotification.textContent = 'CSS Copied!';
+                copyNotification.classList.add('show');
+                
+                // Change button text temporarily
+                const originalText = copyCode.innerHTML;
+                copyCode.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                
+                setTimeout(() => {
+                    copyNotification.classList.remove('show');
+                    copyCode.innerHTML = originalText;
+                }, 2000);
+            }
+            
+            function showCopyError() {
+                copyNotification.textContent = 'Failed to copy!';
+                copyNotification.classList.add('show');
+                
+                setTimeout(() => {
+                    copyNotification.classList.remove('show');
+                }, 2000);
+            }
+            
+            function fallbackCopyText(text) {
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                textarea.style.position = 'fixed';  // Prevent scrolling to bottom
+                document.body.appendChild(textarea);
+                textarea.select();
+                
+                try {
+                    const successful = document.execCommand('copy');
+                    if (successful) {
+                        showCopySuccess();
+                    } else {
+                        showCopyError();
+                    }
+                } catch (err) {
+                    showCopyError();
+                }
+                
+                document.body.removeChild(textarea);
+            }
+        });
+    </script>
+</body>
+</html>

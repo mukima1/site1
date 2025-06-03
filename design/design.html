@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Tools | Dashboard</title>
+    <style>
+        :root {
+            --primary: #6C63FF;
+            --primary-light: #A29BFF;
+            --secondary: #FF6584;
+            --dark: #2D3748;
+            --light: #F7FAFC;
+            --gray: #E2E8F0;
+            --border-radius: 16px;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        @supports (font-variation-settings: normal) {
+            body { font-family: 'Inter var', -apple-system, BlinkMacSystemFont, sans-serif; }
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            padding: 3rem 0 4rem;
+            text-align: center;
+            margin-bottom: -2rem;
+            clip-path: ellipse(100% 100% at 50% 0%);
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.05em;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            font-weight: 400;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .tool-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 2.5rem 2rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+        .tool-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .tool-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            border-radius: 50%;
+            font-size: 2rem;
+            box-shadow: 0 4px 6px rgba(108, 99, 255, 0.3);
+        }
+
+        .tool-card h2 {
+            margin-bottom: 1rem;
+            color: var(--dark);
+            font-weight: 700;
+            font-size: 1.4rem;
+        }
+
+        .tool-card p {
+            color: #4A5568;
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--primary);
+            color: white;
+            padding: 0.8rem 1.8rem;
+            border-radius: 9999px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 6px rgba(108, 99, 255, 0.2);
+        }
+
+        .btn:hover {
+            background-color: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(108, 99, 255, 0.3);
+        }
+
+        .btn i {
+            margin-right: 8px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2.5rem;
+            color: #718096;
+            font-size: 0.9rem;
+            margin-top: 3rem;
+            border-top: 1px solid var(--gray);
+        }
+
+        .coming-soon {
+            background-color: #CBD5E0 !important;
+            box-shadow: none !important;
+        }
+
+        .coming-soon:hover {
+            transform: none !important;
+            background-color: #CBD5E0 !important;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 2rem 0 3rem;
+                clip-path: ellipse(120% 100% at 50% 0%);
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .tool-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .tool-card {
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Color Design Toolkit</h1>
+            <p class="subtitle">Essential color utilities for designers and developers. All tools work directly in your browser.</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="tool-grid">
+            <!-- Color Converter -->
+            <div class="tool-card">
+                <div class="tool-icon">
+                    <i class="fas fa-exchange-alt"></i>
+                </div>
+                <h2>Color Converter</h2>
+                <p>Convert between HEX, RGB, HSL, and CMYK color formats instantly.</p>
+                <a href="tools/colorConv.html" class="btn">
+                    <i class="fas fa-arrow-right"></i> Open Tool
+                </a>
+            </div>
+
+            <!-- Color Picker -->
+            <div class="tool-card">
+                <div class="tool-icon">
+                    <i class="fas fa-eye-dropper"></i>
+                </div>
+                <h2>Color Picker</h2>
+                <p>Use the eyedropper to pick colors from anywhere on your screen.</p>
+                <a href="tools/picker.html" class="btn">
+                    <i class="fas fa-arrow-right"></i> Open Tool
+                </a>
+            </div>
+
+            <!-- Palette Generator -->
+            <div class="tool-card">
+                <div class="tool-icon">
+                    <i class="fas fa-palette"></i>
+                </div>
+                <h2>Palette Generator</h2>
+                <p>Create beautiful color schemes from images or base colors.</p>
+                <a href="tools/pallet.html" class="btn">
+                    <i class="fas fa-arrow-right"></i> Open Tool
+                </a>
+            </div>
+
+            <!-- Gradient Generator -->
+            <div class="tool-card">
+                <div class="tool-icon">
+                    <i class="fas fa-sliders-h"></i>
+                </div>
+                <h2>Gradient Generator</h2>
+                <p>Build perfect CSS gradients with custom colors and directions.</p>
+                <a href="tools/gdt.html" class="btn">
+                    <i class="fas fa-arrow-right"></i> Open Tool
+                </a>
+            </div>
+
+            <!-- Contrast Checker -->
+            <div class="tool-card">
+                <div class="tool-icon">
+                    <i class="fas fa-universal-access"></i>
+                </div>
+                <h2>Contrast Checker</h2>
+                <p>Ensure your color combinations meet WCAG accessibility standards.</p>
+                <a href="tools/cont.html" class="btn">
+                    <i class="fas fa-arrow-right"></i> Open Tool
+                </a>
+            </div>
+
+            <!-- Coming Soon -->
+            <div class="tool-card">
+                <div class="tool-icon" style="background: linear-gradient(135deg, #A0AEC0, #CBD5E0);">
+                    <i class="fas fa-lightbulb"></i>
+                </div>
+                <h2>More Tools</h2>
+                <p>Additional color tools coming soon based on your feedback.</p>
+                <a href="#" class="btn coming-soon">
+                    <i class="fas fa-clock"></i> Coming Soon
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>All calculations happen in your browser - no data is sent to any servers.</p>
+        <p>© 2023 Color Design Toolkit | Crafted with <i class="fas fa-heart" style="color: var(--secondary);"></i></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Converter | HEX, RGB, HSL, CMYK</title>
+    <style>
+        :root {
+            --primary: #7c3aed;
+            --primary-dark: #6d28d9;
+            --primary-light: #8b5cf6;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #e2e8f0;
+            --border-radius: 12px;
+            --card-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            --hover-shadow: 0 15px 35px rgba(0,0,0,0.12);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            flex: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: #64748b;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .converter-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        @media (max-width: 768px) {
+            .converter-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .color-preview {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .color-display-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin-bottom: 2rem;
+        }
+
+        .color-display {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: var(--transition);
+            border: 8px solid white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .color-text {
+            position: absolute;
+            bottom: -30px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-weight: bold;
+            font-family: 'Fira Code', monospace;
+            font-size: 1rem;
+            color: var(--dark);
+        }
+
+        .color-input-container {
+            width: 100%;
+            max-width: 300px;
+            margin-top: 1rem;
+        }
+
+        .color-picker-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .color-picker-input {
+            flex: 1;
+            height: 40px;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+        }
+
+        .color-input {
+            width: 100%;
+        }
+
+        .color-input input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--gray);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            text-align: center;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .color-input input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+        }
+
+        .input-error {
+            border-color: #ef4444 !important;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2) !important;
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+            text-align: center;
+            display: none;
+        }
+
+        .contrast-info {
+            margin-top: 1.5rem;
+            padding: 0.75rem;
+            border-radius: var(--border-radius);
+            background: var(--light);
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .contrast-ratio {
+            font-weight: bold;
+            margin-top: 0.25rem;
+        }
+
+        .contrast-good {
+            color: #10b981;
+        }
+
+        .contrast-poor {
+            color: #ef4444;
+        }
+
+        .formats-container {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+        }
+
+        .formats-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .formats-header h2 {
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .formats-header h2 i {
+            color: var(--primary);
+        }
+
+        .format-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .format-tab {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            background: var(--light);
+            border: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .format-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .format-content {
+            display: none;
+        }
+
+        .format-content.active {
+            display: block;
+        }
+
+        .format-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .format-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .format-group input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--gray);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .format-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+        }
+
+        .copy-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--light);
+            color: var(--dark);
+            padding: 0.7rem 1rem;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            width: 100%;
+            margin-top: 0.5rem;
+            gap: 0.5rem;
+        }
+
+        .copy-btn:hover {
+            background: var(--gray);
+        }
+
+        .copy-btn i {
+            font-size: 0.9rem;
+        }
+
+        footer {
+            text-align: center;
+            padding-top: 3rem;
+            color: #64748b;
+            font-size: 0.9rem;
+            border-top: 1px solid var(--gray);
+        }
+
+        /* Color format specific styles */
+        .hex-input::before {
+            content: "#";
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .hex-input {
+            position: relative;
+        }
+
+        .hex-input input {
+            padding-left: 1.8rem;
+        }
+
+        .rgb-inputs, .hsl-inputs, .cmyk-inputs {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.75rem;
+        }
+
+        .rgb-inputs .format-group:nth-child(4),
+        .hsl-inputs .format-group:nth-child(4),
+        .cmyk-inputs .format-group:nth-child(5) {
+            grid-column: span 4;
+        }
+
+        .percentage::after {
+            content: "%";
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+        }
+
+        .percentage {
+            position: relative;
+        }
+
+        .percentage input {
+            padding-right: 1.8rem;
+        }
+
+        @media (max-width: 480px) {
+            .rgb-inputs, .hsl-inputs, .cmyk-inputs {
+                grid-template-columns: 1fr;
+            }
+            
+            .rgb-inputs .format-group:nth-child(4),
+            .hsl-inputs .format-group:nth-child(4),
+            .cmyk-inputs .format-group:nth-child(5) {
+                grid-column: span 1;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Color Converter</h1>
+            <p class="subtitle">Convert between HEX, RGB, HSL, and CMYK color formats instantly</p>
+        </header>
+
+        <div class="converter-container">
+            <div class="color-preview">
+                <div class="color-display-container">
+                    <div class="color-display" id="colorDisplay" style="background-color: #7c3aed;"></div>
+                    <div class="color-text" id="colorText">#7c3aed</div>
+                </div>
+                
+                <div class="color-input-container">
+                    <div class="color-picker-row">
+                        <input type="color" id="colorPicker" class="color-picker-input" value="#7c3aed">
+                        <span>or</span>
+                    </div>
+                    <div class="color-input">
+                        <input type="text" id="colorInput" value="#7c3aed" placeholder="#RRGGBB">
+                        <div class="error-message" id="errorMessage">Please enter a valid HEX color</div>
+                    </div>
+                    
+                    <div class="contrast-info">
+                        <div>Text contrast ratio:</div>
+                        <div class="contrast-ratio" id="contrastRatio">10.71 (AAA)</div>
+                        <small>WCAG recommends at least 4.5 for normal text</small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="formats-container">
+                <div class="formats-header">
+                    <h2><i class="fas fa-palette"></i> Color Formats</h2>
+                </div>
+                
+                <div class="format-tabs">
+                    <button class="format-tab active" data-format="hex">HEX</button>
+                    <button class="format-tab" data-format="rgb">RGB</button>
+                    <button class="format-tab" data-format="hsl">HSL</button>
+                    <button class="format-tab" data-format="cmyk">CMYK</button>
+                </div>
+                
+                <div class="format-content active" id="hexFormat">
+                    <div class="format-group hex-input">
+                        <label for="hexValue">HEX Color</label>
+                        <input type="text" id="hexValue" value="7c3aed">
+                    </div>
+                    <button class="copy-btn" data-target="hexValue">
+                        <i class="fas fa-copy"></i> Copy HEX
+                    </button>
+                </div>
+                
+                <div class="format-content" id="rgbFormat">
+                    <div class="rgb-inputs">
+                        <div class="format-group">
+                            <label for="redValue">Red</label>
+                            <input type="number" id="redValue" min="0" max="255" value="124">
+                        </div>
+                        <div class="format-group">
+                            <label for="greenValue">Green</label>
+                            <input type="number" id="greenValue" min="0" max="255" value="58">
+                        </div>
+                        <div class="format-group">
+                            <label for="blueValue">Blue</label>
+                            <input type="number" id="blueValue" min="0" max="255" value="237">
+                        </div>
+                        <div class="format-group">
+                            <label for="rgbValue">RGB</label>
+                            <input type="text" id="rgbValue" value="rgb(124, 58, 237)" readonly>
+                        </div>
+                    </div>
+                    <button class="copy-btn" data-target="rgbValue">
+                        <i class="fas fa-copy"></i> Copy RGB
+                    </button>
+                </div>
+                
+                <div class="format-content" id="hslFormat">
+                    <div class="hsl-inputs">
+                        <div class="format-group">
+                            <label for="hueValue">Hue</label>
+                            <input type="number" id="hueValue" min="0" max="360" value="265">
+                        </div>
+                        <div class="format-group percentage">
+                            <label for="saturationValue">Saturation</label>
+                            <input type="number" id="saturationValue" min="0" max="100" value="84">
+                        </div>
+                        <div class="format-group percentage">
+                            <label for="lightnessValue">Lightness</label>
+                            <input type="number" id="lightnessValue" min="0" max="100" value="58">
+                        </div>
+                        <div class="format-group">
+                            <label for="hslValue">HSL</label>
+                            <input type="text" id="hslValue" value="hsl(265, 84%, 58%)" readonly>
+                        </div>
+                    </div>
+                    <button class="copy-btn" data-target="hslValue">
+                        <i class="fas fa-copy"></i> Copy HSL
+                    </button>
+                </div>
+                
+                <div class="format-content" id="cmykFormat">
+                    <div class="cmyk-inputs">
+                        <div class="format-group percentage">
+                            <label for="cyanValue">Cyan</label>
+                            <input type="number" id="cyanValue" min="0" max="100" value="48">
+                        </div>
+                        <div class="format-group percentage">
+                            <label for="magentaValue">Magenta</label>
+                            <input type="number" id="magentaValue" min="0" max="100" value="76">
+                        </div>
+                        <div class="format-group percentage">
+                            <label for="yellowValue">Yellow</label>
+                            <input type="number" id="yellowValue" min="0" max="100" value="0">
+                        </div>
+                        <div class="format-group percentage">
+                            <label for="blackValue">Black</label>
+                            <input type="number" id="blackValue" min="0" max="100" value="7">
+                        </div>
+                        <div class="format-group">
+                            <label for="cmykValue">CMYK</label>
+                            <input type="text" id="cmykValue" value="cmyk(48%, 76%, 0%, 7%)" readonly>
+                        </div>
+                    </div>
+                    <button class="copy-btn" data-target="cmykValue">
+                        <i class="fas fa-copy"></i> Copy CMYK
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>All conversions happen in your browser - no data is sent to any servers</p>
+            <p>© 2023 Color Converter | Professional Color Tool</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const colorDisplay = document.getElementById('colorDisplay');
+            const colorText = document.getElementById('colorText');
+            const colorPicker = document.getElementById('colorPicker');
+            const colorInput = document.getElementById('colorInput');
+            const errorMessage = document.getElementById('errorMessage');
+            const contrastRatio = document.getElementById('contrastRatio');
+            const hexValue = document.getElementById('hexValue');
+            const redValue = document.getElementById('redValue');
+            const greenValue = document.getElementById('greenValue');
+            const blueValue = document.getElementById('blueValue');
+            const rgbValue = document.getElementById('rgbValue');
+            const hueValue = document.getElementById('hueValue');
+            const saturationValue = document.getElementById('saturationValue');
+            const lightnessValue = document.getElementById('lightnessValue');
+            const hslValue = document.getElementById('hslValue');
+            const cyanValue = document.getElementById('cyanValue');
+            const magentaValue = document.getElementById('magentaValue');
+            const yellowValue = document.getElementById('yellowValue');
+            const blackValue = document.getElementById('blackValue');
+            const cmykValue = document.getElementById('cmykValue');
+            const formatTabs = document.querySelectorAll('.format-tab');
+            const formatContents = document.querySelectorAll('.format-content');
+            const copyButtons = document.querySelectorAll('.copy-btn');
+            
+            // Initial color (purple)
+            let currentColor = {
+                hex: '7c3aed',
+                rgb: { r: 124, g: 58, b: 237 },
+                hsl: { h: 265, s: 84, l: 58 },
+                cmyk: { c: 48, m: 76, y: 0, k: 7 }
+            };
+            
+            // Initialize
+            updateAllDisplays();
+            updateContrastRatio();
+            
+            // Event Listeners
+            colorPicker.addEventListener('input', function() {
+                const hex = this.value.substring(1);
+                currentColor.hex = hex;
+                hexToAll(hex);
+                updateAllDisplays();
+                updateContrastRatio();
+            });
+            
+            colorInput.addEventListener('input', function() {
+                const hex = this.value.replace('#', '');
+                if (/^[0-9A-F]{6}$/i.test(hex)) {
+                    colorInput.classList.remove('input-error');
+                    errorMessage.style.display = 'none';
+                    currentColor.hex = hex;
+                    colorPicker.value = `#${hex}`;
+                    hexToAll(hex);
+                    updateAllDisplays();
+                    updateContrastRatio();
+                } else if (hex.length === 6) {
+                    colorInput.classList.add('input-error');
+                    errorMessage.style.display = 'block';
+                } else {
+                    colorInput.classList.remove('input-error');
+                    errorMessage.style.display = 'none';
+                }
+            });
+            
+            hexValue.addEventListener('input', function() {
+                const hex = this.value;
+                if (/^[0-9A-F]{6}$/i.test(hex)) {
+                    currentColor.hex = hex;
+                    colorPicker.value = `#${hex}`;
+                    colorInput.value = `#${hex}`;
+                    hexToAll(hex);
+                    updateAllDisplays();
+                    updateContrastRatio();
+                }
+            });
+            
+            // RGB inputs
+            [redValue, greenValue, blueValue].forEach(input => {
+                input.addEventListener('input', function() {
+                    const r = parseInt(redValue.value) || 0;
+                    const g = parseInt(greenValue.value) || 0;
+                    const b = parseInt(blueValue.value) || 0;
+                    
+                    if (r >= 0 && r <= 255 && g >= 0 && g <= 255 && b >= 0 && b <= 255) {
+                        currentColor.rgb = { r, g, b };
+                        rgbToAll(r, g, b);
+                        updateAllDisplays();
+                        updateContrastRatio();
+                    }
+                });
+            });
+            
+            // HSL inputs
+            [hueValue, saturationValue, lightnessValue].forEach(input => {
+                input.addEventListener('input', function() {
+                    const h = parseInt(hueValue.value) || 0;
+                    const s = parseInt(saturationValue.value) || 0;
+                    const l = parseInt(lightnessValue.value) || 0;
+                    
+                    if (h >= 0 && h <= 360 && s >= 0 && s <= 100 && l >= 0 && l <= 100) {
+                        currentColor.hsl = { h, s, l };
+                        hslToAll(h, s, l);
+                        updateAllDisplays();
+                        updateContrastRatio();
+                    }
+                });
+            });
+            
+            // CMYK inputs
+            [cyanValue, magentaValue, yellowValue, blackValue].forEach(input => {
+                input.addEventListener('input', function() {
+                    const c = parseInt(cyanValue.value) || 0;
+                    const m = parseInt(magentaValue.value) || 0;
+                    const y = parseInt(yellowValue.value) || 0;
+                    const k = parseInt(blackValue.value) || 0;
+                    
+                    if (c >= 0 && c <= 100 && m >= 0 && m <= 100 && y >= 0 && y <= 100 && k >= 0 && k <= 100) {
+                        currentColor.cmyk = { c, m, y, k };
+                        cmykToAll(c, m, y, k);
+                        updateAllDisplays();
+                        updateContrastRatio();
+                    }
+                });
+            });
+            
+            // Format tabs
+            formatTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const format = this.dataset.format;
+                    
+                    formatTabs.forEach(t => t.classList.remove('active'));
+                    formatContents.forEach(c => c.classList.remove('active'));
+                    
+                    this.classList.add('active');
+                    document.getElementById(`${format}Format`).classList.add('active');
+                });
+            });
+            
+            // Copy buttons
+            copyButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const targetId = this.dataset.target;
+                    const target = document.getElementById(targetId);
+                    
+                    navigator.clipboard.writeText(target.value)
+                        .then(() => {
+                            const originalText = this.innerHTML;
+                            this.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                            setTimeout(() => {
+                                this.innerHTML = originalText;
+                            }, 2000);
+                        })
+                        .catch(err => {
+                            console.error('Copy failed:', err);
+                        });
+                });
+            });
+            
+            // Conversion Functions
+            function hexToAll(hex) {
+                // HEX to RGB
+                const r = parseInt(hex.substring(0, 2), 16);
+                const g = parseInt(hex.substring(2, 4), 16);
+                const b = parseInt(hex.substring(4, 6), 16);
+                currentColor.rgb = { r, g, b };
+                
+                // RGB to HSL
+                const hsl = rgbToHsl(r, g, b);
+                currentColor.hsl = hsl;
+                
+                // RGB to CMYK
+                const cmyk = rgbToCmyk(r, g, b);
+                currentColor.cmyk = cmyk;
+            }
+            
+            function rgbToAll(r, g, b) {
+                // RGB to HEX
+                const hex = ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+                currentColor.hex = hex;
+                colorPicker.value = `#${hex}`;
+                colorInput.value = `#${hex}`;
+                
+                // RGB to HSL
+                const hsl = rgbToHsl(r, g, b);
+                currentColor.hsl = hsl;
+                
+                // RGB to CMYK
+                const cmyk = rgbToCmyk(r, g, b);
+                currentColor.cmyk = cmyk;
+            }
+            
+            function hslToAll(h, s, l) {
+                // HSL to RGB
+                const rgb = hslToRgb(h, s, l);
+                currentColor.rgb = rgb;
+                
+                // RGB to HEX
+                const hex = ((1 << 24) + (rgb.r << 16) + (rgb.g << 8) + rgb.b).toString(16).slice(1);
+                currentColor.hex = hex;
+                colorPicker.value = `#${hex}`;
+                colorInput.value = `#${hex}`;
+                
+                // RGB to CMYK
+                const cmyk = rgbToCmyk(rgb.r, rgb.g, rgb.b);
+                currentColor.cmyk = cmyk;
+            }
+            
+            function cmykToAll(c, m, y, k) {
+                // CMYK to RGB
+                const rgb = cmykToRgb(c, m, y, k);
+                currentColor.rgb = rgb;
+                
+                // RGB to HEX
+                const hex = ((1 << 24) + (rgb.r << 16) + (rgb.g << 8) + rgb.b).toString(16).slice(1);
+                currentColor.hex = hex;
+                colorPicker.value = `#${hex}`;
+                colorInput.value = `#${hex}`;
+                
+                // RGB to HSL
+                const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+                currentColor.hsl = hsl;
+            }
+            
+            // Color conversion algorithms
+            function rgbToHsl(r, g, b) {
+                r /= 255, g /= 255, b /= 255;
+                const max = Math.max(r, g, b), min = Math.min(r, g, b);
+                let h, s, l = (max + min) / 2;
+            
+                if (max === min) {
+                    h = s = 0;
+                } else {
+                    const d = max - min;
+                    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                    switch (max) {
+                        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                        case g: h = (b - r) / d + 2; break;
+                        case b: h = (r - g) / d + 4; break;
+                    }
+                    h /= 6;
+                }
+            
+                return {
+                    h: Math.round(h * 360),
+                    s: Math.round(s * 100),
+                    l: Math.round(l * 100)
+                };
+            }
+            
+            function hslToRgb(h, s, l) {
+                h /= 360;
+                s /= 100;
+                l /= 100;
+                
+                let r, g, b;
+            
+                if (s === 0) {
+                    r = g = b = l;
+                } else {
+                    const hue2rgb = (p, q, t) => {
+                        if (t < 0) t += 1;
+                        if (t > 1) t -= 1;
+                        if (t < 1/6) return p + (q - p) * 6 * t;
+                        if (t < 1/2) return q;
+                        if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+                        return p;
+                    };
+            
+                    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+                    const p = 2 * l - q;
+            
+                    r = hue2rgb(p, q, h + 1/3);
+                    g = hue2rgb(p, q, h);
+                    b = hue2rgb(p, q, h - 1/3);
+                }
+            
+                return {
+                    r: Math.round(r * 255),
+                    g: Math.round(g * 255),
+                    b: Math.round(b * 255)
+                };
+            }
+            
+            function rgbToCmyk(r, g, b) {
+                r /= 255, g /= 255, b /= 255;
+                const k = 1 - Math.max(r, g, b);
+                const c = (1 - r - k) / (1 - k) || 0;
+                const m = (1 - g - k) / (1 - k) || 0;
+                const y = (1 - b - k) / (1 - k) || 0;
+                
+                return {
+                    c: Math.round(c * 100),
+                    m: Math.round(m * 100),
+                    y: Math.round(y * 100),
+                    k: Math.round(k * 100)
+                };
+            }
+            
+            function cmykToRgb(c, m, y, k) {
+                c /= 100, m /= 100, y /= 100, k /= 100;
+                const r = 255 * (1 - c) * (1 - k);
+                const g = 255 * (1 - m) * (1 - k);
+                const b = 255 * (1 - y) * (1 - k);
+                
+                return {
+                    r: Math.round(r),
+                    g: Math.round(g),
+                    b: Math.round(b)
+                };
+            }
+            
+            // Calculate contrast ratio
+            function getContrastRatio(hexColor) {
+                // Convert hex to RGB
+                const r = parseInt(hexColor.substring(0, 2), 16) / 255;
+                const g = parseInt(hexColor.substring(2, 4), 16) / 255;
+                const b = parseInt(hexColor.substring(4, 6), 16) / 255;
+                
+                // Calculate relative luminance
+                const luminance = 0.2126 * (r <= 0.03928 ? r / 12.92 : Math.pow((r + 0.055) / 1.055, 2.4)) +
+                                  0.7152 * (g <= 0.03928 ? g / 12.92 : Math.pow((g + 0.055) / 1.055, 2.4)) +
+                                  0.0722 * (b <= 0.03928 ? b / 12.92 : Math.pow((b + 0.055) / 1.055, 2.4));
+                
+                // White luminance is 1
+                const contrast = (1 + 0.05) / (luminance + 0.05);
+                return contrast;
+            }
+            
+            function updateContrastRatio() {
+                const ratio = getContrastRatio(currentColor.hex);
+                const roundedRatio = Math.round(ratio * 100) / 100;
+                
+                contrastRatio.textContent = `${roundedRatio} ${ratio >= 7 ? '(AAA)' : ratio >= 4.5 ? '(AA)' : '(Poor)'}`;
+                
+                if (ratio >= 7) {
+                    contrastRatio.className = 'contrast-ratio contrast-good';
+                } else if (ratio >= 4.5) {
+                    contrastRatio.className = 'contrast-ratio';
+                } else {
+                    contrastRatio.className = 'contrast-ratio contrast-poor';
+                }
+            }
+            
+            // Update all displays
+            function updateAllDisplays() {
+                // Update color display
+                colorDisplay.style.backgroundColor = `#${currentColor.hex}`;
+                colorText.textContent = `#${currentColor.hex}`;
+                colorText.style.color = getContrastRatio(currentColor.hex) >= 4.5 ? '#1e293b' : '#f8fafc';
+                
+                // Update HEX
+                hexValue.value = currentColor.hex;
+                
+                // Update RGB
+                redValue.value = currentColor.rgb.r;
+                greenValue.value = currentColor.rgb.g;
+                blueValue.value = currentColor.rgb.b;
+                rgbValue.value = `rgb(${currentColor.rgb.r}, ${currentColor.rgb.g}, ${currentColor.rgb.b})`;
+                
+                // Update HSL
+                hueValue.value = currentColor.hsl.h;
+                saturationValue.value = currentColor.hsl.s;
+                lightnessValue.value = currentColor.hsl.l;
+                hslValue.value = `hsl(${currentColor.hsl.h}, ${currentColor.hsl.s}%, ${currentColor.hsl.l}%)`;
+                
+                // Update CMYK
+                cyanValue.value = currentColor.cmyk.c;
+                magentaValue.value = currentColor.cmyk.m;
+                yellowValue.value = currentColor.cmyk.y;
+                blackValue.value = currentColor.cmyk.k;
+                cmykValue.value = `cmyk(${currentColor.cmyk.c}%, ${currentColor.cmyk.m}%, ${currentColor.cmyk.y}%, ${currentColor.cmyk.k}%)`;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF to Excel Converter</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #1d4ed8;
+      --primary-dark: #1e40af;
+      --accent: #3b82f6;
+      --light: #f9fafb;
+      --dark: #1f2937;
+      --success: #10b981;
+      --error: #ef4444;
+      --border-radius: 8px;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f3f4f6;
+      color: var(--dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.6;
+    }
+
+    header {
+      background: white;
+      box-shadow: var(--shadow);
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .navbar {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      color: var(--primary);
+      font-size: 1.8rem;
+    }
+
+    .logo-text {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    main {
+      flex: 1;
+      padding: 2rem 0;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .converter-card {
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      padding: 2rem;
+      margin-bottom: 2rem;
+      border: 1px solid #e5e7eb;
+    }
+
+    .drop-area {
+      border: 2px dashed #d1d5db;
+      border-radius: var(--border-radius);
+      padding: 3rem;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-bottom: 1.5rem;
+      background: #f9fafb;
+    }
+
+    .drop-area:hover {
+      border-color: var(--primary);
+      background: rgba(29, 78, 216, 0.05);
+    }
+
+    .drop-icon {
+      font-size: 3rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+
+    .file-preview {
+      display: none;
+      margin-top: 1.5rem;
+    }
+
+    .preview-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      box-shadow: var(--shadow);
+      border-radius: var(--border-radius);
+      overflow: hidden;
+    }
+
+    .preview-table th, .preview-table td {
+      padding: 0.75rem;
+      text-align: left;
+      border: 1px solid #e5e7eb;
+    }
+
+    .preview-table th {
+      background-color: var(--primary);
+      color: white;
+      font-weight: 600;
+    }
+
+    .preview-table tr:nth-child(even) {
+      background-color: #f9fafb;
+    }
+
+    .preview-table tr:hover {
+      background-color: #f3f4f6;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--border-radius);
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    .btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .progress-container {
+      display: none;
+      margin: 1.5rem 0;
+    }
+
+    .result-container {
+      display: none;
+      text-align: center;
+      padding: 2rem;
+      background: rgba(16, 185, 129, 0.1);
+      border-radius: var(--border-radius);
+    }
+
+    .table-count {
+      margin-bottom: 1rem;
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .table-container {
+      margin-bottom: 1.5rem;
+      overflow-x: auto;
+    }
+
+    @media (max-width: 768px) {
+      .converter-card {
+        padding: 1.5rem;
+      }
+      .drop-area {
+        padding: 2rem 1rem;
+      }
+      .preview-table th, .preview-table td {
+        padding: 0.5rem;
+        font-size: 0.875rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <a href="#" class="logo">
+        <i class="fas fa-file-excel logo-icon"></i>
+        <span class="logo-text">PDF to Excel</span>
+      </a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="container">
+      <div class="converter-card">
+        <h1 style="text-align: center; margin-bottom: 1rem;">PDF to Excel Converter</h1>
+        <p style="text-align: center; color: #6b7280; margin-bottom: 2rem;">
+          Extract tables from PDFs and convert them to Excel format
+        </p>
+
+        <div id="dropArea" class="drop-area">
+          <i class="fas fa-cloud-upload-alt drop-icon"></i>
+          <p class="drop-text">Drag & drop your PDF here</p>
+          <p class="drop-hint">or click to select a file</p>
+          <input type="file" id="fileInput" accept=".pdf" style="display: none;">
+        </div>
+
+        <div id="filePreview" class="file-preview">
+          <div id="tableCount" class="table-count"></div>
+          <div id="tablesContainer"></div>
+        </div>
+
+        <div style="text-align: center; margin-top: 1.5rem;">
+          <button id="convertBtn" class="btn btn-primary" disabled>
+            <i class="fas fa-file-excel"></i> Convert to Excel
+          </button>
+        </div>
+
+        <div id="progressContainer" class="progress-container">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span id="progressText">Processing...</span>
+            <span id="progressPercent">0%</span>
+          </div>
+          <div style="height: 8px; background: #e5e7eb; border-radius: 4px;">
+            <div id="progressBar" style="height: 100%; background: var(--primary); width: 0%; transition: width 0.3s;"></div>
+          </div>
+        </div>
+
+        <div id="resultContainer" class="result-container">
+          <i class="fas fa-check-circle" style="font-size: 3rem; color: var(--success); margin-bottom: 1rem;"></i>
+          <p style="font-size: 1.2rem; margin-bottom: 1.5rem;">Your Excel file is ready!</p>
+          <button id="downloadBtn" class="btn btn-primary">
+            <i class="fas fa-download"></i> Download Excel File
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- PDF.js for PDF rendering -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+  
+  <!-- pdf-lib for advanced PDF operations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+  
+  <!-- SheetJS for Excel generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  
+  <!-- FileSaver.js for saving files -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+  <script>
+    // Initialize PDF.js
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+
+    // DOM Elements
+    const dropArea = document.getElementById('dropArea');
+    const fileInput = document.getElementById('fileInput');
+    const convertBtn = document.getElementById('convertBtn');
+    const filePreview = document.getElementById('filePreview');
+    const tablesContainer = document.getElementById('tablesContainer');
+    const tableCount = document.getElementById('tableCount');
+    const progressContainer = document.getElementById('progressContainer');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const progressPercent = document.getElementById('progressPercent');
+    const resultContainer = document.getElementById('resultContainer');
+    const downloadBtn = document.getElementById('downloadBtn');
+
+    let pdfFile = null;
+    let excelBlob = null;
+    let extractedTables = [];
+
+    // Event Listeners
+    dropArea.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', handleFileSelect);
+    
+    ['dragenter', 'dragover'].forEach(event => {
+      dropArea.addEventListener(event, highlight, false);
+    });
+    
+    ['dragleave', 'drop'].forEach(event => {
+      dropArea.addEventListener(event, unhighlight, false);
+    });
+    
+    dropArea.addEventListener('drop', handleDrop, false);
+    convertBtn.addEventListener('click', convertToExcel);
+    downloadBtn.addEventListener('click', downloadExcel);
+
+    // Functions
+    function highlight(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      dropArea.style.borderColor = 'var(--primary)';
+      dropArea.style.background = 'rgba(29, 78, 216, 0.1)';
+    }
+
+    function unhighlight(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      dropArea.style.borderColor = '#d1d5db';
+      dropArea.style.background = '#f9fafb';
+    }
+
+    function handleDrop(e) {
+      e.preventDefault();
+      const dt = e.dataTransfer;
+      const file = dt.files[0];
+      if (file) handleFile(file);
+    }
+
+    function handleFileSelect(e) {
+      const file = e.target.files[0];
+      if (file) handleFile(file);
+    }
+
+    async function handleFile(file) {
+      // Validate PDF
+      if (!file.type.includes('pdf') && !file.name.toLowerCase().endsWith('.pdf')) {
+        alert('Please select a PDF file');
+        return;
+      }
+
+      pdfFile = file;
+      
+      // Show preview
+      try {
+        await extractTablesFromPDF(file);
+        filePreview.style.display = 'block';
+        convertBtn.disabled = false;
+      } catch (error) {
+        console.error('Error processing PDF:', error);
+        alert('Error loading PDF file. Please try another file.');
+      }
+    }
+
+    async function extractTablesFromPDF(file) {
+      tablesContainer.innerHTML = '';
+      extractedTables = [];
+      
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
+      
+      // Process each page to find tables
+      for (let i = 1; i <= pdf.numPages; i++) {
+        try {
+          updateProgress((i/pdf.numPages)*50, `Analyzing page ${i} of ${pdf.numPages}...`);
+          
+          const page = await pdf.getPage(i);
+          const textContent = await page.getTextContent();
+          
+          // Simple table detection - looks for text items with similar y positions
+          const textItems = textContent.items;
+          const lines = {};
+          
+          // Group text items by their y position (lines)
+          textItems.forEach(item => {
+            const y = item.transform[5];
+            if (!lines[y]) {
+              lines[y] = [];
+            }
+            lines[y].push(item);
+          });
+          
+          // Sort lines by y position (top to bottom)
+          const sortedLines = Object.keys(lines)
+            .map(y => parseFloat(y))
+            .sort((a, b) => b - a); // Higher y values come first (PDF coordinate system)
+          
+          // Simple table detection - assumes tables have multiple lines with similar x positions
+          const potentialTables = [];
+          let currentTable = [];
+          
+          for (let j = 0; j < sortedLines.length; j++) {
+            const y = sortedLines[j];
+            const lineItems = lines[y];
+            
+            // Check if this line has multiple items (potential table row)
+            if (lineItems.length > 1) {
+              currentTable.push(lineItems);
+            } else if (currentTable.length > 0) {
+              // End of a potential table
+              if (currentTable.length >= 2) { // At least 2 rows to be considered a table
+                potentialTables.push(currentTable);
+              }
+              currentTable = [];
+            }
+          }
+          
+          // Add the last table if it exists
+          if (currentTable.length >= 2) {
+            potentialTables.push(currentTable);
+          }
+          
+          // Process potential tables
+          potentialTables.forEach((table, tableIndex) => {
+            const tableData = [];
+            
+            // Convert table lines to rows
+            table.forEach(lineItems => {
+              const row = [];
+              lineItems.forEach(item => {
+                row.push(item.str);
+              });
+              tableData.push(row);
+            });
+            
+            // Add to extracted tables
+            extractedTables.push({
+              page: i,
+              data: tableData
+            });
+            
+            // Display the table preview
+            displayTablePreview(tableData, i, tableIndex);
+          });
+          
+        } catch (error) {
+          console.error(`Error processing page ${i}:`, error);
+          continue;
+        }
+      }
+      
+      // Update table count
+      tableCount.textContent = `Found ${extractedTables.length} table(s) in the PDF`;
+      updateProgress(100, 'PDF analysis complete');
+      setTimeout(() => progressContainer.style.display = 'none', 1000);
+    }
+
+    function displayTablePreview(tableData, pageNum, tableIndex) {
+      const tableDiv = document.createElement('div');
+      tableDiv.className = 'table-container';
+      tableDiv.innerHTML = `
+        <p style="margin-bottom: 0.5rem; color: #4b5563;">Table ${tableIndex + 1} from page ${pageNum}</p>
+        <table class="preview-table">
+          <tbody id="tableBody-${pageNum}-${tableIndex}"></tbody>
+        </table>
+      `;
+      
+      tablesContainer.appendChild(tableDiv);
+      
+      const tableBody = document.getElementById(`tableBody-${pageNum}-${tableIndex}`);
+      
+      // Add header row (use first row as header)
+      const headerRow = document.createElement('tr');
+      tableData[0].forEach(cell => {
+        const th = document.createElement('th');
+        th.textContent = cell;
+        headerRow.appendChild(th);
+      });
+      tableBody.appendChild(headerRow);
+      
+      // Add data rows
+      for (let i = 1; i < tableData.length; i++) {
+        const row = document.createElement('tr');
+        tableData[i].forEach(cell => {
+          const td = document.createElement('td');
+          td.textContent = cell;
+          row.appendChild(td);
+        });
+        tableBody.appendChild(row);
+      }
+    }
+
+    async function convertToExcel() {
+      if (!pdfFile || extractedTables.length === 0) return;
+      
+      // UI Updates
+      convertBtn.disabled = true;
+      progressContainer.style.display = 'block';
+      updateProgress(0, 'Creating Excel file...');
+      
+      try {
+        // Create a new workbook
+        const workbook = XLSX.utils.book_new();
+        
+        // Add each table as a separate worksheet
+        extractedTables.forEach((table, index) => {
+          updateProgress((index/extractedTables.length)*90, `Processing table ${index + 1} of ${extractedTables.length}...`);
+          
+          // Convert table data to worksheet
+          const worksheet = XLSX.utils.aoa_to_sheet(table.data);
+          
+          // Add worksheet to workbook
+          XLSX.utils.book_append_sheet(
+            workbook, 
+            worksheet, 
+            `Page ${table.page}-Table ${index + 1}`
+          );
+        });
+        
+        // Generate Excel file
+        updateProgress(95, 'Finalizing Excel file...');
+        const excelFile = XLSX.write(workbook, {
+          bookType: 'xlsx',
+          type: 'array'
+        });
+        
+        excelBlob = new Blob([excelFile], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        });
+        
+        // Show result
+        updateProgress(100, 'Done!');
+        resultContainer.style.display = 'block';
+        
+      } catch (error) {
+        console.error('Conversion error:', error);
+        alert('Conversion failed: ' + error.message);
+        convertBtn.disabled = false;
+        progressContainer.style.display = 'none';
+      }
+    }
+
+    function downloadExcel() {
+      if (!excelBlob) return;
+      
+      const url = URL.createObjectURL(excelBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = pdfFile.name.replace('.pdf', '.xlsx');
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function updateProgress(percent, message) {
+      progressBar.style.width = `${percent}%`;
+      progressPercent.textContent = `${Math.round(percent)}%`;
+      progressText.textContent = message;
+    }
+  </script>
+</body>
+</html>

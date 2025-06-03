@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Splitter Tool</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>PDF Splitter</h1>
+        <div class="upload-area" id="dropArea">
+            <input type="file" id="fileInput" accept=".pdf">
+            <p>Drag & drop your PDF here or click to browse</p>
+        </div>
+        
+        <div class="controls">
+            <div class="split-option">
+                <h3>Split Options</h3>
+                <select id="splitMethod">
+                    <option value="single">Extract single pages</option>
+                    <option value="range">Split by page ranges</option>
+                    <option value="every">Split every N pages</option>
+                </select>
+                
+                <div id="singlePages" class="option-content">
+                    <p>Enter page numbers to extract (comma separated):</p>
+                    <input type="text" id="pageNumbers" placeholder="e.g. 1,3,5-7">
+                </div>
+                
+                <div id="pageRanges" class="option-content" style="display:none;">
+                    <p>Enter page ranges (one per line):</p>
+                    <textarea id="ranges" placeholder="e.g. 1-3\n4-5\n6-8"></textarea>
+                </div>
+                
+                <div id="everyNPages" class="option-content" style="display:none;">
+                    <p>Split after every</p>
+                    <input type="number" id="nValue" min="1" value="1"> pages
+                </div>
+            </div>
+            
+            <button id="splitBtn" disabled>Split PDF</button>
+        </div>
+        
+        <div class="preview">
+            <h3>Preview <span id="pageCount"></span></h3>
+            <div id="previewContainer"></div>
+        </div>
+        
+        <div class="results" id="results" style="display:none;">
+            <h3>Split Results</h3>
+            <div id="downloadLinks"></div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
