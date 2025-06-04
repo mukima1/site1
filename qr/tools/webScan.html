@@ -1,17 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-FKNNWBVZ6V"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-FKNNWBVZ6V');
-</script>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Webcam QR Scanner | Real-Time Code Detection</title>
@@ -126,6 +115,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transform: scaleX(-1); /* Mirror the video */
         }
 
         .scan-region {
@@ -332,7 +322,7 @@
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@zxing/library@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.19.1"></script>
 </head>
 <body>
     <div class="container">
@@ -395,7 +385,7 @@
         
         <footer>
             <p>All processing happens in your browser - no data is uploaded to any servers</p>
-            <p>© 2023 Webcam QR Scanner | Real-Time Code Detection</p>
+            <p>© 2025 Webcam QR Scanner | Real-Time Code Detection</p>
         </footer>
     </div>
 
@@ -415,10 +405,16 @@
             let codeReader = new ZXing.BrowserQRCodeReader();
             let activeDeviceId = null;
             let lastResult = null;
+            let decodingStream = null;
             
             // Get available cameras
             async function getCameras() {
                 try {
+                    // First request camera permission
+                    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                    // Stop the stream immediately since we just wanted permission
+                    stream.getTracks().forEach(track => track.stop());
+                    
                     const devices = await codeReader.getVideoInputDevices();
                     
                     if (devices.length === 0) {
@@ -426,6 +422,7 @@
                         return;
                     }
                     
+                    cameraSelect.innerHTML = '<option value="">Select Camera</option>';
                     devices.forEach(device => {
                         const option = document.createElement('option');
                         option.value = device.deviceId;
@@ -441,6 +438,7 @@
                 } catch (error) {
                     console.error('Error getting cameras:', error);
                     cameraSelect.innerHTML = '<option value="">Camera access error</option>';
+                    updateResult('Camera access denied. Please allow camera permissions.', 'error');
                 }
             }
             
@@ -452,20 +450,30 @@
                 }
                 
                 try {
-                    await codeReader.decodeFromVideoDevice(activeDeviceId, video, (result, error) => {
-                        if (result) {
-                            if (result.text !== lastResult) {
-                                lastResult = result.text;
-                                updateResult(result.text, 'success');
+                    // Reset any previous decoding
+                    if (decodingStream) {
+                        await codeReader.reset();
+                    }
+                    
+                    // Start decoding
+                    decodingStream = await codeReader.decodeFromVideoDevice(
+                        activeDeviceId, 
+                        video, 
+                        (result, error) => {
+                            if (result) {
+                                if (result.text !== lastResult) {
+                                    lastResult = result.text;
+                                    updateResult(result.text, 'success');
+                                }
+                            }
+                            
+                            if (error) {
+                                if (!(error instanceof ZXing.NotFoundException)) {
+                                    console.error('Scan error:', error);
+                                }
                             }
                         }
-                        
-                        if (error) {
-                            if (!(error instanceof ZXing.NotFoundException)) {
-                                console.error('Scan error:', error);
-                            }
-                        }
-                    });
+                    );
                     
                     scannerStatus.className = 'status active';
                     scannerStatus.innerHTML = '<i class="fas fa-circle"></i><span>Scanning</span>';
@@ -481,6 +489,7 @@
             async function stopScanning() {
                 try {
                     await codeReader.reset();
+                    decodingStream = null;
                     scannerStatus.className = 'status inactive';
                     scannerStatus.innerHTML = '<i class="fas fa-circle"></i><span>Inactive</span>';
                     startBtn.disabled = false;
