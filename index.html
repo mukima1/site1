@@ -1,20 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
   <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-FKNNWBVZ6V"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-FKNNWBVZ6V');
-</script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-FKNNWBVZ6V"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-FKNNWBVZ6V');
+  </script>
 
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>All-in-One File Converter</title>
+  <title>FileConverterPro - Ultimate File Conversion Toolkit</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     /* Reset */
@@ -34,19 +32,51 @@
       padding: 2rem 1rem;
     }
     h1 {
-      margin-bottom: 0.5rem;
-      font-weight: 700;
+      margin-bottom: 1rem;
+      font-weight: 800;
       color: #2c3e50;
       text-align: center;
       animation: fadeInDown 0.8s ease;
+      font-size: 2.5rem;
+      line-height: 1.2;
+    }
+    .tagline {
+      display: inline-block;
+      background: linear-gradient(90deg, #4b6cb7, #182848);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
     p.description {
       margin-bottom: 2rem;
-      font-size: 1.1rem;
-      color: #666;
+      font-size: 1.2rem;
+      color: #555;
       text-align: center;
-      max-width: 600px;
+      max-width: 800px;
       animation: fadeIn 1s ease;
+      line-height: 1.6;
+    }
+    .feature-highlights {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.8rem;
+      margin-bottom: 2.5rem;
+      max-width: 800px;
+    }
+    .feature-pill {
+      background: white;
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
     .grid {
       display: grid;
@@ -67,6 +97,7 @@
       justify-content: center;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
       user-select: none;
+      border: 1px solid rgba(0,0,0,0.05);
     }
     .card:hover {
       transform: translateY(-5px);
@@ -163,6 +194,7 @@
       margin: 2rem auto;
       text-align: center;
       animation: fadeIn 1.2s ease;
+      border: 1px solid rgba(0,0,0,0.05);
     }
     
     .youtube-card h2 {
@@ -248,7 +280,25 @@
       transform: translateY(0);
     }
     
-    @media (max-width: 320px) {
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2rem;
+      }
+      .description {
+        font-size: 1.1rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.8rem;
+      }
+      .tagline {
+        font-size: 0.9rem;
+      }
+      .description {
+        font-size: 1rem;
+      }
       .card {
         padding: 1.2rem 1rem;
       }
@@ -269,8 +319,24 @@
 </head>
 <body>
 
-  <h1>All-in-One File Converter</h1>
-  <p class="description">Convert documents, images, audio, video, office files, and code — all from one place.</p>
+  <h1>Your Ultimate File Conversion & Productivity Toolkit</h1>
+  <div class="tagline">All-in-One Solution for Professionals & Creators</div>
+  <p class="description">
+    Convert, edit, and optimize any file type with our comprehensive suite of tools. 
+    From documents and media to QR codes and design assets - everything you need for 
+    seamless digital workflow in one powerful platform.
+  </p>
+  
+  <div class="feature-highlights">
+    <div class="feature-pill"><i class="fas fa-file-pdf"></i> PDF Tools</div>
+    <div class="feature-pill"><i class="fas fa-image"></i> Image Converter</div>
+    <div class="feature-pill"><i class="fas fa-qrcode"></i> QR Generator</div>
+    <div class="feature-pill"><i class="fas fa-barcode"></i> Barcode Tools</div>
+    <div class="feature-pill"><i class="fas fa-palette"></i> Design Suite</div>
+    <div class="feature-pill"><i class="fas fa-file-word"></i> Office Tools</div>
+    <div class="feature-pill"><i class="fas fa-code"></i> Code Utilities</div>
+    <div class="feature-pill"><i class="fas fa-file-audio"></i> Audio/Video</div>
+  </div>
 
   <div class="social-coffee-container">
     <a href="https://www.linkedin.com/in/ssenkima-ashiraf-a841ba241" target="_blank" class="social-icon linkedin">
@@ -298,48 +364,48 @@
 
   <div class="grid">
     <div class="card" onclick="navigateTo('documents')">
-      <div class="icon">🔁</div>
-      <h2>Document Conversion</h2>
-      <p>PDF ⇄ Word, PowerPoint, Excel; Merge, Split, Compress PDFs</p>
+      <div class="icon">📄</div>
+      <h2>Document Tools</h2>
+      <p>PDF to Word/Excel/PPT, merge/split PDFs, compress documents, and more advanced features</p>
     </div>
     <div class="card" onclick="navigateTo('images')">
       <div class="icon">🖼️</div>
-      <h2>Image Conversion</h2>
-      <p>JPG, PNG, WebP, PDF, Resize & Compress Images</p>
+      <h2>Image Converter</h2>
+      <p>Convert between JPG, PNG, WebP, SVG, resize, compress, and optimize images for web</p>
     </div>
     <div class="card" onclick="navigateTo('qr-barcode')">
-      <div class="icon">📊</div>
-      <h2>QR & Barcode Tools</h2>
-      <p>Generate QR Codes, Barcodes; Customize and Scan</p>
+      <div class="icon">🔳</div>
+      <h2>QR & Barcode</h2>
+      <p>Generate customizable QR codes, barcodes, with tracking and analytics options</p>
     </div>
     <div class="card" onclick="navigateTo('web-design')">
       <div class="icon">🎨</div>
-      <h2>Web Design Suite</h2>
-      <p>UI Tools, Color Pickers, CSS Generators, Design Resources</p>
+      <h2>Design Suite</h2>
+      <p>Color pickers, CSS generators, UI tools, and premium design resources</p>
     </div>
     <div class="card" onclick="navigateTo('office')">
-      <div class="icon">📎</div>
-      <h2>Office File Tools</h2>
-      <p>Word, TXT, HTML Conversion; Document to Markdown; Resume Creator</p>
+      <div class="icon">📊</div>
+      <h2>Office Tools</h2>
+      <p>Word to PDF/TXT/HTML, document to Markdown, resume builder, and templates</p>
     </div>
     <div class="card" onclick="navigateTo('language')">
-      <div class="icon">🌐</div>
-      <h2>Language & Code Tools</h2>
-      <p>Encoding Converters; Code Formatter; Spell Check & Grammar Fix</p>
+      <div class="icon">💻</div>
+      <h2>Code Utilities</h2>
+      <p>Encoding converters, code formatters, syntax highlighters, and validation tools</p>
     </div>
   </div>
 
   <!-- YouTube Channel Section -->
   <div class="youtube-card">
-    <h2><i class="fab fa-youtube"></i> Check Out Our YouTube Channel</h2>
-    <p>Subscribe to it for tutorials, tips, and updates about our file conversion tools and more!</p>
+    <h2><i class="fab fa-youtube"></i> Master Digital Tools With Our Tutorials</h2>
+    <p>Subscribe to our YouTube channel for in-depth tutorials, productivity tips, and the latest updates about our toolkit!</p>
     <a href="https://youtube.com/@mukimatv?si=a7RU-m6biU9xLMz3" target="_blank" class="youtube-btn">
       <i class="fab fa-youtube"></i> Visit Channel
     </a>
   </div>
 
   <footer>
-    &copy; 2025 AllFileConverter. Free & always improving.
+    &copy; 2025 FileConverterPro. Free & always improving. Empowering your digital workflow.
   </footer>
 
   <script>
@@ -368,6 +434,7 @@
   document.addEventListener('DOMContentLoaded', function() {
     const cards = document.querySelectorAll('.card');
     const youtubeCard = document.querySelector('.youtube-card');
+    const features = document.querySelectorAll('.feature-pill');
     
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -384,6 +451,13 @@
       card.style.transform = 'translateY(20px)';
       card.style.transition = `opacity 0.5s ease ${index * 0.1}s, transform 0.5s ease ${index * 0.1}s`;
       observer.observe(card);
+    });
+    
+    features.forEach((feature, index) => {
+      feature.style.opacity = 0;
+      feature.style.transform = 'translateY(10px)';
+      feature.style.transition = `opacity 0.3s ease ${index * 0.05}s, transform 0.3s ease ${index * 0.05}s`;
+      observer.observe(feature);
     });
     
     // Add animation for YouTube card
