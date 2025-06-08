@@ -152,6 +152,8 @@
       width: 100%;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       text-decoration: none;
+      position: relative;
+      z-index: 2;
     }
     .card-btn:hover, .card-btn:focus {
       transform: translateY(-2px);
@@ -333,6 +335,7 @@
       background: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 100%);
       transform: translateY(100%);
       transition: transform 0.4s ease;
+      pointer-events: none; /* This fixes the click issue */
     }
     .card:hover::after {
       transform: translateY(0);
@@ -509,23 +512,30 @@
 
   <script>
   function navigateTo(category) {
-    // Map categories to their file paths
-    const pagePaths = {
-      'qr-barcode': 'qr/qr.html',
-      'web-design': 'design/design.html',
-      documents: 'document/document.html',
-      language: 'language/language.html',
-      office: 'office tools/office.html',
-      images: 'image/image.html'
-    };
+    try {
+      // Map categories to their file paths
+      const pagePaths = {
+        'qr-barcode': 'qr/qr.html',
+        'web-design': 'design/design.html',
+        documents: 'document/document.html',
+        language: 'language/language.html',
+        office: 'office tools/office.html',
+        images: 'image/image.html'
+      };
 
-    // Get the path for the selected category
-    const path = pagePaths[category];
-    
-    if (path) {
-      window.location.href = path;
-    } else {
-      console.error('Navigation path not found for category:', category);
+      // Get the path for the selected category
+      const path = pagePaths[category];
+      
+      if (path) {
+        window.location.href = path;
+      } else {
+        console.error('Navigation path not found for category:', category);
+        // Optionally show a user-friendly message
+        alert('This feature is coming soon!');
+      }
+    } catch (error) {
+      console.error('Navigation error:', error);
+      alert('An error occurred during navigation.');
     }
   }
   
