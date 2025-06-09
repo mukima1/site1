@@ -6,6 +6,7 @@
     <title>Ultimate Business Card Designer</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         :root {
             --primary-color: #3498db;
@@ -157,9 +158,13 @@
             align-items: center;
         }
         
-        .contact-info i {
+        .contact-info .icon {
+            width: 16px;
+            height: 16px;
             margin-right: 5px;
-            font-size: 1.1em;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .card-qr {
@@ -395,31 +400,6 @@
         .qr-option-btn.selected {
             background: var(--primary-color);
             color: white;
-        }
-        
-        /* Font Icons (simulated) */
-        .icon {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            background-color: currentColor;
-            mask-size: contain;
-            -webkit-mask-size: contain;
-            mask-repeat: no-repeat;
-            -webkit-mask-repeat: no-repeat;
-            vertical-align: middle;
-        }
-        
-        .icon-phone {
-            mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M20.5 15.5c-1.23 0-2.42-.2-3.53-.57-.35-.12-.74-.03-1.01.24l-2.2 2.2c-2.83-1.44-5.15-3.75-6.59-6.59l2.2-2.21c.28-.28.36-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1 0 9.39 7.61 17 17 17 .55 0 1-.45 1-1v-3.5c0-.55-.45-1-1-1z'/%3E%3C/svg%3E");
-        }
-        
-        .icon-email {
-            mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z'/%3E%3C/svg%3E");
-        }
-        
-        .icon-website {
-            mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z'/%3E%3C/svg%3E");
         }
         
         /* Tab System */
@@ -725,9 +705,30 @@
                     </div>
                     <div class="card-footer">
                         <div class="contact-info">
-                            <p><span class="icon icon-phone"></span> <span id="preview-phone">(123) 456-7890</span></p>
-                            <p><span class="icon icon-email"></span> <span id="preview-email">your@email.com</span></p>
-                            <p><span class="icon icon-website"></span> <span id="preview-website">example.com</span></p>
+                            <p>
+                                <span class="icon">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M20.5 15.5c-1.23 0-2.42-.2-3.53-.57-.35-.12-.74-.03-1.01.24l-2.2 2.2c-2.83-1.44-5.15-3.75-6.59-6.59l2.2-2.21c.28-.28.36-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1 0 9.39 7.61 17 17 17 .55 0 1-.45 1-1v-3.5c0-.55-.45-1-1-1z"/>
+                                    </svg>
+                                </span>
+                                <span id="preview-phone">(123) 456-7890</span>
+                            </p>
+                            <p>
+                                <span class="icon">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                                    </svg>
+                                </span>
+                                <span id="preview-email">your@email.com</span>
+                            </p>
+                            <p>
+                                <span class="icon">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                                    </svg>
+                                </span>
+                                <span id="preview-website">example.com</span>
+                            </p>
                         </div>
                         <div class="card-qr">
                             <img id="preview-qr" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNmZmZmZmYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBhbGlnbm1lbnQtYmFzZWxpbmU9Im1pZGRsZSIgZmlsbD0iIzMzMyI+VVBMQURFClFSIENPREU8L3RleHQ+PC9zdmc+" alt="QR Code Placeholder">
@@ -964,8 +965,6 @@
                 // Replace the preview QR code
                 previewQr.src = qrImgElement.src;
                 previewQr.style.filter = `brightness(0) saturate(100%) invert(16%) sepia(99%) saturate(7404%) hue-rotate(358deg) brightness(95%) contrast(118%)`;
-                // Note: The above filter would need adjustment to match the exact QR color
-                // This is a simplified approach - a more accurate solution would involve canvas manipulation
             }
             
             function setPattern(pattern) {
@@ -1042,43 +1041,95 @@
             }
             
             function downloadAsPNG() {
-                html2canvas(businessCard, {
-                    scale: 3, // Higher quality
-                    logging: false,
+                // Temporarily show all elements that should be visible
+                const hiddenElements = [];
+                document.querySelectorAll('[style*="display: none"]').forEach(el => {
+                    if (window.getComputedStyle(el).display === 'none') {
+                        hiddenElements.push(el);
+                        el.style.display = '';
+                    }
+                });
+
+                // Clone the card to avoid affecting the original
+                const cardClone = businessCard.cloneNode(true);
+                cardClone.style.position = 'absolute';
+                cardClone.style.left = '-9999px';
+                document.body.appendChild(cardClone);
+
+                html2canvas(cardClone, {
+                    scale: 3,
+                    logging: true,
                     useCORS: true,
                     allowTaint: true,
-                    backgroundColor: businessCard.style.backgroundColor
+                    backgroundColor: businessCard.style.backgroundColor,
+                    letterRendering: true,
+                    onclone: function(clonedDoc) {
+                        // Ensure fonts are loaded
+                        if (clonedDoc.fonts && clonedDoc.fonts.ready) {
+                            return clonedDoc.fonts.ready;
+                        }
+                        return Promise.resolve();
+                    }
                 }).then(canvas => {
+                    // Remove the clone
+                    document.body.removeChild(cardClone);
+                    
+                    // Restore hidden elements
+                    hiddenElements.forEach(el => {
+                        el.style.display = 'none';
+                    });
+
                     const link = document.createElement('a');
                     link.download = 'business-card.png';
-                    link.href = canvas.toDataURL('image/png', 1.0);
+                    link.href = canvas.toDataURL('image/png');
                     link.click();
+                }).catch(err => {
+                    console.error('Error generating PNG:', err);
+                    // Remove the clone and restore hidden elements even if there's an error
+                    document.body.removeChild(cardClone);
+                    hiddenElements.forEach(el => {
+                        el.style.display = 'none';
+                    });
                 });
             }
             
             function downloadAsPDF() {
+                // Temporarily show all elements that should be visible
+                const hiddenElements = [];
+                document.querySelectorAll('[style*="display: none"]').forEach(el => {
+                    if (window.getComputedStyle(el).display === 'none') {
+                        hiddenElements.push(el);
+                        el.style.display = '';
+                    }
+                });
+
                 html2canvas(businessCard, {
                     scale: 3,
                     logging: false,
                     useCORS: true,
                     allowTaint: true,
-                    backgroundColor: businessCard.style.backgroundColor
+                    backgroundColor: businessCard.style.backgroundColor,
+                    letterRendering: true
                 }).then(canvas => {
-                    // In a real implementation, we would use jsPDF here
-                    // For now, we'll just show an alert
-                    alert('For PDF export, please include the jsPDF library. PNG export is available now.');
-                    
-                    // This is what the PDF code would look like:
-                    /*
+                    // Restore hidden elements
+                    hiddenElements.forEach(el => {
+                        el.style.display = 'none';
+                    });
+
                     const imgData = canvas.toDataURL('image/png');
-                    const pdf = new jsPDF({
+                    const pdf = new jspdf.jsPDF({
                         orientation: 'landscape',
                         unit: 'in',
                         format: [3.5, 2]
                     });
                     pdf.addImage(imgData, 'PNG', 0, 0, 3.5, 2);
                     pdf.save('business-card.pdf');
-                    */
+                }).catch(err => {
+                    console.error('Error generating PDF:', err);
+                    // Restore hidden elements even if there's an error
+                    hiddenElements.forEach(el => {
+                        el.style.display = 'none';
+                    });
                 });
             }
             
