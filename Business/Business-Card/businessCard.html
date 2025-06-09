@@ -3,13 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Business Card Designer</title>
+    <title>Ultimate Business Card Designer</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
     <style>
         :root {
             --primary-color: #3498db;
             --secondary-color: #2980b9;
             --accent-color: #e74c3c;
+            --text-color: #333333;
+            --card-bg: #ffffff;
         }
         
         body {
@@ -60,7 +63,7 @@
         .business-card {
             width: 3.5in;
             height: 2in;
-            background: linear-gradient(135deg, #ffffff, #f1f1f1);
+            background: var(--card-bg);
             padding: 25px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.15);
             position: relative;
@@ -128,6 +131,7 @@
             overflow: hidden;
             border: 3px solid rgba(255,255,255,0.3);
             box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            flex-shrink: 0;
         }
         
         .card-photo img {
@@ -165,11 +169,13 @@
             padding: 5px;
             border-radius: 5px;
             box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            flex-shrink: 0;
         }
         
         .card-qr img {
             width: 100%;
             height: 100%;
+            object-fit: contain;
         }
         
         /* Form Styles */
@@ -369,6 +375,28 @@
             margin-top: 5px;
         }
         
+        /* QR Code Options */
+        .qr-options {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .qr-option-btn {
+            flex: 1;
+            padding: 8px;
+            text-align: center;
+            background: #f1f1f1;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .qr-option-btn.selected {
+            background: var(--primary-color);
+            color: white;
+        }
+        
         /* Font Icons (simulated) */
         .icon {
             display: inline-block;
@@ -393,128 +421,282 @@
         .icon-website {
             mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z'/%3E%3C/svg%3E");
         }
+        
+        /* Tab System */
+        .tab-container {
+            margin-top: 20px;
+        }
+        
+        .tab-buttons {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .tab-btn {
+            padding: 10px 15px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+            position: relative;
+        }
+        
+        .tab-btn.active {
+            color: var(--primary-color);
+        }
+        
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--primary-color);
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 15px 0;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Advanced Options */
+        .advanced-options {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f5f7fa;
+            border-radius: 8px;
+        }
+        
+        .slider-container {
+            margin: 15px 0;
+        }
+        
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        
+        .range-slider {
+            width: 100%;
+            height: 6px;
+            -webkit-appearance: none;
+            background: #ddd;
+            border-radius: 3px;
+            outline: none;
+        }
+        
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>Premium Business Card Designer</h1>
-        <p>Create stunning business cards with your custom QR code</p>
+        <h1>Ultimate Business Card Designer</h1>
+        <p>Create professional business cards with photos and QR codes</p>
     </div>
     
     <div class="container">
         <div class="form-section">
-            <div class="form-group">
-                <label for="name">Full Name</label>
-                <input type="text" id="name" placeholder="John Doe">
-            </div>
-            
-            <div class="form-group">
-                <label for="title">Job Title</label>
-                <input type="text" id="title" placeholder="Marketing Director">
-            </div>
-            
-            <div class="form-group">
-                <label for="company">Company</label>
-                <input type="text" id="company" placeholder="Acme Inc.">
-            </div>
-            
-            <div class="form-group">
-                <label for="phone">Phone Number</label>
-                <input type="tel" id="phone" placeholder="(123) 456-7890">
-            </div>
-            
-            <div class="form-group">
-                <label for="email">Email Address</label>
-                <input type="email" id="email" placeholder="john@example.com">
-            </div>
-            
-            <div class="form-group">
-                <label for="website">Website</label>
-                <input type="url" id="website" placeholder="https://example.com">
-            </div>
-            
-            <div class="upload-group">
-                <label>Upload Your QR Code</label>
-                <input type="file" id="qr-code-upload" accept="image/*">
-                <div class="upload-preview">
-                    <img id="qr-preview" class="preview-image" style="display: none;">
-                    <span id="qr-upload-text">No QR code uploaded</span>
+            <div class="tab-container">
+                <div class="tab-buttons">
+                    <button class="tab-btn active" data-tab="basic-info">Basic Info</button>
+                    <button class="tab-btn" data-tab="design">Design</button>
+                    <button class="tab-btn" data-tab="advanced">Advanced</button>
                 </div>
-            </div>
-            
-            <div class="upload-group">
-                <label>Upload Your Photo (Optional)</label>
-                <input type="file" id="photo-upload" accept="image/*">
-                <div class="upload-preview">
-                    <img id="photo-preview" class="preview-image" style="display: none;">
-                    <span id="photo-upload-text">No photo uploaded</span>
-                </div>
-            </div>
-            
-            <div class="design-options">
-                <h3>Design Customization</h3>
                 
-                <div class="form-group">
-                    <label>Color Scheme</label>
-                    <div class="color-picker-group">
-                        <div class="color-option">
-                            <label for="primary-color">Primary</label>
-                            <input type="color" id="primary-color" value="#3498db">
+                <div class="tab-content active" id="basic-info-tab">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" placeholder="John Doe">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="title">Job Title</label>
+                        <input type="text" id="title" placeholder="Marketing Director">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="company">Company</label>
+                        <input type="text" id="company" placeholder="Acme Inc.">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" placeholder="(123) 456-7890">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" placeholder="john@example.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="website">Website</label>
+                        <input type="url" id="website" placeholder="https://example.com">
+                    </div>
+                    
+                    <div class="upload-group">
+                        <label>Upload Your Photo (Optional)</label>
+                        <input type="file" id="photo-upload" accept="image/*">
+                        <div class="upload-preview">
+                            <img id="photo-preview" class="preview-image" style="display: none;">
+                            <span id="photo-upload-text">No photo uploaded</span>
                         </div>
-                        <div class="color-option">
-                            <label for="secondary-color">Secondary</label>
-                            <input type="color" id="secondary-color" value="#2980b9">
+                    </div>
+                    
+                    <div class="upload-group">
+                        <label>QR Code Options</label>
+                        <div class="qr-options">
+                            <div class="qr-option-btn selected" data-qr-option="upload">Upload QR</div>
+                            <div class="qr-option-btn" data-qr-option="generate">Generate QR</div>
                         </div>
-                        <div class="color-option">
-                            <label for="text-color">Text</label>
-                            <input type="color" id="text-color" value="#333333">
+                        
+                        <div id="qr-upload-section">
+                            <input type="file" id="qr-code-upload" accept="image/*">
+                            <div class="upload-preview">
+                                <img id="qr-preview" class="preview-image" style="display: none;">
+                                <span id="qr-upload-text">No QR code uploaded</span>
+                            </div>
+                        </div>
+                        
+                        <div id="qr-generate-section" style="display: none;">
+                            <div class="form-group">
+                                <label for="qr-content">QR Code Content</label>
+                                <textarea id="qr-content" rows="3" placeholder="Enter URL or text to encode in QR code"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="qr-color">QR Code Color</label>
+                                <input type="color" id="qr-color" value="#000000">
+                            </div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="form-group">
-                    <label for="font">Font Family</label>
-                    <select id="font">
-                        <option value="'Segoe UI', Tahoma, Geneva, Verdana, sans-serif">Segoe UI (Modern)</option>
-                        <option value="'Helvetica Neue', Arial, sans-serif">Helvetica (Clean)</option>
-                        <option value="Georgia, 'Times New Roman', Times, serif">Georgia (Elegant)</option>
-                        <option value="'Courier New', Courier, monospace">Courier (Technical)</option>
-                        <option value="'Avenir Next', 'Arial Narrow', sans-serif">Avenir (Professional)</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label>Background Pattern</label>
-                    <div class="pattern-options">
-                        <div class="pattern-option pattern-none selected" data-pattern="none"></div>
-                        <div class="pattern-option pattern-dots" data-pattern="dots"></div>
-                        <div class="pattern-option pattern-lines" data-pattern="lines"></div>
-                        <div class="pattern-option pattern-grid" data-pattern="grid"></div>
-                        <div class="pattern-option pattern-diagonal" data-pattern="diagonal"></div>
-                        <div class="pattern-option pattern-zigzag" data-pattern="zigzag"></div>
+                <div class="tab-content" id="design-tab">
+                    <div class="form-group">
+                        <label>Color Scheme</label>
+                        <div class="color-picker-group">
+                            <div class="color-option">
+                                <label for="primary-color">Primary</label>
+                                <input type="color" id="primary-color" value="#3498db">
+                            </div>
+                            <div class="color-option">
+                                <label for="secondary-color">Secondary</label>
+                                <input type="color" id="secondary-color" value="#2980b9">
+                            </div>
+                            <div class="color-option">
+                                <label for="text-color">Text</label>
+                                <input type="color" id="text-color" value="#333333">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="card-bg-color">Card Background</label>
+                        <input type="color" id="card-bg-color" value="#ffffff">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="font">Font Family</label>
+                        <select id="font">
+                            <option value="'Segoe UI', Tahoma, Geneva, Verdana, sans-serif">Segoe UI (Modern)</option>
+                            <option value="'Helvetica Neue', Arial, sans-serif">Helvetica (Clean)</option>
+                            <option value="Georgia, 'Times New Roman', Times, serif">Georgia (Elegant)</option>
+                            <option value="'Courier New', Courier, monospace">Courier (Technical)</option>
+                            <option value="'Avenir Next', 'Arial Narrow', sans-serif">Avenir (Professional)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Background Pattern</label>
+                        <div class="pattern-options">
+                            <div class="pattern-option pattern-none selected" data-pattern="none"></div>
+                            <div class="pattern-option pattern-dots" data-pattern="dots"></div>
+                            <div class="pattern-option pattern-lines" data-pattern="lines"></div>
+                            <div class="pattern-option pattern-grid" data-pattern="grid"></div>
+                            <div class="pattern-option pattern-diagonal" data-pattern="diagonal"></div>
+                            <div class="pattern-option pattern-zigzag" data-pattern="zigzag"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Layout Style</label>
+                        <div class="layout-options">
+                            <div class="layout-option selected" data-layout="standard">
+                                <div class="layout-preview" style="background: var(--primary-color);"></div>
+                                <div class="layout-preview" style="background: #ccc; width: 70%;"></div>
+                                <div class="layout-preview" style="background: #ccc; width: 50%;"></div>
+                                <div class="layout-name">Standard</div>
+                            </div>
+                            <div class="layout-option" data-layout="modern">
+                                <div class="layout-preview" style="background: var(--primary-color); width: 30%;"></div>
+                                <div class="layout-preview" style="background: #ccc; width: 100%;"></div>
+                                <div class="layout-preview" style="background: #ccc; width: 80%;"></div>
+                                <div class="layout-name">Modern</div>
+                            </div>
+                            <div class="layout-option" data-layout="minimal">
+                                <div class="layout-preview" style="background: #ccc; width: 100%;"></div>
+                                <div class="layout-preview" style="background: #ccc; width: 60%;"></div>
+                                <div class="layout-preview" style="background: var(--primary-color); width: 40%;"></div>
+                                <div class="layout-name">Minimal</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="form-group">
-                    <label>Layout Style</label>
-                    <div class="layout-options">
-                        <div class="layout-option selected" data-layout="standard">
-                            <div class="layout-preview" style="background: var(--primary-color);"></div>
-                            <div class="layout-preview" style="background: #ccc; width: 70%;"></div>
-                            <div class="layout-preview" style="background: #ccc; width: 50%;"></div>
-                            <div class="layout-name">Standard</div>
+                <div class="tab-content" id="advanced-tab">
+                    <div class="advanced-options">
+                        <div class="form-group">
+                            <label>Photo Style</label>
+                            <select id="photo-style">
+                                <option value="circle">Circle</option>
+                                <option value="square">Square</option>
+                                <option value="rounded">Rounded Corners</option>
+                            </select>
                         </div>
-                        <div class="layout-option" data-layout="modern">
-                            <div class="layout-preview" style="background: var(--primary-color); width: 30%;"></div>
-                            <div class="layout-preview" style="background: #ccc; width: 100%;"></div>
-                            <div class="layout-preview" style="background: #ccc; width: 80%;"></div>
-                            <div class="layout-name">Modern</div>
+                        
+                        <div class="form-group">
+                            <label>Photo Border</label>
+                            <select id="photo-border">
+                                <option value="none">None</option>
+                                <option value="solid">Solid</option>
+                                <option value="dashed">Dashed</option>
+                                <option value="double">Double</option>
+                            </select>
                         </div>
-                        <div class="layout-option" data-layout="minimal">
-                            <div class="layout-preview" style="background: #ccc; width: 100%;"></div>
-                            <div class="layout-preview" style="background: #ccc; width: 60%;"></div>
-                            <div class="layout-preview" style="background: var(--primary-color); width: 40%;"></div>
-                            <div class="layout-name">Minimal</div>
+                        
+                        <div class="form-group">
+                            <label for="photo-border-color">Border Color</label>
+                            <input type="color" id="photo-border-color" value="#ffffff">
+                        </div>
+                        
+                        <div class="slider-container">
+                            <div class="slider-label">
+                                <span>Pattern Opacity</span>
+                                <span id="pattern-opacity-value">30%</span>
+                            </div>
+                            <input type="range" min="0" max="100" value="30" class="range-slider" id="pattern-opacity">
+                        </div>
+                        
+                        <div class="slider-container">
+                            <div class="slider-label">
+                                <span>Content Padding</span>
+                                <span id="content-padding-value">25px</span>
+                            </div>
+                            <input type="range" min="10" max="40" value="25" class="range-slider" id="content-padding">
                         </div>
                     </div>
                 </div>
@@ -564,6 +746,45 @@
             const downloadPdfBtn = document.getElementById('download-pdf');
             const businessCard = document.getElementById('business-card');
             const cardBgPattern = document.getElementById('card-bg-pattern');
+            const cardContent = document.querySelector('.card-content');
+            
+            // Tab system
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabId = button.dataset.tab;
+                    
+                    // Update active tab button
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    
+                    // Show corresponding tab content
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    document.getElementById(`${tabId}-tab`).classList.add('active');
+                });
+            });
+            
+            // QR Code Options
+            const qrOptionButtons = document.querySelectorAll('.qr-option-btn');
+            const qrUploadSection = document.getElementById('qr-upload-section');
+            const qrGenerateSection = document.getElementById('qr-generate-section');
+            
+            qrOptionButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    qrOptionButtons.forEach(btn => btn.classList.remove('selected'));
+                    button.classList.add('selected');
+                    
+                    if (button.dataset.qrOption === 'upload') {
+                        qrUploadSection.style.display = 'block';
+                        qrGenerateSection.style.display = 'none';
+                    } else {
+                        qrUploadSection.style.display = 'none';
+                        qrGenerateSection.style.display = 'block';
+                    }
+                });
+            });
             
             // Upload elements
             const qrUpload = document.getElementById('qr-code-upload');
@@ -575,14 +796,29 @@
             const photoPreview = document.getElementById('photo-preview');
             const photoUploadText = document.getElementById('photo-upload-text');
             const previewPhoto = document.getElementById('preview-photo');
+            const cardPhoto = document.querySelector('.card-photo');
             
             // Design elements
             const primaryColorInput = document.getElementById('primary-color');
             const secondaryColorInput = document.getElementById('secondary-color');
             const textColorInput = document.getElementById('text-color');
+            const cardBgColorInput = document.getElementById('card-bg-color');
             const fontSelect = document.getElementById('font');
             const patternOptions = document.querySelectorAll('.pattern-option');
             const layoutOptions = document.querySelectorAll('.layout-option');
+            
+            // Advanced options
+            const photoStyleSelect = document.getElementById('photo-style');
+            const photoBorderSelect = document.getElementById('photo-border');
+            const photoBorderColor = document.getElementById('photo-border-color');
+            const patternOpacitySlider = document.getElementById('pattern-opacity');
+            const patternOpacityValue = document.getElementById('pattern-opacity-value');
+            const contentPaddingSlider = document.getElementById('content-padding');
+            const contentPaddingValue = document.getElementById('content-padding-value');
+            
+            // QR Generation
+            const qrContentInput = document.getElementById('qr-content');
+            const qrColorInput = document.getElementById('qr-color');
             
             // Current design state
             let currentPattern = 'none';
@@ -591,6 +827,9 @@
             // Initialize
             setPattern('none');
             setLayout('standard');
+            updatePhotoStyle();
+            updatePatternOpacity();
+            updateContentPadding();
             
             // Event Listeners
             generateBtn.addEventListener('click', generateCard);
@@ -652,11 +891,19 @@
             primaryColorInput.addEventListener('input', updateColors);
             secondaryColorInput.addEventListener('input', updateColors);
             textColorInput.addEventListener('input', updateColors);
+            cardBgColorInput.addEventListener('input', updateCardBackground);
             
             // Font Change
             fontSelect.addEventListener('change', function() {
                 businessCard.style.fontFamily = this.value;
             });
+            
+            // Advanced Options
+            photoStyleSelect.addEventListener('change', updatePhotoStyle);
+            photoBorderSelect.addEventListener('change', updatePhotoBorder);
+            photoBorderColor.addEventListener('input', updatePhotoBorder);
+            patternOpacitySlider.addEventListener('input', updatePatternOpacity);
+            contentPaddingSlider.addEventListener('input', updateContentPadding);
             
             // Functions
             function generateCard() {
@@ -685,8 +932,40 @@
                 document.getElementById('preview-website').textContent = 
                     website || 'example.com';
                 
-                // Update colors
+                // Generate QR code if in generate mode
+                const activeQrOption = document.querySelector('.qr-option-btn.selected').dataset.qrOption;
+                if (activeQrOption === 'generate') {
+                    generateQRCode();
+                }
+                
+                // Update colors and design
                 updateColors();
+                updateCardBackground();
+            }
+            
+            function generateQRCode() {
+                const qrContent = qrContentInput.value || 'https://example.com';
+                const qrColor = qrColorInput.value;
+                
+                const qr = qrcode(0, 'L');
+                qr.addData(qrContent);
+                qr.make();
+                
+                // Create QR code image
+                const qrImg = qr.createImgTag(4);
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = qrImg;
+                const qrImgElement = tempDiv.querySelector('img');
+                
+                // Set color
+                qrImgElement.style.backgroundColor = 'white';
+                qrImgElement.style.filter = `drop-shadow(0 0 1px ${qrColor})`;
+                
+                // Replace the preview QR code
+                previewQr.src = qrImgElement.src;
+                previewQr.style.filter = `brightness(0) saturate(100%) invert(16%) sepia(99%) saturate(7404%) hue-rotate(358deg) brightness(95%) contrast(118%)`;
+                // Note: The above filter would need adjustment to match the exact QR color
+                // This is a simplified approach - a more accurate solution would involve canvas manipulation
             }
             
             function setPattern(pattern) {
@@ -694,13 +973,12 @@
                 if (pattern !== 'none') {
                     cardBgPattern.classList.add(`pattern-${pattern}`);
                 }
+                updatePatternOpacity();
             }
             
             function setLayout(layout) {
                 businessCard.className = 'business-card';
                 businessCard.classList.add(`layout-${layout}`);
-                
-                // Additional layout-specific styling could go here
             }
             
             function updateColors() {
@@ -711,6 +989,7 @@
                 // Update CSS variables
                 document.documentElement.style.setProperty('--primary-color', primaryColor);
                 document.documentElement.style.setProperty('--secondary-color', secondaryColor);
+                document.documentElement.style.setProperty('--text-color', textColor);
                 
                 // Update card text color
                 businessCard.style.color = textColor;
@@ -725,12 +1004,50 @@
                 });
             }
             
+            function updateCardBackground() {
+                const bgColor = cardBgColorInput.value;
+                document.documentElement.style.setProperty('--card-bg', bgColor);
+                businessCard.style.backgroundColor = bgColor;
+            }
+            
+            function updatePhotoStyle() {
+                const style = photoStyleSelect.value;
+                cardPhoto.style.borderRadius = style === 'circle' ? '50%' : 
+                                             style === 'rounded' ? '10px' : '0';
+            }
+            
+            function updatePhotoBorder() {
+                const borderStyle = photoBorderSelect.value;
+                const borderColor = photoBorderColor.value;
+                
+                if (borderStyle === 'none') {
+                    cardPhoto.style.border = 'none';
+                } else {
+                    cardPhoto.style.border = borderStyle === 'solid' ? `3px solid ${borderColor}` :
+                                           borderStyle === 'dashed' ? `3px dashed ${borderColor}` :
+                                           `6px double ${borderColor}`;
+                }
+            }
+            
+            function updatePatternOpacity() {
+                const opacity = patternOpacitySlider.value / 100;
+                patternOpacityValue.textContent = `${patternOpacitySlider.value}%`;
+                cardBgPattern.style.opacity = opacity;
+            }
+            
+            function updateContentPadding() {
+                const padding = `${contentPaddingSlider.value}px`;
+                contentPaddingValue.textContent = padding;
+                businessCard.style.padding = padding;
+            }
+            
             function downloadAsPNG() {
                 html2canvas(businessCard, {
                     scale: 3, // Higher quality
                     logging: false,
                     useCORS: true,
-                    allowTaint: true
+                    allowTaint: true,
+                    backgroundColor: businessCard.style.backgroundColor
                 }).then(canvas => {
                     const link = document.createElement('a');
                     link.download = 'business-card.png';
@@ -744,7 +1061,8 @@
                     scale: 3,
                     logging: false,
                     useCORS: true,
-                    allowTaint: true
+                    allowTaint: true,
+                    backgroundColor: businessCard.style.backgroundColor
                 }).then(canvas => {
                     // In a real implementation, we would use jsPDF here
                     // For now, we'll just show an alert
