@@ -343,6 +343,77 @@
     .card:hover .card-btn {
       animation: pulse 1.5s infinite;
     }
+    
+    /* New Notification Banner */
+    .notification-banner {
+      background: linear-gradient(135deg, #4b6cb7, #182848);
+      color: white;
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      margin: 1rem 0;
+      max-width: 800px;
+      width: calc(100% - 2rem);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      animation: slideInDown 0.5s ease;
+    }
+    
+    .notification-banner .close-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 0.3rem;
+      margin-left: 1rem;
+    }
+    
+    @keyframes slideInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    /* Search Bar Styles */
+    .search-container {
+      width: 100%;
+      max-width: 800px;
+      margin: 1rem 0;
+      position: relative;
+    }
+    
+    .search-bar {
+      width: 100%;
+      padding: 0.8rem 1.2rem;
+      padding-right: 3rem;
+      border-radius: 50px;
+      border: 1px solid #ddd;
+      font-size: 1rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+    }
+    
+    .search-bar:focus {
+      outline: none;
+      border-color: #4b6cb7;
+      box-shadow: 0 4px 12px rgba(75, 108, 183, 0.2);
+    }
+    
+    .search-icon {
+      position: absolute;
+      right: 1.2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #777;
+    }
+    
     /* Mobile-specific styles */
     @media (max-width: 768px) {
       body {
@@ -361,6 +432,15 @@
       }
       .social-coffee-container {
         gap: 1rem;
+      }
+      .notification-banner {
+        flex-direction: column;
+        text-align: center;
+        padding: 0.8rem;
+      }
+      .notification-banner .close-btn {
+        margin-top: 0.5rem;
+        margin-left: 0;
       }
     }
     @media (max-width: 480px) {
@@ -386,6 +466,21 @@
     seamless digital workflow in one powerful platform.
   </p>
 
+  <!-- New Notification Banner -->
+  <div class="notification-banner" id="newFeatureNotification">
+    <div>
+      <strong>🎉 New Feature Added!</strong> We've expanded our toolkit with Business Tools to help you manage invoices, receipts, and more.
+    </div>
+    <button class="close-btn" onclick="document.getElementById('newFeatureNotification').style.display = 'none'">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+  <!-- Search Bar -->
+  <div class="search-container">
+    <input type="text" class="search-bar" id="searchBar" placeholder="Search for tools (documents, images, business, etc.)...">
+    <i class="fas fa-search search-icon"></i>
+  </div>
 
   <div class="social-coffee-container">
     <a href="https://www.linkedin.com/in/ssenkima-ashiraf-a841ba241" target="_blank" class="social-icon linkedin">
@@ -437,6 +532,21 @@
       </div>
       <button class="card-btn" onclick="navigateTo('images')">
         <i class="fas fa-arrow-right"></i> Convert Now
+      </button>
+    </div>
+    
+    <!-- New Business Card -->
+    <div class="card">
+      <div class="card-content">
+        <button class="like-btn" aria-label="Like this tool" onclick="toggleLike(this)">
+          <i class="far fa-heart"></i>
+        </button>
+        <div class="icon">💼</div>
+        <h2>Business Tools</h2>
+        <p>Invoice generator, receipt maker, business card designer, and financial document tools</p>
+      </div>
+      <button class="card-btn" onclick="navigateTo('business')">
+        <i class="fas fa-arrow-right"></i> Explore Now
       </button>
     </div>
     
@@ -495,7 +605,23 @@
         <i class="fas fa-arrow-right"></i> Transform Now
       </button>
     </div>
+    
+    <!-- Additional Business-related Card -->
+    <div class="card">
+      <div class="card-content">
+        <button class="like-btn" aria-label="Like this tool" onclick="toggleLike(this)">
+          <i class="far fa-heart"></i>
+        </button>
+        <div class="icon">📈</div>
+        <h2>Financial Tools</h2>
+        <p>Budget planners, expense trackers, tax calculators, and financial report generators</p>
+      </div>
+      <button class="card-btn" onclick="navigateTo('financial')">
+        <i class="fas fa-arrow-right"></i> Calculate Now
+      </button>
+    </div>
   </div>
+  
 
   <!-- YouTube Channel Section -->
   <div class="youtube-card">
@@ -520,7 +646,9 @@
         documents: 'document/document.html',
         language: 'language/language.html',
         office: 'office tools/office.html',
-        images: 'image/image.html'
+        images: 'image/image.html',
+        business: 'business/business.html',
+        financial: 'business/financial.html'
       };
 
       // Get the path for the selected category
@@ -555,11 +683,30 @@
     }
   }
   
+  // Search functionality
+  document.getElementById('searchBar').addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase();
+    const cards = document.querySelectorAll('.card');
+    
+    cards.forEach(card => {
+      const title = card.querySelector('h2').textContent.toLowerCase();
+      const description = card.querySelector('p').textContent.toLowerCase();
+      
+      if (title.includes(searchTerm) || description.includes(searchTerm)) {
+        card.style.display = 'flex';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  });
+  
   // Add animation to cards when they come into view
   document.addEventListener('DOMContentLoaded', function() {
     const cards = document.querySelectorAll('.card');
     const youtubeCard = document.querySelector('.youtube-card');
     const featureDescription = document.querySelector('.feature-description');
+    const notificationBanner = document.getElementById('newFeatureNotification');
+    const searchContainer = document.querySelector('.search-container');
     
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -592,6 +739,22 @@
       youtubeCard.style.transform = 'translateY(20px)';
       youtubeCard.style.transition = 'opacity 0.5s ease 0.6s, transform 0.5s ease 0.6s';
       observer.observe(youtubeCard);
+    }
+    
+    // Add animation for notification banner
+    if (notificationBanner) {
+      notificationBanner.style.opacity = 0;
+      notificationBanner.style.transform = 'translateY(-20px)';
+      notificationBanner.style.transition = 'opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s';
+      observer.observe(notificationBanner);
+    }
+    
+    // Add animation for search container
+    if (searchContainer) {
+      searchContainer.style.opacity = 0;
+      searchContainer.style.transform = 'translateY(20px)';
+      searchContainer.style.transition = 'opacity 0.5s ease 0.4s, transform 0.5s ease 0.4s';
+      observer.observe(searchContainer);
     }
     
     // Load liked state from localStorage

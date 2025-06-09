@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Business Card Designer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --accent-color: #e74c3c;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+            justify-content: center;
+        }
+        
+        .form-section {
+            flex: 1;
+            min-width: 350px;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .preview-section {
+            flex: 1;
+            min-width: 350px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        
+        .business-card {
+            width: 3.5in;
+            height: 2in;
+            background: linear-gradient(135deg, #ffffff, #f1f1f1);
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        /* Card Design Elements */
+        .card-bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.1;
+            z-index: 0;
+            background-size: cover;
+        }
+        
+        .card-content {
+            position: relative;
+            z-index: 1;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        
+        .card-text {
+            flex: 1;
+        }
+        
+        .card-name {
+            font-size: 1.4em;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: inherit;
+        }
+        
+        .card-title {
+            font-size: 0.9em;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: inherit;
+            opacity: 0.8;
+        }
+        
+        .card-company {
+            font-size: 1em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: inherit;
+        }
+        
+        .card-photo {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid rgba(255,255,255,0.3);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+        
+        .card-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+        
+        .contact-info {
+            font-size: 0.75em;
+            line-height: 1.5;
+        }
+        
+        .contact-info p {
+            margin: 3px 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .contact-info i {
+            margin-right: 5px;
+            font-size: 1.1em;
+        }
+        
+        .card-qr {
+            width: 70px;
+            height: 70px;
+            background: white;
+            padding: 5px;
+            border-radius: 5px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .card-qr img {
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #555;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.95em;
+            transition: all 0.2s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+        
+        .color-picker-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .color-option {
+            flex: 1;
+        }
+        
+        .upload-group {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f5f7fa;
+            border-radius: 8px;
+        }
+        
+        .upload-preview {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+            align-items: center;
+        }
+        
+        .preview-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 5px;
+            object-fit: cover;
+            border: 1px solid #ddd;
+        }
+        
+        .design-options {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .btn-secondary {
+            background-color: #f1f1f1;
+            color: #333;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #e1e1e1;
+        }
+        
+        /* Pattern Options */
+        .pattern-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .pattern-option {
+            width: 100%;
+            height: 40px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        
+        .pattern-option:hover {
+            transform: scale(1.05);
+        }
+        
+        .pattern-option.selected {
+            border-color: var(--primary-color);
+        }
+        
+        /* Predefined patterns */
+        .pattern-dots {
+            background-image: radial-gradient(currentColor 2px, transparent 2px);
+            background-size: 15px 15px;
+        }
+        
+        .pattern-lines {
+            background-image: repeating-linear-gradient(45deg, currentColor 0, currentColor 1px, transparent 0, transparent 50%);
+            background-size: 10px 10px;
+        }
+        
+        .pattern-grid {
+            background-image: repeating-linear-gradient(0deg, currentColor 0, currentColor 1px, transparent 1px, transparent 20%), repeating-linear-gradient(90deg, currentColor 0, currentColor 1px, transparent 1px, transparent 20%);
+            background-size: 20px 20px;
+        }
+        
+        .pattern-diagonal {
+            background-image: repeating-linear-gradient(-45deg, currentColor 0, currentColor 1px, transparent 0, transparent 50%);
+            background-size: 15px 15px;
+        }
+        
+        .pattern-zigzag {
+            background-image: linear-gradient(135deg, currentColor 25%, transparent 25%), linear-gradient(225deg, currentColor 25%, transparent 25%), linear-gradient(315deg, currentColor 25%, transparent 25%), linear-gradient(45deg, currentColor 25%, transparent 25%);
+            background-size: 20px 20px;
+        }
+        
+        .pattern-none {
+            background: transparent;
+        }
+        
+        /* Layout Options */
+        .layout-options {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .layout-option {
+            flex: 1;
+            height: 60px;
+            border-radius: 6px;
+            background: #f1f1f1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 5px;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        
+        .layout-option:hover {
+            background: #e1e1e1;
+        }
+        
+        .layout-option.selected {
+            border-color: var(--primary-color);
+            background: #e3f2fd;
+        }
+        
+        .layout-preview {
+            width: 100%;
+            height: 8px;
+            background: #bbb;
+            border-radius: 2px;
+        }
+        
+        .layout-name {
+            font-size: 0.7em;
+            text-align: center;
+            margin-top: 5px;
+        }
+        
+        /* Font Icons (simulated) */
+        .icon {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            background-color: currentColor;
+            mask-size: contain;
+            -webkit-mask-size: contain;
+            mask-repeat: no-repeat;
+            -webkit-mask-repeat: no-repeat;
+            vertical-align: middle;
+        }
+        
+        .icon-phone {
+            mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M20.5 15.5c-1.23 0-2.42-.2-3.53-.57-.35-.12-.74-.03-1.01.24l-2.2 2.2c-2.83-1.44-5.15-3.75-6.59-6.59l2.2-2.21c.28-.28.36-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1 0 9.39 7.61 17 17 17 .55 0 1-.45 1-1v-3.5c0-.55-.45-1-1-1z'/%3E%3C/svg%3E");
+        }
+        
+        .icon-email {
+            mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z'/%3E%3C/svg%3E");
+        }
+        
+        .icon-website {
+            mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='currentColor'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z'/%3E%3C/svg%3E");
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Premium Business Card Designer</h1>
+        <p>Create stunning business cards with your custom QR code</p>
+    </div>
+    
+    <div class="container">
+        <div class="form-section">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" placeholder="John Doe">
+            </div>
+            
+            <div class="form-group">
+                <label for="title">Job Title</label>
+                <input type="text" id="title" placeholder="Marketing Director">
+            </div>
+            
+            <div class="form-group">
+                <label for="company">Company</label>
+                <input type="text" id="company" placeholder="Acme Inc.">
+            </div>
+            
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" placeholder="(123) 456-7890">
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" placeholder="john@example.com">
+            </div>
+            
+            <div class="form-group">
+                <label for="website">Website</label>
+                <input type="url" id="website" placeholder="https://example.com">
+            </div>
+            
+            <div class="upload-group">
+                <label>Upload Your QR Code</label>
+                <input type="file" id="qr-code-upload" accept="image/*">
+                <div class="upload-preview">
+                    <img id="qr-preview" class="preview-image" style="display: none;">
+                    <span id="qr-upload-text">No QR code uploaded</span>
+                </div>
+            </div>
+            
+            <div class="upload-group">
+                <label>Upload Your Photo (Optional)</label>
+                <input type="file" id="photo-upload" accept="image/*">
+                <div class="upload-preview">
+                    <img id="photo-preview" class="preview-image" style="display: none;">
+                    <span id="photo-upload-text">No photo uploaded</span>
+                </div>
+            </div>
+            
+            <div class="design-options">
+                <h3>Design Customization</h3>
+                
+                <div class="form-group">
+                    <label>Color Scheme</label>
+                    <div class="color-picker-group">
+                        <div class="color-option">
+                            <label for="primary-color">Primary</label>
+                            <input type="color" id="primary-color" value="#3498db">
+                        </div>
+                        <div class="color-option">
+                            <label for="secondary-color">Secondary</label>
+                            <input type="color" id="secondary-color" value="#2980b9">
+                        </div>
+                        <div class="color-option">
+                            <label for="text-color">Text</label>
+                            <input type="color" id="text-color" value="#333333">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="font">Font Family</label>
+                    <select id="font">
+                        <option value="'Segoe UI', Tahoma, Geneva, Verdana, sans-serif">Segoe UI (Modern)</option>
+                        <option value="'Helvetica Neue', Arial, sans-serif">Helvetica (Clean)</option>
+                        <option value="Georgia, 'Times New Roman', Times, serif">Georgia (Elegant)</option>
+                        <option value="'Courier New', Courier, monospace">Courier (Technical)</option>
+                        <option value="'Avenir Next', 'Arial Narrow', sans-serif">Avenir (Professional)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Background Pattern</label>
+                    <div class="pattern-options">
+                        <div class="pattern-option pattern-none selected" data-pattern="none"></div>
+                        <div class="pattern-option pattern-dots" data-pattern="dots"></div>
+                        <div class="pattern-option pattern-lines" data-pattern="lines"></div>
+                        <div class="pattern-option pattern-grid" data-pattern="grid"></div>
+                        <div class="pattern-option pattern-diagonal" data-pattern="diagonal"></div>
+                        <div class="pattern-option pattern-zigzag" data-pattern="zigzag"></div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Layout Style</label>
+                    <div class="layout-options">
+                        <div class="layout-option selected" data-layout="standard">
+                            <div class="layout-preview" style="background: var(--primary-color);"></div>
+                            <div class="layout-preview" style="background: #ccc; width: 70%;"></div>
+                            <div class="layout-preview" style="background: #ccc; width: 50%;"></div>
+                            <div class="layout-name">Standard</div>
+                        </div>
+                        <div class="layout-option" data-layout="modern">
+                            <div class="layout-preview" style="background: var(--primary-color); width: 30%;"></div>
+                            <div class="layout-preview" style="background: #ccc; width: 100%;"></div>
+                            <div class="layout-preview" style="background: #ccc; width: 80%;"></div>
+                            <div class="layout-name">Modern</div>
+                        </div>
+                        <div class="layout-option" data-layout="minimal">
+                            <div class="layout-preview" style="background: #ccc; width: 100%;"></div>
+                            <div class="layout-preview" style="background: #ccc; width: 60%;"></div>
+                            <div class="layout-preview" style="background: var(--primary-color); width: 40%;"></div>
+                            <div class="layout-name">Minimal</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="button-group">
+                <button id="generate-btn" class="btn-primary">Generate Card</button>
+                <button id="download-png" class="btn-secondary">Download PNG</button>
+                <button id="download-pdf" class="btn-secondary">Download PDF</button>
+            </div>
+        </div>
+        
+        <div class="preview-section">
+            <div class="business-card" id="business-card">
+                <div class="card-bg-pattern" id="card-bg-pattern"></div>
+                <div class="card-content">
+                    <div class="card-header">
+                        <div class="card-text">
+                            <div class="card-name" id="preview-name">Your Name</div>
+                            <div class="card-title" id="preview-title">Your Title</div>
+                            <div class="card-company" id="preview-company">Your Company</div>
+                        </div>
+                        <div class="card-photo">
+                            <img id="preview-photo" style="display: none;">
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="contact-info">
+                            <p><span class="icon icon-phone"></span> <span id="preview-phone">(123) 456-7890</span></p>
+                            <p><span class="icon icon-email"></span> <span id="preview-email">your@email.com</span></p>
+                            <p><span class="icon icon-website"></span> <span id="preview-website">example.com</span></p>
+                        </div>
+                        <div class="card-qr">
+                            <img id="preview-qr" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNmZmZmZmYiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjEwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBhbGlnbm1lbnQtYmFzZWxpbmU9Im1pZGRsZSIgZmlsbD0iIzMzMyI+VVBMQURFClFSIENPREU8L3RleHQ+PC9zdmc+" alt="QR Code Placeholder">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const generateBtn = document.getElementById('generate-btn');
+            const downloadPngBtn = document.getElementById('download-png');
+            const downloadPdfBtn = document.getElementById('download-pdf');
+            const businessCard = document.getElementById('business-card');
+            const cardBgPattern = document.getElementById('card-bg-pattern');
+            
+            // Upload elements
+            const qrUpload = document.getElementById('qr-code-upload');
+            const qrPreview = document.getElementById('qr-preview');
+            const qrUploadText = document.getElementById('qr-upload-text');
+            const previewQr = document.getElementById('preview-qr');
+            
+            const photoUpload = document.getElementById('photo-upload');
+            const photoPreview = document.getElementById('photo-preview');
+            const photoUploadText = document.getElementById('photo-upload-text');
+            const previewPhoto = document.getElementById('preview-photo');
+            
+            // Design elements
+            const primaryColorInput = document.getElementById('primary-color');
+            const secondaryColorInput = document.getElementById('secondary-color');
+            const textColorInput = document.getElementById('text-color');
+            const fontSelect = document.getElementById('font');
+            const patternOptions = document.querySelectorAll('.pattern-option');
+            const layoutOptions = document.querySelectorAll('.layout-option');
+            
+            // Current design state
+            let currentPattern = 'none';
+            let currentLayout = 'standard';
+            
+            // Initialize
+            setPattern('none');
+            setLayout('standard');
+            
+            // Event Listeners
+            generateBtn.addEventListener('click', generateCard);
+            downloadPngBtn.addEventListener('click', downloadAsPNG);
+            downloadPdfBtn.addEventListener('click', downloadAsPDF);
+            
+            // QR Code Upload
+            qrUpload.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        qrPreview.src = event.target.result;
+                        qrPreview.style.display = 'block';
+                        previewQr.src = event.target.result;
+                        qrUploadText.textContent = file.name;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // Photo Upload
+            photoUpload.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        photoPreview.src = event.target.result;
+                        photoPreview.style.display = 'block';
+                        previewPhoto.src = event.target.result;
+                        previewPhoto.style.display = 'block';
+                        photoUploadText.textContent = file.name;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // Pattern Selection
+            patternOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    patternOptions.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    currentPattern = this.dataset.pattern;
+                    setPattern(currentPattern);
+                });
+            });
+            
+            // Layout Selection
+            layoutOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    layoutOptions.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    currentLayout = this.dataset.layout;
+                    setLayout(currentLayout);
+                });
+            });
+            
+            // Color Change
+            primaryColorInput.addEventListener('input', updateColors);
+            secondaryColorInput.addEventListener('input', updateColors);
+            textColorInput.addEventListener('input', updateColors);
+            
+            // Font Change
+            fontSelect.addEventListener('change', function() {
+                businessCard.style.fontFamily = this.value;
+            });
+            
+            // Functions
+            function generateCard() {
+                // Update text content
+                document.getElementById('preview-name').textContent = 
+                    document.getElementById('name').value || 'Your Name';
+                document.getElementById('preview-title').textContent = 
+                    document.getElementById('title').value || 'Your Title';
+                document.getElementById('preview-company').textContent = 
+                    document.getElementById('company').value || 'Your Company';
+                
+                // Update contact info
+                const phone = document.getElementById('phone').value;
+                document.getElementById('preview-phone').textContent = 
+                    phone || '(123) 456-7890';
+                
+                const email = document.getElementById('email').value;
+                document.getElementById('preview-email').textContent = 
+                    email || 'your@email.com';
+                
+                let website = document.getElementById('website').value;
+                if (website) {
+                    website = website.replace(/^https?:\/\//, '');
+                    website = website.replace(/\/$/, '');
+                }
+                document.getElementById('preview-website').textContent = 
+                    website || 'example.com';
+                
+                // Update colors
+                updateColors();
+            }
+            
+            function setPattern(pattern) {
+                cardBgPattern.className = 'card-bg-pattern';
+                if (pattern !== 'none') {
+                    cardBgPattern.classList.add(`pattern-${pattern}`);
+                }
+            }
+            
+            function setLayout(layout) {
+                businessCard.className = 'business-card';
+                businessCard.classList.add(`layout-${layout}`);
+                
+                // Additional layout-specific styling could go here
+            }
+            
+            function updateColors() {
+                const primaryColor = primaryColorInput.value;
+                const secondaryColor = secondaryColorInput.value;
+                const textColor = textColorInput.value;
+                
+                // Update CSS variables
+                document.documentElement.style.setProperty('--primary-color', primaryColor);
+                document.documentElement.style.setProperty('--secondary-color', secondaryColor);
+                
+                // Update card text color
+                businessCard.style.color = textColor;
+                
+                // Update buttons
+                document.querySelectorAll('.btn-primary').forEach(btn => {
+                    btn.style.backgroundColor = primaryColor;
+                });
+                
+                document.querySelectorAll('.btn-primary:hover').forEach(btn => {
+                    btn.style.backgroundColor = secondaryColor;
+                });
+            }
+            
+            function downloadAsPNG() {
+                html2canvas(businessCard, {
+                    scale: 3, // Higher quality
+                    logging: false,
+                    useCORS: true,
+                    allowTaint: true
+                }).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = 'business-card.png';
+                    link.href = canvas.toDataURL('image/png', 1.0);
+                    link.click();
+                });
+            }
+            
+            function downloadAsPDF() {
+                html2canvas(businessCard, {
+                    scale: 3,
+                    logging: false,
+                    useCORS: true,
+                    allowTaint: true
+                }).then(canvas => {
+                    // In a real implementation, we would use jsPDF here
+                    // For now, we'll just show an alert
+                    alert('For PDF export, please include the jsPDF library. PNG export is available now.');
+                    
+                    // This is what the PDF code would look like:
+                    /*
+                    const imgData = canvas.toDataURL('image/png');
+                    const pdf = new jsPDF({
+                        orientation: 'landscape',
+                        unit: 'in',
+                        format: [3.5, 2]
+                    });
+                    pdf.addImage(imgData, 'PNG', 0, 0, 3.5, 2);
+                    pdf.save('business-card.pdf');
+                    */
+                });
+            }
+            
+            // Generate initial card
+            generateCard();
+        });
+    </script>
+</body>
+</html>
