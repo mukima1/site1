@@ -19,6 +19,14 @@ document.addEventListener('DOMContentLoaded', function() {
   const clearFormBtn = document.getElementById('clear-form');
   const generatePdfBtn = document.getElementById('generate-pdf');
   const currencySelect = document.getElementById('currency');
+  
+  // Payment Instruction Elements
+  const bankNameEl = document.getElementById('bank-name');
+  const accountNameEl = document.getElementById('account-name');
+  const accountNumberEl = document.getElementById('account-number');
+  const branchEl = document.getElementById('branch');
+  const swiftCodeEl = document.getElementById('swift-code');
+  const otherDetailsEl = document.getElementById('other-details');
 
   // Initialize form with default values
   document.getElementById('invoice-date').valueAsDate = new Date();
@@ -205,6 +213,14 @@ document.addEventListener('DOMContentLoaded', function() {
         type: discountTypeEl.value,
         value: discountValueEl.value
       },
+      payment: {
+        bankName: bankNameEl.value,
+        accountName: accountNameEl.value,
+        accountNumber: accountNumberEl.value,
+        branch: branchEl.value,
+        swiftCode: swiftCodeEl.value,
+        otherDetails: otherDetailsEl.value
+      },
       themeColor: themeColorInput.value,
       logo: logoDataUrl,
       currency: currencySelect.value
@@ -276,6 +292,17 @@ document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('terms').value = formData.terms || '';
       discountTypeEl.value = formData.discount?.type || 'none';
       discountValueEl.value = formData.discount?.value || 0;
+      
+      // Payment details
+      if (formData.payment) {
+        bankNameEl.value = formData.payment.bankName || '';
+        accountNameEl.value = formData.payment.accountName || '';
+        accountNumberEl.value = formData.payment.accountNumber || '';
+        branchEl.value = formData.payment.branch || '';
+        swiftCodeEl.value = formData.payment.swiftCode || '';
+        otherDetailsEl.value = formData.payment.otherDetails || '';
+      }
+      
       themeColorInput.value = formData.themeColor || '#4F46E5';
       updateThemeColor();
       
@@ -331,6 +358,14 @@ document.addEventListener('DOMContentLoaded', function() {
       
       document.getElementById('notes').value = '';
       document.getElementById('terms').value = '';
+      
+      // Clear payment details
+      bankNameEl.value = '';
+      accountNameEl.value = '';
+      accountNumberEl.value = '';
+      branchEl.value = '';
+      swiftCodeEl.value = '';
+      otherDetailsEl.value = '';
       
       // Clear items table
       itemsTable.innerHTML = '';
@@ -573,7 +608,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Footer on each page
         doc.setFontSize(8);
         doc.setTextColor(100);
-        doc.text(`Page ${data.pageCount}`, pageWidth / 2, doc.internal.pageSize.getHeight() - 10, { align: 'center' });
+        doc.text(`Page ${data.pageNumber}`, pageWidth / 2, doc.internal.pageSize.getHeight() - 10, { align: 'center' });
       }
     });
     
@@ -615,21 +650,27 @@ document.addEventListener('DOMContentLoaded', function() {
     
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(60);
-    doc.text('Please make payment using the following details:', margin, paymentY + 5);
     
-    const paymentDetails = [
-      'Bank: Equity Bank Uganda Limited',
-      `Account Name: ${companyName}`,
-      'Account Number: 1234567890',
-      'Branch: Kampala Road',
-      'SWIFT Code: EQBLUGKA',
-      `Amount Due: ${formatCurrency(total, currencyCode)}`
-    ];
+    const paymentDetails = [];
     
-    paymentDetails.forEach((detail, index) => {
-      doc.text(detail, margin, paymentY + 10 + (index * 5));
-    });
+    if (bankNameEl.value) paymentDetails.push(`Bank: ${bankNameEl.value}`);
+    if (accountNameEl.value) paymentDetails.push(`Account Name: ${accountNameEl.value}`);
+    if (accountNumberEl.value) paymentDetails.push(`Account Number: ${accountNumberEl.value}`);
+    if (branchEl.value) paymentDetails.push(`Branch: ${branchEl.value}`);
+    if (swiftCodeEl.value) paymentDetails.push(`SWIFT Code: ${swiftCodeEl.value}`);
+    if (otherDetailsEl.value) paymentDetails.push(otherDetailsEl.value);
     
+    paymentDetails.push(`Amount Due: ${formatCurrency(total, currencyCode)}`);
+    
+    if (paymentDetails.length > 1) { // More than just amount due
+      doc.text('Please make payment using the following details:', margin, paymentY + 5);
+      paymentDetails.forEach((detail, index) => {
+        doc.text(detail, margin, paymentY + 10 + (index * 5));
+      });
+    } else {
+      doc.text(paymentDetails[0], margin, paymentY + 5);
+    }
+
     // Notes
     if (notes) {
       const notesY = paymentY + 10 + (paymentDetails.length * 5) + 5;
