@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-FKNNWBVZ6V');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate100FreeTools - Social Media Quote Generator</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <h1>Ultimate<span>100FreeTools</span></h1>
+            <p class="tagline">Create stunning social media quotes in seconds</p>
+        </header>
+
+        <main class="main-content">
+            <div class="quote-generator-container">
+                <div class="controls-panel">
+                    <div class="category-selector">
+                        <button class="category-btn active" data-category="social">Social Media</button>
+                        <button class="category-btn" data-category="personal">Personal</button>
+                        <button class="category-btn" data-category="inspiration">Inspiration</button>
+                    </div>
+
+                    <div class="social-media-presets">
+                        <div class="preset-header">
+                            <h3>Platform Styles</h3>
+                            <div class="preset-buttons">
+                                <button class="preset-btn active" data-preset="twitter">
+                                    <i class="fab fa-twitter"></i>
+                                </button>
+                                <button class="preset-btn" data-preset="instagram">
+                                    <i class="fab fa-instagram"></i>
+                                </button>
+                                <button class="preset-btn" data-preset="facebook">
+                                    <i class="fab fa-facebook-f"></i>
+                                </button>
+                                <button class="preset-btn" data-preset="tiktok">
+                                    <i class="fab fa-tiktok"></i>
+                                </button>
+                                <button class="preset-btn" data-preset="whatsapp">
+                                    <i class="fab fa-whatsapp"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="media-source-section">
+                            <h4>Quote Source</h4>
+                            <div class="media-source-options">
+                                <div class="source-option">
+                                    <input type="radio" id="famous" name="source" checked>
+                                    <label for="famous">Famous Figure</label>
+                                </div>
+                                <div class="source-option">
+                                    <input type="radio" id="personal" name="source">
+                                    <label for="personal">Personal Quote</label>
+                                </div>
+                                <div class="source-option">
+                                    <input type="radio" id="news" name="source">
+                                    <label for="news">News Source</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quote-input-section">
+                        <textarea id="quote-text" placeholder="Type your inspirational quote here..."></textarea>
+                        <div class="author-inputs">
+                            <input type="text" id="author-name" placeholder="Author name">
+                            <input type="text" id="author-title" placeholder="Title/Description">
+                        </div>
+                    </div>
+
+                    <div class="image-upload-section">
+                        <div class="upload-options">
+                            <div class="upload-option">
+                                <input type="radio" id="stock" name="image-source" checked>
+                                <label for="stock">Use Stock Image</label>
+                            </div>
+                            <div class="upload-option">
+                                <input type="radio" id="custom" name="image-source">
+                                <label for="custom">Upload Your Image</label>
+                            </div>
+                            <div class="upload-option">
+                                <input type="radio" id="none" name="image-source">
+                                <label for="none">No Image</label>
+                            </div>
+                        </div>
+                        <div class="image-upload-container">
+                            <div class="image-preview" id="image-preview">
+                                <div class="placeholder-text">
+                                    <i class="fas fa-image"></i>
+                                    <p>Image preview will appear here</p>
+                                </div>
+                            </div>
+                            <input type="file" id="image-upload" accept="image/*" style="display: none;">
+                            <button id="upload-btn" class="btn-upload">Choose Image</button>
+                        </div>
+                    </div>
+
+                    <div class="style-controls">
+                        <div class="style-control-group">
+                            <h4>Text Style</h4>
+                            <div class="font-selector">
+                                <select id="font-family">
+                                    <option value="'Montserrat', sans-serif">Montserrat</option>
+                                    <option value="'Playfair Display', serif">Playfair Display</option>
+                                    <option value="'Poppins', sans-serif">Poppins</option>
+                                    <option value="Arial, sans-serif">Arial</option>
+                                    <option value="Georgia, serif">Georgia</option>
+                                </select>
+                            </div>
+                            <div class="color-picker">
+                                <label for="text-color">Text Color:</label>
+                                <input type="color" id="text-color" value="#ffffff">
+                            </div>
+                        </div>
+
+                        <div class="style-control-group">
+                            <h4>Background</h4>
+                            <div class="bg-options">
+                                <button class="bg-option-btn active" data-bg-type="solid">Solid</button>
+                                <button class="bg-option-btn" data-bg-type="gradient">Gradient</button>
+                                <button class="bg-option-btn" data-bg-type="image">Image</button>
+                            </div>
+                            <div class="bg-color-picker">
+                                <label for="bg-color">BG Color:</label>
+                                <input type="color" id="bg-color" value="#1da1f2">
+                            </div>
+                            <div class="gradient-controls hidden">
+                                <label for="gradient-color">Second Color:</label>
+                                <input type="color" id="gradient-color" value="#0056b3">
+                                <select id="gradient-direction">
+                                    <option value="to right">Horizontal</option>
+                                    <option value="to bottom">Vertical</option>
+                                    <option value="to bottom right">Diagonal</option>
+                                    <option value="circle">Radial</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="watermark-controls">
+                        <h4>Watermark & Branding</h4>
+                        <div class="watermark-options">
+                            <div class="watermark-option">
+                                <input type="checkbox" id="add-watermark" checked>
+                                <label for="add-watermark">Add Platform Watermark</label>
+                            </div>
+                            <div class="watermark-option">
+                                <input type="checkbox" id="add-branding" checked>
+                                <label for="add-branding">Add Ultimate100FreeTools Branding</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button id="generate-btn" class="btn-primary">Generate Quote</button>
+                        <button id="random-btn" class="btn-secondary">Random Design</button>
+                        <button id="reset-btn" class="btn-tertiary">Reset</button>
+                    </div>
+                </div>
+
+                <div class="quote-preview-container">
+                    <div class="size-options">
+                        <button class="size-option active" data-size="square">Square</button>
+                        <button class="size-option" data-size="story">Story</button>
+                        <button class="size-option" data-size="post">Post</button>
+                        <button class="size-option" data-size="custom">Custom</button>
+                    </div>
+                    
+                    <div class="quote-display" id="quote-display">
+                        <div class="quote-preview twitter-style" id="quote-preview">
+                            <div class="quote-content">
+                                <div class="quote-text">Your generated quote will appear here with beautiful styling and professional design.</div>
+                                <div class="quote-author">
+                                    <div class="author-image"></div>
+                                    <div class="author-info">
+                                        <div class="author-name">Author Name</div>
+                                        <div class="author-title">Position/Title</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="platform-watermark">
+                                <i class="fab fa-twitter"></i>
+                            </div>
+                            <div class="brand-watermark">
+                                Ultimate100FreeTools
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="download-options">
+                        <button id="download-png" class="btn-download">
+                            <i class="fas fa-download"></i> PNG
+                        </button>
+                        <button id="download-jpg" class="btn-download">
+                            <i class="fas fa-download"></i> JPG
+                        </button>
+                        <button id="share-btn" class="btn-share">
+                            <i class="fas fa-share-alt"></i> Share
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

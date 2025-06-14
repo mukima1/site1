@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-FKNNWBVZ6V');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative Tools | Spark Your Imagination</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #4895ef;
+            --light: #f8f9fa;
+            --dark: #212529;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7ff;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .tool-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card-header {
+            height: 180px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .card-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+        }
+        
+        .card-title {
+            position: absolute;
+            bottom: 1rem;
+            left: 1.5rem;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+            z-index: 1;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        .card-description {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+        
+        .btn:hover {
+            background-color: var(--secondary);
+        }
+        
+        .doodle {
+            background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .meme {
+            background-image: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .quote {
+            background-image: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+        
+        .icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            display: inline-block;
+        }
+        
+        @media (max-width: 768px) {
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Creative Tools</h1>
+            <p class="subtitle">Unleash your creativity with our powerful yet simple tools designed for fun and engagement.</p>
+        </header>
+        
+        <div class="tools-grid">
+            <!-- Doodle Tool Card -->
+            <div class="tool-card">
+                <div class="card-header doodle">
+                    <h2 class="card-title">Doodle Creator</h2>
+                </div>
+                <div class="card-body">
+                    <div class="icon">🎨</div>
+                    <p class="card-description">
+                        Express yourself with our intuitive doodling tool. Create beautiful sketches, diagrams, or just let your imagination flow.
+                    </p>
+                    <a href="Doodle/Doodle.html" class="btn">Start Doodling</a>
+                </div>
+            </div>
+            
+            <!-- Meme Generator Card -->
+            <div class="tool-card">
+                <div class="card-header meme">
+                    <h2 class="card-title">Meme Generator</h2>
+                </div>
+                <div class="card-body">
+                    <div class="icon">😂</div>
+                    <p class="card-description">
+                        Create hilarious memes in seconds. Choose from templates or upload your own images to spread laughter.
+                    </p>
+                    <a href="memes/meme.html" class="btn">Make a Meme</a>
+                </div>
+            </div>
+            
+            <!-- Social Media Quote Card -->
+            <div class="tool-card">
+                <div class="card-header quote">
+                    <h2 class="card-title">Quote Generator</h2>
+                </div>
+                <div class="card-body">
+                    <div class="icon">💬</div>
+                    <p class="card-description">
+                        Craft beautiful social media quotes with custom backgrounds and fonts. Perfect for Instagram, Twitter, and more.
+                    </p>
+                    <a href="quote/quote.html" class="btn">Create Quote</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

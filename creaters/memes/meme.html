@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-FKNNWBVZ6V');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drag & Drop Meme Generator</title>
+    <style>
+        :root {
+            --primary: #FF6B6B;
+            --secondary: #4ECDC4;
+            --dark: #292F36;
+            --light: #F7FFF7;
+            --accent: #FFE66D;
+            --danger: #FF6B6B;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border: 2px solid var(--accent);
+        }
+        
+        h1 {
+            font-size: clamp(1.8rem, 5vw, 2.8rem);
+            margin-bottom: 8px;
+            color: var(--primary);
+            text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(to right, #FF6B6B, #4ECDC4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            font-size: clamp(0.9rem, 3vw, 1.2rem);
+            color: var(--dark);
+            font-weight: normal;
+        }
+        
+        .generator-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .editor-panel, .meme-display {
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border: 2px solid var(--accent);
+        }
+        
+        .meme-display {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            order: -1;
+        }
+        
+        .meme-canvas-container {
+            position: relative;
+            margin-bottom: 20px;
+            max-width: 100%;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            touch-action: none;
+        }
+        
+        #meme-canvas {
+            max-width: 100%;
+            display: block;
+            background-color: white;
+        }
+        
+        .text-element {
+            position: absolute;
+            cursor: move;
+            user-select: none;
+            z-index: 10;
+            text-align: center;
+            max-width: 90%;
+            word-break: break-word;
+            transform: translate(-50%, -50%);
+        }
+        
+        .text-element.dragging {
+            opacity: 0.8;
+            z-index: 100;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+            color: var(--dark);
+            font-size: clamp(0.9rem, 3vw, 1.1rem);
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: clamp(0.9rem, 3vw, 1rem);
+            transition: all 0.2s ease;
+            background-color: white;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 70px;
+        }
+        
+        .color-options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .color-option {
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        .color-picker {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .color-picker input[type="color"] {
+            width: 50px;
+            height: 35px;
+            padding: 2px;
+            border-radius: 5px;
+            border: 2px solid #ddd;
+            cursor: pointer;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: clamp(0.9rem, 3vw, 1rem);
+            font-weight: bold;
+            transition: all 0.2s ease;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn-danger {
+            background-color: var(--danger);
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary);
+        }
+        
+        .btn-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .templates-container {
+            margin-top: 15px;
+        }
+        
+        .templates-header {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+            scrollbar-width: none;
+        }
+        
+        .tabs::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .tab {
+            padding: 6px 12px;
+            background-color: #eee;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+        
+        .tab.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .templates {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .template {
+            cursor: pointer;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+            position: relative;
+            aspect-ratio: 1;
+        }
+        
+        .template:hover {
+            transform: scale(1.03);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+        }
+        
+        .template.active {
+            border-color: var(--primary);
+        }
+        
+        .template img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .template-name {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 4px;
+            font-size: 0.7rem;
+            text-align: center;
+        }
+        
+        .download-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+            width: 100%;
+        }
+        
+        @media (min-width: 768px) {
+            .generator-container {
+                flex-direction: row;
+            }
+            
+            .editor-panel {
+                flex: 1;
+                min-width: 350px;
+            }
+            
+            .meme-display {
+                flex: 2;
+                min-width: 500px;
+                order: 1;
+            }
+            
+            .btn {
+                width: auto;
+            }
+            
+            .templates {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+            
+            .templates-header {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>DRAG & DROP MEME GENERATOR</h1>
+            <p class="subtitle">Position text anywhere with drag & drop</p>
+        </header>
+        
+        <div class="generator-container">
+            <div class="editor-panel">
+                <div class="form-group">
+                    <label for="meme-template">Choose a template:</label>
+                    <select id="meme-template" class="form-control">
+                        <option value="custom">Upload your own</option>
+                        <!-- Templates will be added by JS -->
+                    </select>
+                </div>
+                
+                <div class="form-group" id="upload-container">
+                    <label for="image-upload">Upload your image:</label>
+                    <input type="file" id="image-upload" accept="image/*">
+                </div>
+                
+                <div class="templates-container">
+                    <div class="templates-header">
+                        <h3>Popular Templates</h3>
+                        <div class="tabs">
+                            <div class="tab active" data-category="all">All</div>
+                            <div class="tab" data-category="reaction">Reaction</div>
+                            <div class="tab" data-category="animals">Animals</div>
+                            <div class="tab" data-category="tv">TV/Movies</div>
+                        </div>
+                    </div>
+                    
+                    <div class="templates" id="template-thumbnails">
+                        <!-- Template thumbnails will be added by JS -->
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="top-text">Top Text:</label>
+                    <textarea id="top-text" placeholder="Drag this text anywhere"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="bottom-text">Bottom Text:</label>
+                    <textarea id="bottom-text" placeholder="Drag this text anywhere"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Text Styling</label>
+                    <div class="color-options">
+                        <div class="color-option">
+                            <label>Text Color:</label>
+                            <div class="color-picker">
+                                <input type="color" id="text-color" value="#ffffff">
+                                <span id="color-value">#FFFFFF</span>
+                            </div>
+                        </div>
+                        <div class="color-option">
+                            <label>Outline Color:</label>
+                            <div class="color-picker">
+                                <input type="color" id="outline-color" value="#000000">
+                                <span id="outline-color-value">#000000</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="text-size">Text Size:</label>
+                    <div class="slider-container">
+                        <input type="range" id="text-size" min="10" max="100" value="40">
+                        <span class="slider-value" id="text-size-value">40</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="outline-size">Outline Size:</label>
+                    <div class="slider-container">
+                        <input type="range" id="outline-size" min="0" max="20" value="5">
+                        <span class="slider-value" id="outline-size-value">5</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="text-font">Font Style:</label>
+                    <select id="text-font">
+                        <option value="Impact">Impact (Classic)</option>
+                        <option value="Arial Black">Arial Black</option>
+                        <option value="Comic Sans MS">Comic Sans</option>
+                        <option value="Bangers">Bangers</option>
+                        <option value="Poppins">Poppins</option>
+                    </select>
+                </div>
+                
+                <div class="btn-group">
+                    <button id="update-btn" class="btn">Update Text</button>
+                    <button id="random-btn" class="btn btn-secondary">Random</button>
+                    <button id="clear-btn" class="btn btn-danger">Clear All</button>
+                </div>
+            </div>
+            
+            <div class="meme-display">
+                <div class="meme-canvas-container" id="meme-container">
+                    <canvas id="meme-canvas" width="600" height="600"></canvas>
+                    <!-- Text elements will be added here -->
+                </div>
+                
+                <div class="download-options">
+                    <button id="download-png" class="btn">Download PNG</button>
+                    <button id="download-jpg" class="btn">Download JPG</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Meme templates
+            const memeTemplates = [
+                { id: 'drake', name: 'Drake Hotline Bling', url: 'https://i.imgflip.com/30b1gx.jpg', category: 'reaction' },
+                { id: 'distracted', name: 'Distracted Boyfriend', url: 'https://i.imgflip.com/1bij.jpg', category: 'reaction' },
+                { id: 'rollsafe', name: 'Roll Safe', url: 'https://i.imgflip.com/1h7in3.jpg', category: 'reaction' },
+                { id: 'oprah', name: 'Oprah You Get A', url: 'https://i.imgflip.com/1g8my4.jpg', category: 'reaction' },
+                { id: 'changemind', name: 'Change My Mind', url: 'https://i.imgflip.com/24y43o.jpg', category: 'reaction' },
+                { id: 'disaster', name: 'Disaster Girl', url: 'https://i.imgflip.com/23ls.jpg', category: 'reaction' },
+                { id: 'alwayshas', name: 'It Always Has Been', url: 'https://i.imgflip.com/1h7in3.jpg', category: 'reaction' },
+                { id: 'ermg', name: 'Ermahgerd', url: 'https://i.imgflip.com/1bim.jpg', category: 'reaction' },
+                { id: 'grumpycat', name: 'Grumpy Cat', url: 'https://i.imgflip.com/8k0sa.jpg', category: 'animals' },
+                { id: 'doge', name: 'Doge', url: 'https://i.imgflip.com/4t0m5.jpg', category: 'animals' },
+                { id: 'blinking', name: 'Blinking Guy', url: 'https://i.imgflip.com/9vct.jpg', category: 'animals' },
+                { id: 'patrick', name: 'Patrick Star', url: 'https://i.imgflip.com/1bgw.jpg', category: 'animals' },
+                { id: 'spongebob', name: 'Mocking Spongebob', url: 'https://i.imgflip.com/1otk96.jpg', category: 'animals' },
+                { id: 'onedoesnot', name: 'One Does Not Simply', url: 'https://i.imgflip.com/1bij.jpg', category: 'tv' },
+                { id: 'batman', name: 'Batman Slapping Robin', url: 'https://i.imgflip.com/9ehk.jpg', category: 'tv' },
+                { id: 'ancientaliens', name: 'Ancient Aliens Guy', url: 'https://i.imgflip.com/26am.jpg', category: 'tv' }
+            ];
+            
+            // DOM elements
+            const canvas = document.getElementById('meme-canvas');
+            const ctx = canvas.getContext('2d');
+            const memeContainer = document.getElementById('meme-container');
+            const topTextInput = document.getElementById('top-text');
+            const bottomTextInput = document.getElementById('bottom-text');
+            const textColorInput = document.getElementById('text-color');
+            const colorValueSpan = document.getElementById('color-value');
+            const outlineColorInput = document.getElementById('outline-color');
+            const outlineColorValueSpan = document.getElementById('outline-color-value');
+            const textSizeInput = document.getElementById('text-size');
+            const textSizeValueSpan = document.getElementById('text-size-value');
+            const outlineSizeInput = document.getElementById('outline-size');
+            const outlineSizeValueSpan = document.getElementById('outline-size-value');
+            const textFontSelect = document.getElementById('text-font');
+            const updateBtn = document.getElementById('update-btn');
+            const randomBtn = document.getElementById('random-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            const downloadPngBtn = document.getElementById('download-png');
+            const downloadJpgBtn = document.getElementById('download-jpg');
+            const memeTemplateSelect = document.getElementById('meme-template');
+            const uploadContainer = document.getElementById('upload-container');
+            const imageUpload = document.getElementById('image-upload');
+            const templateThumbnails = document.getElementById('template-thumbnails');
+            const tabs = document.querySelectorAll('.tab');
+            
+            // Current meme state
+            let currentImage = null;
+            let currentTemplate = null;
+            let topTextElement = null;
+            let bottomTextElement = null;
+            let isDragging = false;
+            let activeTextElement = null;
+            let startX, startY, startLeft, startTop;
+            
+            // Initialize the app
+            function init() {
+                // Populate template select
+                memeTemplates.forEach(template => {
+                    const option = document.createElement('option');
+                    option.value = template.id;
+                    option.textContent = template.name;
+                    memeTemplateSelect.appendChild(option);
+                });
+                
+                // Add custom option
+                const customOption = document.createElement('option');
+                customOption.value = 'custom';
+                customOption.textContent = 'Upload your own';
+                memeTemplateSelect.appendChild(customOption);
+                
+                // Load all templates initially
+                loadTemplates('all');
+                
+                // Set default template
+                if (memeTemplates.length > 0) {
+                    loadTemplate(memeTemplates[0].id);
+                    memeTemplateSelect.value = memeTemplates[0].id;
+                }
+                
+                // Create draggable text elements
+                createTextElements();
+                
+                // Event listeners
+                updateBtn.addEventListener('click', updateMeme);
+                randomBtn.addEventListener('click', loadRandomTemplate);
+                clearBtn.addEventListener('click', clearCanvas);
+                downloadPngBtn.addEventListener('click', () => downloadMeme('png'));
+                downloadJpgBtn.addEventListener('click', () => downloadMeme('jpg'));
+                textColorInput.addEventListener('input', updateColorValue);
+                outlineColorInput.addEventListener('input', updateOutlineColorValue);
+                textSizeInput.addEventListener('input', updateTextSizeValue);
+                outlineSizeInput.addEventListener('input', updateOutlineSizeValue);
+                memeTemplateSelect.addEventListener('change', handleTemplateChange);
+                imageUpload.addEventListener('change', handleImageUpload);
+                
+                // Setup drag events
+                setupDragEvents();
+                
+                // Tab click events
+                tabs.forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        tabs.forEach(t => t.classList.remove('active'));
+                        tab.classList.add('active');
+                        loadTemplates(tab.dataset.category);
+                    });
+                });
+                
+                // Initial render
+                updateMeme();
+            }
+            
+            // Create draggable text elements
+            function createTextElements() {
+                // Remove existing elements if they exist
+                if (topTextElement) topTextElement.remove();
+                if (bottomTextElement) bottomTextElement.remove();
+                
+                // Create top text element
+                topTextElement = document.createElement('div');
+                topTextElement.className = 'text-element';
+                topTextElement.id = 'top-text-element';
+                topTextElement.textContent = 'TOP TEXT';
+                topTextElement.style.display = 'none';
+                memeContainer.appendChild(topTextElement);
+                
+                // Create bottom text element
+                bottomTextElement = document.createElement('div');
+                bottomTextElement.className = 'text-element';
+                bottomTextElement.id = 'bottom-text-element';
+                bottomTextElement.textContent = 'BOTTOM TEXT';
+                bottomTextElement.style.display = 'none';
+                memeContainer.appendChild(bottomTextElement);
+            }
+            
+            // Setup drag events
+            function setupDragEvents() {
+                [topTextElement, bottomTextElement].forEach(element => {
+                    // Mouse events
+                    element.addEventListener('mousedown', startDrag);
+                    
+                    // Touch events
+                    element.addEventListener('touchstart', startDrag, { passive: false });
+                });
+                
+                // Document-wide move/end events
+                document.addEventListener('mousemove', drag);
+                document.addEventListener('mouseup', endDrag);
+                document.addEventListener('touchmove', drag, { passive: false });
+                document.addEventListener('touchend', endDrag);
+            }
+            
+            // Start dragging
+            function startDrag(e) {
+                e.preventDefault();
+                isDragging = true;
+                activeTextElement = this;
+                activeTextElement.classList.add('dragging');
+                
+                // Get initial position
+                const rect = activeTextElement.getBoundingClientRect();
+                const containerRect = memeContainer.getBoundingClientRect();
+                
+                // Calculate current position (accounting for transform)
+                const currentX = rect.left - containerRect.left + rect.width / 2;
+                const currentY = rect.top - containerRect.top + rect.height / 2;
+                
+                // Set start positions
+                if (e.type === 'touchstart') {
+                    startX = e.touches[0].clientX;
+                    startY = e.touches[0].clientY;
+                } else {
+                    startX = e.clientX;
+                    startY = e.clientY;
+                }
+                
+                startLeft = currentX;
+                startTop = currentY;
+            }
+            
+            // Handle dragging
+            function drag(e) {
+                if (!isDragging) return;
+                e.preventDefault();
+                
+                let clientX, clientY;
+                if (e.type === 'touchmove') {
+                    clientX = e.touches[0].clientX;
+                    clientY = e.touches[0].clientY;
+                } else {
+                    clientX = e.clientX;
+                    clientY = e.clientY;
+                }
+                
+                // Calculate new position
+                const dx = clientX - startX;
+                const dy = clientY - startY;
+                const newX = startLeft + dx;
+                const newY = startTop + dy;
+                
+                // Update position
+                activeTextElement.style.left = newX + 'px';
+                activeTextElement.style.top = newY + 'px';
+            }
+            
+            // End dragging
+            function endDrag() {
+                if (!isDragging) return;
+                isDragging = false;
+                if (activeTextElement) {
+                    activeTextElement.classList.remove('dragging');
+                    activeTextElement = null;
+                }
+            }
+            
+            // Load templates by category
+            function loadTemplates(category) {
+                templateThumbnails.innerHTML = '';
+                
+                const filteredTemplates = category === 'all' 
+                    ? memeTemplates 
+                    : memeTemplates.filter(t => t.category === category);
+                
+                filteredTemplates.forEach(template => {
+                    const templateDiv = document.createElement('div');
+                    templateDiv.className = 'template';
+                    templateDiv.dataset.id = template.id;
+                    
+                    const img = document.createElement('img');
+                    img.src = template.url;
+                    img.alt = template.name;
+                    
+                    const nameSpan = document.createElement('span');
+                    nameSpan.className = 'template-name';
+                    nameSpan.textContent = template.name;
+                    
+                    templateDiv.appendChild(img);
+                    templateDiv.appendChild(nameSpan);
+                    templateThumbnails.appendChild(templateDiv);
+                    
+                    templateDiv.addEventListener('click', () => {
+                        document.querySelectorAll('.template').forEach(t => t.classList.remove('active'));
+                        templateDiv.classList.add('active');
+                        loadTemplate(template.id);
+                        memeTemplateSelect.value = template.id;
+                    });
+                });
+            }
+            
+            // Load random template
+            function loadRandomTemplate() {
+                const randomIndex = Math.floor(Math.random() * memeTemplates.length);
+                const randomTemplate = memeTemplates[randomIndex];
+                loadTemplate(randomTemplate.id);
+                memeTemplateSelect.value = randomTemplate.id;
+                
+                // Update active template thumbnail
+                document.querySelectorAll('.template').forEach(t => t.classList.remove('active'));
+                const thumbnails = document.querySelectorAll('.template');
+                if (thumbnails[randomIndex]) {
+                    thumbnails[randomIndex].classList.add('active');
+                }
+                
+                // Random funny text
+                const funnyTopTexts = [
+                    "WHEN YOU SEE IT",
+                    "ME WHEN...",
+                    "HOW IT FEELS TO",
+                    "WAIT... WHAT?",
+                    "THAT MOMENT WHEN",
+                    "EVERY TIME",
+                    "LITERALLY ME",
+                    "POV: YOU'RE"
+                ];
+                
+                const funnyBottomTexts = [
+                    "I SHOULD BUY A BOAT",
+                    "BUT THAT'S NONE OF MY BUSINESS",
+                    "ONE DOES NOT SIMPLY",
+                    "AIN'T NOBODY GOT TIME FOR THAT",
+                    "YOU HAD ONE JOB",
+                    "NOT SURE IF... OR...",
+                    "THAT ESCALATED QUICKLY",
+                    "WASTED"
+                ];
+                
+                topTextInput.value = funnyTopTexts[Math.floor(Math.random() * funnyTopTexts.length)];
+                bottomTextInput.value = funnyBottomTexts[Math.floor(Math.random() * funnyBottomTexts.length)];
+                
+                // Random color
+                const colors = ['#FFFFFF', '#000000', '#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF'];
+                textColorInput.value = colors[Math.floor(Math.random() * colors.length)];
+                updateColorValue();
+                
+                updateMeme();
+            }
+            
+            // Load template by ID
+            function loadTemplate(templateId) {
+                if (templateId === 'custom') {
+                    uploadContainer.style.display = 'block';
+                    return;
+                }
+                
+                uploadContainer.style.display = 'none';
+                const template = memeTemplates.find(t => t.id === templateId);
+                if (!template) return;
+                
+                currentTemplate = template;
+                currentImage = new Image();
+                currentImage.crossOrigin = 'Anonymous';
+                currentImage.src = template.url;
+                currentImage.onload = () => {
+                    adjustCanvasSize();
+                    updateMeme();
+                };
+            }
+            
+            // Handle template change
+            function handleTemplateChange() {
+                const templateId = memeTemplateSelect.value;
+                document.querySelectorAll('.template').forEach(t => t.classList.remove('active'));
+                
+                if (templateId !== 'custom') {
+                    const activeThumb = document.querySelector(`.template[data-id="${templateId}"]`);
+                    if (activeThumb) activeThumb.classList.add('active');
+                }
+                
+                loadTemplate(templateId);
+            }
+            
+            // Handle image upload
+            function handleImageUpload(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    currentImage = new Image();
+                    currentImage.src = event.target.result;
+                    currentImage.onload = () => {
+                        adjustCanvasSize();
+                        updateMeme();
+                    };
+                };
+                reader.readAsDataURL(file);
+            }
+            
+            // Adjust canvas size based on image
+            function adjustCanvasSize() {
+                if (!currentImage) return;
+                
+                // Calculate dimensions while maintaining aspect ratio
+                const maxWidth = 600;
+                const maxHeight = 600;
+                let width = currentImage.width;
+                let height = currentImage.height;
+                
+                if (width > maxWidth) {
+                    const ratio = maxWidth / width;
+                    width = maxWidth;
+                    height = height * ratio;
+                }
+                
+                if (height > maxHeight) {
+                    const ratio = maxHeight / height;
+                    height = maxHeight;
+                    width = width * ratio;
+                }
+                
+                canvas.width = width;
+                canvas.height = height;
+                
+                // Update container size
+                memeContainer.style.width = width + 'px';
+                memeContainer.style.height = height + 'px';
+            }
+            
+            // Update the meme
+            function updateMeme() {
+                if (!currentImage) return;
+                
+                // Update canvas first
+                updateCanvas();
+                
+                // Update text elements
+                updateTextElements();
+            }
+            
+            // Update just the canvas
+            function updateCanvas() {
+                if (!currentImage) return;
+                
+                // Clear canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Draw image
+                ctx.drawImage(currentImage, 0, 0, canvas.width, canvas.height);
+            }
+            
+            // Update the text elements
+            function updateTextElements() {
+                // Top text
+                const topText = topTextInput.value;
+                if (topText) {
+                    topTextElement.textContent = topText;
+                    topTextElement.style.display = 'block';
+                    
+                    // Apply styles
+                    applyTextStyles(topTextElement);
+                    
+                    // Set initial position if not already set
+                    if (!topTextElement.style.left || !topTextElement.style.top) {
+                        topTextElement.style.left = '50%';
+                        topTextElement.style.top = '20%';
+                    }
+                } else {
+                    topTextElement.style.display = 'none';
+                }
+                
+                // Bottom text
+                const bottomText = bottomTextInput.value;
+                if (bottomText) {
+                    bottomTextElement.textContent = bottomText;
+                    bottomTextElement.style.display = 'block';
+                    
+                    // Apply styles
+                    applyTextStyles(bottomTextElement);
+                    
+                    // Set initial position if not already set
+                    if (!bottomTextElement.style.left || !bottomTextElement.style.top) {
+                        bottomTextElement.style.left = '50%';
+                        bottomTextElement.style.top = '80%';
+                    }
+                } else {
+                    bottomTextElement.style.display = 'none';
+                }
+            }
+            
+            // Apply text styles to an element
+            function applyTextStyles(element) {
+                const fontSize = parseInt(textSizeInput.value);
+                const fontFamily = textFontSelect.value;
+                const textColor = textColorInput.value;
+                const outlineSize = parseInt(outlineSizeInput.value);
+                const outlineColor = outlineColorInput.value;
+                
+                element.style.fontFamily = fontFamily;
+                element.style.fontSize = fontSize + 'px';
+                element.style.color = textColor;
+                element.style.textShadow = `
+                    ${outlineSize}px ${outlineSize}px 0 ${outlineColor},
+                    ${-outlineSize}px ${outlineSize}px 0 ${outlineColor},
+                    ${outlineSize}px ${-outlineSize}px 0 ${outlineColor},
+                    ${-outlineSize}px ${-outlineSize}px 0 ${outlineColor}
+                `;
+                element.style.fontWeight = 'bold';
+                element.style.padding = '5px';
+                element.style.cursor = 'move';
+            }
+            
+            // Clear canvas
+            function clearCanvas() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                topTextInput.value = '';
+                bottomTextInput.value = '';
+                textColorInput.value = '#ffffff';
+                colorValueSpan.textContent = '#FFFFFF';
+                outlineColorInput.value = '#000000';
+                outlineColorValueSpan.textContent = '#000000';
+                textSizeInput.value = '40';
+                textSizeValueSpan.textContent = '40';
+                outlineSizeInput.value = '5';
+                outlineSizeValueSpan.textContent = '5';
+                textFontSelect.value = 'Impact';
+                imageUpload.value = '';
+                
+                // Hide text elements
+                topTextElement.style.display = 'none';
+                bottomTextElement.style.display = 'none';
+                
+                if (currentTemplate) {
+                    loadTemplate(currentTemplate.id);
+                } else if (memeTemplates.length > 0) {
+                    loadTemplate(memeTemplates[0].id);
+                }
+            }
+            
+            // Download meme
+            function downloadMeme(format) {
+                if (!currentImage) return;
+                
+                // Create a temporary canvas with both image and text
+                const tempCanvas = document.createElement('canvas');
+                const tempCtx = tempCanvas.getContext('2d');
+                tempCanvas.width = canvas.width;
+                tempCanvas.height = canvas.height;
+                
+                // Draw the base image
+                tempCtx.drawImage(canvas, 0, 0);
+                
+                // Draw the text elements
+                drawTextToCanvas(tempCtx);
+                
+                let mimeType, extension;
+                if (format === 'png') {
+                    mimeType = 'image/png';
+                    extension = 'png';
+                } else {
+                    mimeType = 'image/jpeg';
+                    extension = 'jpg';
+                }
+                
+                const link = document.createElement('a');
+                link.download = `meme-${Date.now()}.${extension}`;
+                link.href = tempCanvas.toDataURL(mimeType);
+                link.click();
+            }
+            
+            // Draw text to canvas (for download)
+            function drawTextToCanvas(ctx) {
+                const fontSize = parseInt(textSizeInput.value);
+                const fontFamily = textFontSelect.value;
+                const textColor = textColorInput.value;
+                const outlineSize = parseInt(outlineSizeInput.value);
+                const outlineColor = outlineColorInput.value;
+                
+                ctx.font = `bold ${fontSize}px ${fontFamily}`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                
+                // Draw top text if visible
+                if (topTextElement.style.display !== 'none') {
+                    const text = topTextInput.value;
+                    const left = parseFloat(topTextElement.style.left);
+                    const top = parseFloat(topTextElement.style.top);
+                    
+                    // Draw outline
+                    ctx.strokeStyle = outlineColor;
+                    ctx.lineWidth = outlineSize * 2;
+                    ctx.strokeText(text, left, top);
+                    
+                    // Draw text
+                    ctx.fillStyle = textColor;
+                    ctx.fillText(text, left, top);
+                }
+                
+                // Draw bottom text if visible
+                if (bottomTextElement.style.display !== 'none') {
+                    const text = bottomTextInput.value;
+                    const left = parseFloat(bottomTextElement.style.left);
+                    const top = parseFloat(bottomTextElement.style.top);
+                    
+                    // Draw outline
+                    ctx.strokeStyle = outlineColor;
+                    ctx.lineWidth = outlineSize * 2;
+                    ctx.strokeText(text, left, top);
+                    
+                    // Draw text
+                    ctx.fillStyle = textColor;
+                    ctx.fillText(text, left, top);
+                }
+            }
+            
+            // Update color value display
+            function updateColorValue() {
+                colorValueSpan.textContent = textColorInput.value.toUpperCase();
+                updateTextElements();
+            }
+            
+            function updateOutlineColorValue() {
+                outlineColorValueSpan.textContent = outlineColorInput.value.toUpperCase();
+                updateTextElements();
+            }
+            
+            function updateTextSizeValue() {
+                textSizeValueSpan.textContent = textSizeInput.value;
+                updateTextElements();
+            }
+            
+            function updateOutlineSizeValue() {
+                outlineSizeValueSpan.textContent = outlineSizeInput.value;
+                updateTextElements();
+            }
+            
+            // Initialize the app
+            init();
+        });
+    </script>
+</body>
+</html>

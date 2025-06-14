@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-FKNNWBVZ6V');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DoodleMaster - Draw Anything!</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>DoodleMaster <i class="fas fa-paint-brush"></i></h1>
+            <div class="header-controls">
+                <button id="clear-btn" title="Clear Canvas"><i class="fas fa-trash-alt"></i> Clear</button>
+                <button id="save-btn" title="Save Drawing"><i class="fas fa-download"></i> Save</button>
+                <button id="toggle-grid" title="Toggle Grid"><i class="fas fa-border-all"></i> Grid</button>
+            </div>
+        </header>
+
+        <div class="toolbar">
+            <div class="tool-section">
+                <label>Tool:</label>
+                <select id="tool-select">
+                    <option value="pen">Pen</option>
+                    <option value="brush">Brush</option>
+                    <option value="eraser">Eraser</option>
+                    <option value="line">Line</option>
+                    <option value="rectangle">Rectangle</option>
+                    <option value="circle">Circle</option>
+                    <option value="text">Text</option>
+                </select>
+            </div>
+
+            <div class="tool-section">
+                <label>Color:</label>
+                <input type="color" id="color-picker" value="#000000">
+                <input type="text" id="color-hex" value="#000000" maxlength="7">
+            </div>
+
+            <div class="tool-section">
+                <label>Size:</label>
+                <input type="range" id="size-slider" min="1" max="50" value="5">
+                <span id="size-value">5</span>
+            </div>
+
+            <div class="tool-section">
+                <label>Opacity:</label>
+                <input type="range" id="opacity-slider" min="10" max="100" value="100">
+                <span id="opacity-value">100%</span>
+            </div>
+
+            <div class="tool-section">
+                <label>Fill:</label>
+                <input type="checkbox" id="fill-shapes">
+            </div>
+        </div>
+
+        <div class="canvas-container">
+            <canvas id="doodle-canvas"></canvas>
+        </div>
+
+        <div class="footer">
+            <div class="color-palette">
+                <div class="color-swatch" style="background-color: #000000;" data-color="#000000"></div>
+                <div class="color-swatch" style="background-color: #ff0000;" data-color="#ff0000"></div>
+                <div class="color-swatch" style="background-color: #00ff00;" data-color="#00ff00"></div>
+                <div class="color-swatch" style="background-color: #0000ff;" data-color="#0000ff"></div>
+                <div class="color-swatch" style="background-color: #ffff00;" data-color="#ffff00"></div>
+                <div class="color-swatch" style="background-color: #ff00ff;" data-color="#ff00ff"></div>
+                <div class="color-swatch" style="background-color: #00ffff;" data-color="#00ffff"></div>
+                <div class="color-swatch" style="background-color: #ffffff;" data-color="#ffffff"></div>
+            </div>
+            <div class="undo-redo">
+                <button id="undo-btn" title="Undo"><i class="fas fa-undo"></i></button>
+                <button id="redo-btn" title="Redo"><i class="fas fa-redo"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
