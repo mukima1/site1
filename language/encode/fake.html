@@ -1,0 +1,1799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataGen Pro - Advanced Dataset Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/faker@5.5.3/dist/faker.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --dark-color: #2c3e50;
+            --light-color: #ecf0f1;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: var(--dark-color);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .card-header {
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 10px 10px 0 0 !important;
+            font-weight: 600;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-success {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+        
+        .btn-warning {
+            background-color: var(--warning-color);
+            border-color: var(--warning-color);
+        }
+        
+        .sector-option, .mode-option {
+            cursor: pointer;
+            padding: 10px;
+            margin: 5px;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        
+        .sector-option:hover, .mode-option:hover {
+            background-color: var(--light-color);
+        }
+        
+        .sector-option.active, .mode-option.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        #previewTable {
+            width: 100%;
+            overflow-x: auto;
+        }
+        
+        table {
+            font-size: 0.9rem;
+        }
+        
+        th {
+            background-color: var(--dark-color);
+            color: white;
+            position: sticky;
+            top: 0;
+        }
+        
+        .download-btn {
+            margin: 5px;
+            min-width: 120px;
+        }
+        
+        .badge-sector {
+            background-color: var(--secondary-color);
+            margin-right: 5px;
+        }
+        
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .pipeline-status {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .pipeline-status-indicator {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .status-normal {
+            background-color: var(--secondary-color);
+        }
+        
+        .status-warning {
+            background-color: var(--warning-color);
+        }
+        
+        .status-danger {
+            background-color: var(--danger-color);
+        }
+        
+        .pipeline-card {
+            border-left: 5px solid var(--primary-color);
+        }
+        
+        .custom-field-form {
+            background-color: var(--light-color);
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        
+        .tab-content {
+            padding: 15px 0;
+        }
+        
+        .nav-tabs .nav-link.active {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        @media (max-width: 768px) {
+            .sector-options, .mode-options {
+                flex-direction: column;
+            }
+            
+            .download-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .download-btn {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-database me-2"></i>DataGen Pro+
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <a class="nav-link active" href="../../index.html">
+    <i class="fas fa-home me-1"></i> Home
+</a>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center mb-5">
+                <h1 class="display-4 mb-3">Advanced Dataset Generator</h1>
+                <p class="lead">Create realistic datasets and monitor simulated pipelines for energy and environmental sectors.</p>
+            </div>
+        </div>
+
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="dataset-tab" data-bs-toggle="tab" data-bs-target="#dataset" type="button" role="tab">
+                    <i class="fas fa-table me-1"></i>Dataset Generator
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="pipeline-tab" data-bs-toggle="tab" data-bs-target="#pipeline" type="button" role="tab">
+                    <i class="fas fa-project-diagram me-1"></i>Pipeline Monitoring
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="custom-tab" data-bs-toggle="tab" data-bs-target="#custom" type="button" role="tab">
+                    <i class="fas fa-cogs me-1"></i>Custom Dataset Builder
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="myTabContent">
+            <!-- Dataset Generator Tab -->
+            <div class="tab-pane fade show active" id="dataset" role="tabpanel">
+                <div class="row mt-4">
+                    <div class="col-md-5">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fas fa-cog me-2"></i>Dataset Configuration
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="recordCount" class="form-label">Number of Records</label>
+                                    <input type="number" class="form-control" id="recordCount" min="1" max="100000" value="100">
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label class="form-label">Select Sector</label>
+                                    <div class="d-flex flex-wrap sector-options">
+                                        <div class="sector-option active" data-sector="finance" onclick="selectSector(this, 'finance')">
+                                            <i class="fas fa-chart-line me-1"></i> Finance
+                                        </div>
+                                        <div class="sector-option" data-sector="oilgas" onclick="selectSector(this, 'oilgas')">
+                                            <i class="fas fa-gas-pump me-1"></i> Oil & Gas
+                                        </div>
+                                        <div class="sector-option" data-sector="environment" onclick="selectSector(this, 'environment')">
+                                            <i class="fas fa-leaf me-1"></i> Environment
+                                        </div>
+                                        <div class="sector-option" data-sector="engineering" onclick="selectSector(this, 'engineering')">
+                                            <i class="fas fa-cogs me-1"></i> Engineering
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Select Fields</label>
+                                    <div id="fieldOptions">
+                                        <!-- Fields will be populated based on sector selection -->
+                                    </div>
+                                </div>
+                                
+                                <button id="generateBtn" class="btn btn-primary w-100 py-2" onclick="generateData()">
+                                    <i class="fas fa-magic me-2"></i>Generate Dataset
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-7">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fas fa-table me-2"></i>Dataset Preview
+                            </div>
+                            <div class="card-body">
+                                <div class="loading-spinner" id="loadingSpinner">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    <p class="mt-2">Generating your dataset...</p>
+                                </div>
+                                
+                                <div id="previewSection" style="display: none;">
+                                    <div class="alert alert-success mb-3">
+                                        <i class="fas fa-check-circle me-2"></i>Dataset generated successfully! 
+                                        <span id="recordCountBadge" class="badge bg-primary ms-2"></span>
+                                        <span id="sectorBadge" class="badge badge-sector ms-1"></span>
+                                    </div>
+                                    
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-hover table-bordered" id="previewTable">
+                                            <thead>
+                                                <tr id="tableHeader"></tr>
+                                            </thead>
+                                            <tbody id="tableBody"></tbody>
+                                        </table>
+                                    </div>
+                                    
+                                    <div class="mt-4">
+                                        <h5 class="mb-3"><i class="fas fa-download me-2"></i>Export Dataset</h5>
+                                        <div class="d-flex flex-wrap download-buttons">
+                                            <button class="btn btn-success download-btn" onclick="exportData('csv')">
+                                                <i class="fas fa-file-csv me-1"></i> CSV
+                                            </button>
+                                            <button class="btn btn-success download-btn" onclick="exportData('excel')">
+                                                <i class="fas fa-file-excel me-1"></i> Excel
+                                            </button>
+                                            <button class="btn btn-success download-btn" onclick="exportData('json')">
+                                                <i class="fas fa-file-code me-1"></i> JSON
+                                            </button>
+                                            <button class="btn btn-success download-btn" onclick="exportData('sql')">
+                                                <i class="fas fa-database me-1"></i> SQL
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div id="emptyState" class="text-center py-5">
+                                    <i class="fas fa-table fa-3x mb-3 text-muted"></i>
+                                    <h5 class="text-muted">No dataset generated yet</h5>
+                                    <p class="text-muted">Configure your options and click "Generate Dataset"</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pipeline Monitoring Tab -->
+            <div class="tab-pane fade" id="pipeline" role="tabpanel">
+                <div class="row mt-4">
+                    <div class="col-md-4">
+                        <div class="card pipeline-card">
+                            <div class="card-header">
+                                <i class="fas fa-project-diagram me-2"></i>Pipeline Network
+                            </div>
+                            <div class="card-body">
+                                <div class="pipeline-status">
+                                    <div class="pipeline-status-indicator status-normal"></div>
+                                    <div>
+                                        <strong>Main Oil Pipeline (North)</strong>
+                                        <div class="text-muted small">Throughput: 12,450 bbl/hr</div>
+                                    </div>
+                                </div>
+                                <div class="pipeline-status">
+                                    <div class="pipeline-status-indicator status-warning"></div>
+                                    <div>
+                                        <strong>Gas Pipeline (East)</strong>
+                                        <div class="text-muted small">Pressure fluctuation detected</div>
+                                    </div>
+                                </div>
+                                <div class="pipeline-status">
+                                    <div class="pipeline-status-indicator status-normal"></div>
+                                    <div>
+                                        <strong>Water Pipeline (Coastal)</strong>
+                                        <div class="text-muted small">Flow: 8,200 m³/hr</div>
+                                    </div>
+                                </div>
+                                <div class="pipeline-status">
+                                    <div class="pipeline-status-indicator status-danger"></div>
+                                    <div>
+                                        <strong>Crude Pipeline (West)</strong>
+                                        <div class="text-muted small">Leak detected at KM 42</div>
+                                    </div>
+                                </div>
+                                
+                                <hr>
+                                
+                                <button class="btn btn-primary w-100" onclick="generatePipelineData()">
+                                    <i class="fas fa-sync-alt me-2"></i>Generate New Data
+                                </button>
+                                
+                                <div class="mt-3">
+                                    <button class="btn btn-success w-100" onclick="exportPipelineData()">
+                                        <i class="fas fa-download me-2"></i>Export Current Data
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card mt-4">
+                            <div class="card-header">
+                                <i class="fas fa-filter me-2"></i>Pipeline Alerts
+                            </div>
+                            <div class="card-body">
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    <strong>Gas Pipeline (East)</strong> - Pressure fluctuation detected at junction 7B
+                                </div>
+                                <div class="alert alert-danger">
+                                    <i class="fas fa-fire me-2"></i>
+                                    <strong>Crude Pipeline (West)</strong> - Possible leak detected at KM 42
+                                </div>
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <strong>Main Oil Pipeline (North)</strong> - Scheduled maintenance in 3 days
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fas fa-chart-line me-2"></i>Pipeline Metrics
+                            </div>
+                            <div class="card-body">
+                                <canvas id="pipelineChart"></canvas>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <i class="fas fa-tachometer-alt me-2"></i>Pressure Monitoring
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="pressureChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <i class="fas fa-ruler-combined me-2"></i>Flow Rates
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="flowChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Custom Dataset Builder Tab -->
+            <div class="tab-pane fade" id="custom" role="tabpanel">
+                <div class="row mt-4">
+                    <div class="col-md-5">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fas fa-cogs me-2"></i>Custom Field Builder
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="customRecordCount" class="form-label">Number of Records</label>
+                                    <input type="number" class="form-control" id="customRecordCount" min="1" max="100000" value="100">
+                                </div>
+                                
+                                <div class="custom-field-form">
+                                    <h5><i class="fas fa-plus-circle me-2"></i>Add New Field</h5>
+                                    <div class="mb-3">
+                                        <label for="fieldName" class="form-label">Field Name</label>
+                                        <input type="text" class="form-control" id="fieldName" placeholder="e.g., Temperature">
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="fieldType" class="form-label">Data Type</label>
+                                        <select class="form-select" id="fieldType" onchange="updateFieldOptions()">
+                                            <option value="number">Number</option>
+                                            <option value="integer">Integer</option>
+                                            <option value="text">Text</option>
+                                            <option value="date">Date</option>
+                                            <option value="boolean">True/False</option>
+                                            <option value="selection">Selection List</option>
+                                            <option value="formula">Formula</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div id="fieldOptionsContainer">
+                                        <!-- Dynamic options will appear here based on field type -->
+                                        <div class="mb-3 number-options">
+                                            <label for="minValue" class="form-label">Minimum Value</label>
+                                            <input type="number" class="form-control" id="minValue" value="0">
+                                        </div>
+                                        <div class="mb-3 number-options">
+                                            <label for="maxValue" class="form-label">Maximum Value</label>
+                                            <input type="number" class="form-control" id="maxValue" value="100">
+                                        </div>
+                                        <div class="mb-3 number-options">
+                                            <label for="decimalPlaces" class="form-label">Decimal Places</label>
+                                            <input type="number" class="form-control" id="decimalPlaces" min="0" max="6" value="2">
+                                        </div>
+                                    </div>
+                                    
+                                    <button class="btn btn-primary w-100" onclick="addCustomField()">
+                                        <i class="fas fa-plus me-2"></i>Add Field
+                                    </button>
+                                </div>
+                                
+                                <div class="mt-4">
+                                    <h5><i class="fas fa-list me-2"></i>Current Fields</h5>
+                                    <div id="customFieldsList" class="mb-3">
+                                        <!-- Added fields will appear here -->
+                                        <div class="alert alert-info">No fields added yet</div>
+                                    </div>
+                                    
+                                    <button id="generateCustomBtn" class="btn btn-warning w-100 py-2" onclick="generateCustomData()" disabled>
+                                        <i class="fas fa-magic me-2"></i>Generate Custom Dataset
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-7">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fas fa-table me-2"></i>Custom Dataset Preview
+                            </div>
+                            <div class="card-body">
+                                <div class="loading-spinner" id="customLoadingSpinner">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    <p class="mt-2">Generating your custom dataset...</p>
+                                </div>
+                                
+                                <div id="customPreviewSection" style="display: none;">
+                                    <div class="alert alert-success mb-3">
+                                        <i class="fas fa-check-circle me-2"></i>Custom dataset generated successfully! 
+                                        <span id="customRecordCountBadge" class="badge bg-primary ms-2"></span>
+                                    </div>
+                                    
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-hover table-bordered" id="customPreviewTable">
+                                            <thead>
+                                                <tr id="customTableHeader"></tr>
+                                            </thead>
+                                            <tbody id="customTableBody"></tbody>
+                                        </table>
+                                    </div>
+                                    
+                                    <div class="mt-4">
+                                        <h5 class="mb-3"><i class="fas fa-download me-2"></i>Export Dataset</h5>
+                                        <div class="d-flex flex-wrap download-buttons">
+                                            <button class="btn btn-success download-btn" onclick="exportCustomData('csv')">
+                                                <i class="fas fa-file-csv me-1"></i> CSV
+                                            </button>
+                                            <button class="btn btn-success download-btn" onclick="exportCustomData('excel')">
+                                                <i class="fas fa-file-excel me-1"></i> Excel
+                                            </button>
+                                            <button class="btn btn-success download-btn" onclick="exportCustomData('json')">
+                                                <i class="fas fa-file-code me-1"></i> JSON
+                                            </button>
+                                            <button class="btn btn-success download-btn" onclick="exportCustomData('sql')">
+                                                <i class="fas fa-database me-1"></i> SQL
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div id="customEmptyState" class="text-center py-5">
+                                    <i class="fas fa-table fa-3x mb-3 text-muted"></i>
+                                    <h5 class="text-muted">No custom dataset generated yet</h5>
+                                    <p class="text-muted">Add fields and click "Generate Custom Dataset"</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container text-center">
+            <p class="mb-0">DataGen Pro+ UltimateTools &copy; 2025 - Advanced Dataset Generator</p>
+        </div>
+    </footer>
+
+    <script>
+        // Sector definitions with available fields (same as before)
+        const sectorDefinitions = {
+            finance: {
+                name: "Finance",
+                fields: [
+                    { id: "transaction_id", name: "Transaction ID", type: "id", default: true },
+                    { id: "date", name: "Date", type: "date", default: true },
+                    { id: "account_id", name: "Account ID", type: "id", default: true },
+                    { id: "customer_name", name: "Customer Name", type: "name", default: true },
+                    { id: "amount", name: "Amount", type: "currency", default: true },
+                    { id: "currency", name: "Currency", type: "currencyCode", default: true },
+                    { id: "transaction_type", name: "Transaction Type", type: "financeType", default: true },
+                    { id: "merchant", name: "Merchant", type: "company", default: false },
+                    { id: "location", name: "Location", type: "city", default: false },
+                    { id: "credit_score", name: "Credit Score", type: "number", min: 300, max: 850, default: false },
+                    { id: "account_balance", name: "Account Balance", type: "currency", default: false },
+                    { id: "risk_level", name: "Risk Level", type: "riskLevel", default: false }
+                ]
+            },
+            oilgas: {
+                name: "Oil & Gas",
+                fields: [
+                    { id: "well_id", name: "Well ID", type: "id", default: true },
+                    { id: "date", name: "Date", type: "date", default: true },
+                    { id: "location", name: "Location", type: "coordinates", default: true },
+                    { id: "production", name: "Production (bbl)", type: "number", min: 0, max: 10000, default: true },
+                    { id: "pressure", name: "Pressure (psi)", type: "number", min: 100, max: 5000, default: true },
+                    { id: "temperature", name: "Temperature (°F)", type: "number", min: 50, max: 300, default: true },
+                    { id: "operator", name: "Operator", type: "company", default: true },
+                    { id: "oil_grade", name: "Oil Grade", type: "oilGrade", default: false },
+                    { id: "water_cut", name: "Water Cut (%)", type: "number", min: 0, max: 100, default: false },
+                    { id: "gas_oil_ratio", name: "Gas-Oil Ratio", type: "number", min: 100, max: 5000, default: false },
+                    { id: "equipment_status", name: "Equipment Status", type: "status", default: false },
+                    { id: "maintenance_due", name: "Maintenance Due", type: "date", default: false }
+                ]
+            },
+            environment: {
+                name: "Environmental",
+                fields: [
+                    { id: "site_id", name: "Site ID", type: "id", default: true },
+                    { id: "date", name: "Date", type: "date", default: true },
+                    { id: "location", name: "Location", type: "coordinates", default: true },
+                    { id: "air_quality", name: "Air Quality Index", type: "number", min: 0, max: 500, default: true },
+                    { id: "water_ph", name: "Water pH", type: "number", min: 0, max: 14, decimals: 1, default: true },
+                    { id: "temperature", name: "Temperature (°C)", type: "number", min: -20, max: 50, default: true },
+                    { id: "co2_level", name: "CO2 Level (ppm)", type: "number", min: 300, max: 2000, default: false },
+                    { id: "noise_level", name: "Noise Level (dB)", type: "number", min: 20, max: 120, default: false },
+                    { id: "wind_speed", name: "Wind Speed (km/h)", type: "number", min: 0, max: 150, default: false },
+                    { id: "rainfall", name: "Rainfall (mm)", type: "number", min: 0, max: 300, default: false },
+                    { id: "soil_quality", name: "Soil Quality Index", type: "number", min: 0, max: 100, default: false },
+                    { id: "biodiversity", name: "Biodiversity Index", type: "number", min: 0, max: 10, decimals: 1, default: false }
+                ]
+            },
+            engineering: {
+                name: "Engineering",
+                fields: [
+                    { id: "project_id", name: "Project ID", type: "id", default: true },
+                    { id: "project_name", name: "Project Name", type: "projectName", default: true },
+                    { id: "start_date", name: "Start Date", type: "date", default: true },
+                    { id: "end_date", name: "End Date", type: "date", default: true },
+                    { id: "budget", name: "Budget ($)", type: "currency", default: true },
+                    { id: "status", name: "Status", type: "projectStatus", default: true },
+                    { id: "engineer", name: "Lead Engineer", type: "name", default: false },
+                    { id: "location", name: "Location", type: "city", default: false },
+                    { id: "materials", name: "Materials Count", type: "number", min: 1, max: 50, default: false },
+                    { id: "safety_incidents", name: "Safety Incidents", type: "number", min: 0, max: 20, default: false },
+                    { id: "completion", name: "Completion (%)", type: "number", min: 0, max: 100, default: false },
+                    { id: "risk_factor", name: "Risk Factor", type: "number", min: 1, max: 10, default: false }
+                ]
+            }
+        };
+
+        // Current state
+        let currentSector = 'finance';
+        let generatedData = [];
+        let selectedFields = [];
+        let customFields = [];
+        let customGeneratedData = [];
+        let pipelineData = [];
+        let pipelineCharts = {};
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSectorFields(currentSector);
+            initializePipelineCharts();
+            generatePipelineData();
+        });
+
+        // Sector selection (same as before)
+        function selectSector(element, sector) {
+            currentSector = sector;
+            
+            // Update UI
+            document.querySelectorAll('.sector-option').forEach(opt => {
+                opt.classList.remove('active');
+            });
+            element.classList.add('active');
+            
+            // Load fields for this sector
+            loadSectorFields(sector);
+        }
+
+        // Load fields for selected sector (same as before)
+        function loadSectorFields(sector) {
+            const sectorDef = sectorDefinitions[sector];
+            const fieldOptionsDiv = document.getElementById('fieldOptions');
+            fieldOptionsDiv.innerHTML = '';
+            
+            sectorDef.fields.forEach(field => {
+                const fieldId = `field_${field.id}`;
+                const checkbox = document.createElement('div');
+                checkbox.className = 'form-check';
+                checkbox.innerHTML = `
+                    <input class="form-check-input" type="checkbox" id="${fieldId}" 
+                           ${field.default ? 'checked' : ''}>
+                    <label class="form-check-label" for="${fieldId}">
+                        ${field.name} <small class="text-muted">(${getTypeDescription(field.type)})</small>
+                    </label>
+                `;
+                fieldOptionsDiv.appendChild(checkbox);
+            });
+        }
+
+        // Helper function to get type descriptions (same as before)
+        function getTypeDescription(type) {
+            const descriptions = {
+                'id': 'Unique ID',
+                'date': 'Date',
+                'name': 'Name',
+                'currency': 'Currency',
+                'currencyCode': 'Currency Code',
+                'financeType': 'Transaction Type',
+                'company': 'Company',
+                'city': 'City',
+                'number': 'Number',
+                'riskLevel': 'Risk Level',
+                'coordinates': 'Coordinates',
+                'oilGrade': 'Oil Grade',
+                'status': 'Status',
+                'projectName': 'Project Name',
+                'projectStatus': 'Project Status'
+            };
+            return descriptions[type] || type;
+        }
+
+        // Generate data based on selected options (same as before)
+        function generateData() {
+            // Show loading spinner
+            document.getElementById('loadingSpinner').style.display = 'block';
+            document.getElementById('previewSection').style.display = 'none';
+            document.getElementById('emptyState').style.display = 'none';
+            
+            // Get selected fields
+            selectedFields = [];
+            const sectorDef = sectorDefinitions[currentSector];
+            sectorDef.fields.forEach(field => {
+                if (document.getElementById(`field_${field.id}`).checked) {
+                    selectedFields.push(field);
+                }
+            });
+            
+            // Get record count
+            const recordCount = parseInt(document.getElementById('recordCount').value);
+            if (isNaN(recordCount) || recordCount < 1) {
+                alert('Please enter a valid number of records');
+                return;
+            }
+            
+            // Generate data (with slight delay to show loading spinner)
+            setTimeout(() => {
+                generatedData = [];
+                
+                for (let i = 0; i < recordCount; i++) {
+                    let record = {};
+                    selectedFields.forEach(field => {
+                        record[field.id] = generateFieldValue(field);
+                    });
+                    generatedData.push(record);
+                }
+                
+                // Update UI
+                updatePreview();
+                
+                // Hide loading spinner, show preview
+                document.getElementById('loadingSpinner').style.display = 'none';
+                document.getElementById('previewSection').style.display = 'block';
+                
+                // Update badges
+                document.getElementById('recordCountBadge').textContent = `${recordCount} records`;
+                document.getElementById('sectorBadge').textContent = sectorDef.name;
+            }, 300);
+        }
+
+        // Generate value for a specific field type (same as before)
+        function generateFieldValue(field) {
+            switch(field.type) {
+                case 'id':
+                    return faker.datatype.uuid().substring(0, 8);
+                case 'date':
+                    return faker.date.recent(365).toISOString().split('T')[0];
+                case 'name':
+                    return faker.name.findName();
+                case 'currency':
+                    return parseFloat(faker.finance.amount(field.min || 0, field.max || 100000, field.decimals || 2));
+                case 'currencyCode':
+                    return faker.finance.currencyCode();
+                case 'financeType':
+                    return faker.random.arrayElement(['Deposit', 'Withdrawal', 'Transfer', 'Payment', 'Refund']);
+                case 'company':
+                    return faker.company.companyName();
+                case 'city':
+                    return faker.address.city();
+                case 'number':
+                    let value = faker.datatype.number({ 
+                        min: field.min || 0, 
+                        max: field.max || 100 
+                    });
+                    if (field.decimals) {
+                        value += parseFloat((Math.random()).toFixed(field.decimals));
+                    }
+                    return value;
+                case 'riskLevel':
+                    return faker.random.arrayElement(['Low', 'Medium', 'High', 'Critical']);
+                case 'coordinates':
+                    return `${parseFloat(faker.address.latitude()).toFixed(4)}, ${parseFloat(faker.address.longitude()).toFixed(4)}`;
+                case 'oilGrade':
+                    return faker.random.arrayElement(['Light Sweet', 'Heavy', 'Sour', 'Extra Light', 'Brent Blend']);
+                case 'status':
+                    return faker.random.arrayElement(['Normal', 'Warning', 'Critical', 'Maintenance']);
+                case 'projectName':
+                    return `${faker.commerce.productName()} Project`;
+                case 'projectStatus':
+                    return faker.random.arrayElement(['Planning', 'In Progress', 'On Hold', 'Completed', 'Cancelled']);
+                default:
+                    return faker.lorem.word();
+            }
+        }
+
+        // Update the preview table (same as before)
+        function updatePreview() {
+            const tableHeader = document.getElementById('tableHeader');
+            const tableBody = document.getElementById('tableBody');
+            
+            // Clear existing content
+            tableHeader.innerHTML = '';
+            tableBody.innerHTML = '';
+            
+            // Add headers
+            selectedFields.forEach(field => {
+                const th = document.createElement('th');
+                th.textContent = field.name;
+                tableHeader.appendChild(th);
+            });
+            
+            // Add sample rows (first 10 records)
+            const displayCount = Math.min(10, generatedData.length);
+            for (let i = 0; i < displayCount; i++) {
+                const row = document.createElement('tr');
+                selectedFields.forEach(field => {
+                    const td = document.createElement('td');
+                    let value = generatedData[i][field.id];
+                    
+                    // Format specific types
+                    if (field.type === 'currency') {
+                        value = value.toLocaleString('en-US', {
+                            style: 'currency',
+                            currency: 'USD'
+                        });
+                    } else if (field.type === 'number' && field.decimals) {
+                        value = parseFloat(value).toFixed(field.decimals);
+                    }
+                    
+                    td.textContent = value;
+                    row.appendChild(td);
+                });
+                tableBody.appendChild(row);
+            }
+        }
+
+        // Export data in different formats (same as before)
+        function exportData(format) {
+            if (generatedData.length === 0) {
+                alert('No data to export. Please generate data first.');
+                return;
+            }
+            
+            let content, mimeType, fileName, extension;
+            const sectorName = sectorDefinitions[currentSector].name.replace(/\s+/g, '_');
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+            
+            switch(format) {
+                case 'csv':
+                    content = convertToCSV();
+                    mimeType = 'text/csv';
+                    extension = 'csv';
+                    break;
+                case 'excel':
+                    content = convertToExcel();
+                    mimeType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+                    extension = 'xlsx';
+                    break;
+                case 'json':
+                    content = JSON.stringify(generatedData, null, 2);
+                    mimeType = 'application/json';
+                    extension = 'json';
+                    break;
+                case 'sql':
+                    content = convertToSQL();
+                    mimeType = 'application/sql';
+                    extension = 'sql';
+                    break;
+                default:
+                    return;
+            }
+            
+            fileName = `DataGen_${sectorName}_${timestamp}.${extension}`;
+            
+            if (format === 'excel') {
+                // Special handling for Excel
+                XLSX.writeFile(content, fileName);
+            } else {
+                // For other formats
+                const blob = new Blob([content], { type: mimeType });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+        }
+
+        // Convert data to CSV (same as before)
+        function convertToCSV() {
+            let csv = '';
+            
+            // Headers
+            csv += selectedFields.map(field => `"${field.name}"`).join(',') + '\n';
+            
+            // Data rows
+            generatedData.forEach(record => {
+                csv += selectedFields.map(field => {
+                    let value = record[field.id];
+                    
+                    // Format specific types
+                    if (field.type === 'currency') {
+                        value = value.toLocaleString('en-US', {
+                            style: 'currency',
+                            currency: 'USD'
+                        });
+                    } else if (field.type === 'number' && field.decimals) {
+                        value = parseFloat(value).toFixed(field.decimals);
+                    }
+                    
+                    // Escape quotes and wrap in quotes
+                    return `"${String(value).replace(/"/g, '""')}"`;
+                }).join(',') + '\n';
+            });
+            
+            return csv;
+        }
+
+        // Convert data to Excel (same as before)
+        function convertToExcel() {
+            const wb = XLSX.utils.book_new();
+            
+            // Prepare data for worksheet
+            const excelData = [
+                selectedFields.map(field => field.name) // Header row
+            ];
+            
+            generatedData.forEach(record => {
+                const row = selectedFields.map(field => {
+                    let value = record[field.id];
+                    
+                    // Format specific types
+                    if (field.type === 'currency') {
+                        value = parseFloat(value).toFixed(2);
+                    } else if (field.type === 'number' && field.decimals) {
+                        value = parseFloat(value).toFixed(field.decimals);
+                    }
+                    
+                    return value;
+                });
+                excelData.push(row);
+            });
+            
+            const ws = XLSX.utils.aoa_to_sheet(excelData);
+            XLSX.utils.book_append_sheet(wb, ws, 'GeneratedData');
+            
+            return wb;
+        }
+
+        // Convert data to SQL INSERT statements (same as before)
+        function convertToSQL() {
+            const tableName = `data_${currentSector}`;
+            let sql = `-- DataGen Pro SQL Export\n`;
+            sql += `-- Sector: ${sectorDefinitions[currentSector].name}\n`;
+            sql += `-- Records: ${generatedData.length}\n`;
+            sql += `-- Generated: ${new Date().toISOString()}\n\n`;
+            sql += `CREATE TABLE IF NOT EXISTS ${tableName} (\n`;
+            
+            // Column definitions
+            sql += selectedFields.map(field => {
+                let columnDef = `    ${field.id} `;
+                
+                switch(field.type) {
+                    case 'id':
+                    case 'currencyCode':
+                    case 'financeType':
+                    case 'oilGrade':
+                    case 'status':
+                    case 'projectStatus':
+                    case 'riskLevel':
+                        columnDef += 'VARCHAR(50)';
+                        break;
+                    case 'date':
+                        columnDef += 'DATE';
+                        break;
+                    case 'name':
+                    case 'company':
+                    case 'city':
+                    case 'projectName':
+                        columnDef += 'VARCHAR(100)';
+                        break;
+                    case 'currency':
+                    case 'number':
+                        columnDef += 'DECIMAL(15,2)';
+                        break;
+                    case 'coordinates':
+                        columnDef += 'VARCHAR(50)';
+                        break;
+                    default:
+                        columnDef += 'VARCHAR(255)';
+                }
+                
+                return columnDef;
+            }).join(',\n') + '\n);\n\n';
+            
+            // INSERT statements
+            generatedData.forEach(record => {
+                sql += `INSERT INTO ${tableName} (`;
+                sql += selectedFields.map(field => field.id).join(', ');
+                sql += ') VALUES (';
+                sql += selectedFields.map(field => {
+                    let value = record[field.id];
+                    
+                    // Format for SQL
+                    if (['id', 'name', 'company', 'city', 'currencyCode', 
+                         'financeType', 'oilGrade', 'status', 'projectStatus', 
+                         'riskLevel', 'projectName', 'coordinates'].includes(field.type)) {
+                        return `'${String(value).replace(/'/g, "''")}'`;
+                    } else if (field.type === 'date') {
+                        return `'${value}'`;
+                    } else {
+                        return value;
+                    }
+                }).join(', ');
+                sql += ');\n';
+            });
+            
+            return sql;
+        }
+
+        // Pipeline Monitoring Functions
+        function initializePipelineCharts() {
+            // Main pipeline chart
+            const pipelineCtx = document.getElementById('pipelineChart').getContext('2d');
+            pipelineCharts.main = new Chart(pipelineCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        {
+                            label: 'Oil Flow (bbl/hr)',
+                            borderColor: '#e74c3c',
+                            backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                            data: []
+                        },
+                        {
+                            label: 'Gas Flow (m³/hr)',
+                            borderColor: '#3498db',
+                            backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                            data: []
+                        },
+                        {
+                            label: 'Water Flow (m³/hr)',
+                            borderColor: '#2ecc71',
+                            backgroundColor: 'rgba(46, 204, 113, 0.1)',
+                            data: []
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Pipeline Flow Rates - Last 24 Hours'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            // Pressure chart
+            const pressureCtx = document.getElementById('pressureChart').getContext('2d');
+            pipelineCharts.pressure = new Chart(pressureCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Main Oil', 'Gas', 'Water', 'Crude'],
+                    datasets: [{
+                        label: 'Pressure (psi)',
+                        data: [],
+                        backgroundColor: [
+                            'rgba(231, 76, 60, 0.7)',
+                            'rgba(52, 152, 219, 0.7)',
+                            'rgba(46, 204, 113, 0.7)',
+                            'rgba(155, 89, 182, 0.7)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Current Pipeline Pressures'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+            // Flow chart
+            const flowCtx = document.getElementById('flowChart').getContext('2d');
+            pipelineCharts.flow = new Chart(flowCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Oil', 'Gas', 'Water'],
+                    datasets: [{
+                        data: [],
+                        backgroundColor: [
+                            'rgba(231, 76, 60, 0.7)',
+                            'rgba(52, 152, 219, 0.7)',
+                            'rgba(46, 204, 113, 0.7)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Flow Distribution'
+                        }
+                    }
+                }
+            });
+        }
+
+        function generatePipelineData() {
+            // Generate timestamps for last 24 hours
+            const labels = [];
+            const now = new Date();
+            for (let i = 23; i >= 0; i--) {
+                const time = new Date(now);
+                time.setHours(now.getHours() - i);
+                labels.push(time.getHours() + ':00');
+            }
+            
+            // Generate flow data with some random variation
+            const oilFlow = Array.from({length: 24}, () => Math.floor(10000 + Math.random() * 5000));
+            const gasFlow = Array.from({length: 24}, () => Math.floor(8000 + Math.random() * 4000));
+            const waterFlow = Array.from({length: 24}, () => Math.floor(6000 + Math.random() * 3000));
+            
+            // Update main chart
+            pipelineCharts.main.data.labels = labels;
+            pipelineCharts.main.data.datasets[0].data = oilFlow;
+            pipelineCharts.main.data.datasets[1].data = gasFlow;
+            pipelineCharts.main.data.datasets[2].data = waterFlow;
+            pipelineCharts.main.update();
+            
+            // Update pressure chart
+            pipelineCharts.pressure.data.datasets[0].data = [
+                1200 + Math.random() * 300,  // Oil
+                800 + Math.random() * 200,   // Gas
+                600 + Math.random() * 150,   // Water
+                1500 + Math.random() * 400   // Crude
+            ];
+            pipelineCharts.pressure.update();
+            
+            // Update flow chart
+            pipelineCharts.flow.data.datasets[0].data = [
+                oilFlow.reduce((a, b) => a + b, 0) / 24,
+                gasFlow.reduce((a, b) => a + b, 0) / 24,
+                waterFlow.reduce((a, b) => a + b, 0) / 24
+            ];
+            pipelineCharts.flow.update();
+            
+            // Store the generated data
+            pipelineData = labels.map((time, i) => ({
+                timestamp: time,
+                oil_flow: oilFlow[i],
+                gas_flow: gasFlow[i],
+                water_flow: waterFlow[i],
+                oil_pressure: pipelineCharts.pressure.data.datasets[0].data[0],
+                gas_pressure: pipelineCharts.pressure.data.datasets[0].data[1],
+                water_pressure: pipelineCharts.pressure.data.datasets[0].data[2],
+                crude_pressure: pipelineCharts.pressure.data.datasets[0].data[3]
+            }));
+        }
+
+        function exportPipelineData() {
+            if (pipelineData.length === 0) {
+                alert('No pipeline data to export. Please generate data first.');
+                return;
+            }
+            
+            const content = JSON.stringify(pipelineData, null, 2);
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+            const fileName = `PipelineData_${timestamp}.json`;
+            
+            const blob = new Blob([content], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Custom Dataset Builder Functions
+        function updateFieldOptions() {
+            const fieldType = document.getElementById('fieldType').value;
+            let optionsHTML = '';
+            
+            switch(fieldType) {
+                case 'number':
+                case 'integer':
+                    optionsHTML = `
+                        <div class="mb-3 number-options">
+                            <label for="minValue" class="form-label">Minimum Value</label>
+                            <input type="number" class="form-control" id="minValue" value="0">
+                        </div>
+                        <div class="mb-3 number-options">
+                            <label for="maxValue" class="form-label">Maximum Value</label>
+                            <input type="number" class="form-control" id="maxValue" value="100">
+                        </div>
+                        ${fieldType === 'number' ? `
+                        <div class="mb-3 number-options">
+                            <label for="decimalPlaces" class="form-label">Decimal Places</label>
+                            <input type="number" class="form-control" id="decimalPlaces" min="0" max="6" value="2">
+                        </div>
+                        ` : ''}
+                    `;
+                    break;
+                case 'text':
+                    optionsHTML = `
+                        <div class="mb-3 text-options">
+                            <label for="textPattern" class="form-label">Text Pattern</label>
+                            <select class="form-select" id="textPattern">
+                                <option value="random">Random Text</option>
+                                <option value="name">Names</option>
+                                <option value="city">City Names</option>
+                                <option value="company">Company Names</option>
+                                <option value="email">Email Addresses</option>
+                            </select>
+                        </div>
+                        <div class="mb-3 text-options">
+                            <label for="textPrefix" class="form-label">Prefix (optional)</label>
+                            <input type="text" class="form-control" id="textPrefix" placeholder="e.g., User_">
+                        </div>
+                    `;
+                    break;
+                case 'date':
+                    optionsHTML = `
+                        <div class="mb-3 date-options">
+                            <label for="startDate" class="form-label">Start Date</label>
+                            <input type="date" class="form-control" id="startDate" value="${new Date(new Date().setFullYear(new Date().getFullYear() - 1)).toISOString().split('T')[0]}">
+                        </div>
+                        <div class="mb-3 date-options">
+                            <label for="endDate" class="form-label">End Date</label>
+                            <input type="date" class="form-control" id="endDate" value="${new Date().toISOString().split('T')[0]}">
+                        </div>
+                        <div class="mb-3 date-options">
+                            <label for="dateFormat" class="form-label">Date Format</label>
+                            <select class="form-select" id="dateFormat">
+                                <option value="yyyy-mm-dd">YYYY-MM-DD</option>
+                                <option value="mm/dd/yyyy">MM/DD/YYYY</option>
+                                <option value="dd-mm-yyyy">DD-MM-YYYY</option>
+                                <option value="timestamp">Timestamp</option>
+                            </select>
+                        </div>
+                    `;
+                    break;
+                case 'boolean':
+                    optionsHTML = `
+                        <div class="mb-3 boolean-options">
+                            <label for="trueProbability" class="form-label">Probability of "True" (%)</label>
+                            <input type="number" class="form-control" id="trueProbability" min="0" max="100" value="50">
+                        </div>
+                        <div class="mb-3 boolean-options">
+                            <label for="trueLabel" class="form-label">"True" Label</label>
+                            <input type="text" class="form-control" id="trueLabel" value="Yes">
+                        </div>
+                        <div class="mb-3 boolean-options">
+                            <label for="falseLabel" class="form-label">"False" Label</label>
+                            <input type="text" class="form-control" id="falseLabel" value="No">
+                        </div>
+                    `;
+                    break;
+                case 'selection':
+                    optionsHTML = `
+                        <div class="mb-3 selection-options">
+                            <label for="selectionValues" class="form-label">Options (comma separated)</label>
+                            <textarea class="form-control" id="selectionValues" rows="3" placeholder="e.g., High, Medium, Low"></textarea>
+                        </div>
+                        <div class="mb-3 selection-options">
+                            <label for="selectionWeights" class="form-label">Weights (optional, comma separated)</label>
+                            <input type="text" class="form-control" id="selectionWeights" placeholder="e.g., 1, 2, 1">
+                        </div>
+                    `;
+                    break;
+                case 'formula':
+                    optionsHTML = `
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>Formula fields will be calculated based on other fields. Add this field after the fields it depends on.
+                        </div>
+                        <div class="mb-3 formula-options">
+                            <label for="formulaExpression" class="form-label">Formula (JavaScript syntax)</label>
+                            <textarea class="form-control" id="formulaExpression" rows="3" placeholder="e.g., field1 * field2 / 100"></textarea>
+                        </div>
+                        <div class="mb-3 formula-options">
+                            <label for="formulaResultType" class="form-label">Result Type</label>
+                            <select class="form-select" id="formulaResultType">
+                                <option value="number">Number</option>
+                                <option value="integer">Integer</option>
+                                <option value="text">Text</option>
+                            </select>
+                        </div>
+                    `;
+                    break;
+            }
+            
+            document.getElementById('fieldOptionsContainer').innerHTML = optionsHTML;
+        }
+
+        function addCustomField() {
+            const fieldName = document.getElementById('fieldName').value.trim();
+            if (!fieldName) {
+                alert('Please enter a field name');
+                return;
+            }
+            
+            const fieldType = document.getElementById('fieldType').value;
+            const fieldId = fieldName.toLowerCase().replace(/\s+/g, '_');
+            
+            const fieldConfig = {
+                id: fieldId,
+                name: fieldName,
+                type: fieldType
+            };
+            
+            // Add type-specific configuration
+            switch(fieldType) {
+                case 'number':
+                case 'integer':
+                    fieldConfig.min = parseFloat(document.getElementById('minValue').value);
+                    fieldConfig.max = parseFloat(document.getElementById('maxValue').value);
+                    if (fieldType === 'number') {
+                        fieldConfig.decimals = parseInt(document.getElementById('decimalPlaces').value);
+                    }
+                    break;
+                case 'text':
+                    fieldConfig.pattern = document.getElementById('textPattern').value;
+                    fieldConfig.prefix = document.getElementById('textPrefix').value;
+                    break;
+                case 'date':
+                    fieldConfig.startDate = document.getElementById('startDate').value;
+                    fieldConfig.endDate = document.getElementById('endDate').value;
+                    fieldConfig.format = document.getElementById('dateFormat').value;
+                    break;
+                case 'boolean':
+                    fieldConfig.trueProbability = parseInt(document.getElementById('trueProbability').value);
+                    fieldConfig.trueLabel = document.getElementById('trueLabel').value;
+                    fieldConfig.falseLabel = document.getElementById('falseLabel').value;
+                    break;
+                case 'selection':
+                    const optionsText = document.getElementById('selectionValues').value.trim();
+                    if (!optionsText) {
+                        alert('Please enter at least one option');
+                        return;
+                    }
+                    fieldConfig.options = optionsText.split(',').map(item => item.trim());
+                    
+                    const weightsText = document.getElementById('selectionWeights').value.trim();
+                    if (weightsText) {
+                        fieldConfig.weights = weightsText.split(',').map(item => parseInt(item.trim()));
+                    }
+                    break;
+                case 'formula':
+                    const formula = document.getElementById('formulaExpression').value.trim();
+                    if (!formula) {
+                        alert('Please enter a formula');
+                        return;
+                    }
+                    fieldConfig.formula = formula;
+                    fieldConfig.resultType = document.getElementById('formulaResultType').value;
+                    break;
+            }
+            
+            // Add to fields list
+            customFields.push(fieldConfig);
+            
+            // Update UI
+            updateCustomFieldsList();
+            
+            // Clear form
+            document.getElementById('fieldName').value = '';
+            
+            // Enable generate button
+            document.getElementById('generateCustomBtn').disabled = false;
+        }
+
+        function updateCustomFieldsList() {
+            const fieldsListDiv = document.getElementById('customFieldsList');
+            
+            if (customFields.length === 0) {
+                fieldsListDiv.innerHTML = '<div class="alert alert-info">No fields added yet</div>';
+                return;
+            }
+            
+            let html = '<div class="list-group">';
+            
+            customFields.forEach((field, index) => {
+                let description = '';
+                
+                switch(field.type) {
+                    case 'number':
+                        description = `Number (${field.min} to ${field.max}, ${field.decimals} decimals)`;
+                        break;
+                    case 'integer':
+                        description = `Integer (${field.min} to ${field.max})`;
+                        break;
+                    case 'text':
+                        description = `Text (${field.pattern}${field.prefix ? ', prefix: ' + field.prefix : ''})`;
+                        break;
+                    case 'date':
+                        description = `Date (${field.startDate} to ${field.endDate}, format: ${field.format})`;
+                        break;
+                    case 'boolean':
+                        description = `Boolean (${field.trueProbability}% ${field.trueLabel}, else ${field.falseLabel})`;
+                        break;
+                    case 'selection':
+                        description = `Selection (${field.options.join(', ')})`;
+                        if (field.weights) {
+                            description += ` with weights (${field.weights.join(', ')})`;
+                        }
+                        break;
+                    case 'formula':
+                        description = `Formula (${field.formula}, result as ${field.resultType})`;
+                        break;
+                }
+                
+                html += `
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>${field.name}</strong>
+                            <div class="text-muted small">${description}</div>
+                        </div>
+                        <button class="btn btn-sm btn-danger" onclick="removeCustomField(${index})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            fieldsListDiv.innerHTML = html;
+        }
+
+        function removeCustomField(index) {
+            customFields.splice(index, 1);
+            updateCustomFieldsList();
+            
+            if (customFields.length === 0) {
+                document.getElementById('generateCustomBtn').disabled = true;
+            }
+        }
+
+        function generateCustomData() {
+            // Show loading spinner
+            document.getElementById('customLoadingSpinner').style.display = 'block';
+            document.getElementById('customPreviewSection').style.display = 'none';
+            document.getElementById('customEmptyState').style.display = 'none';
+            
+            // Get record count
+            const recordCount = parseInt(document.getElementById('customRecordCount').value);
+            if (isNaN(recordCount) || recordCount < 1) {
+                alert('Please enter a valid number of records');
+                return;
+            }
+            
+            // Generate data (with slight delay to show loading spinner)
+            setTimeout(() => {
+                customGeneratedData = [];
+                
+                for (let i = 0; i < recordCount; i++) {
+                    let record = {};
+                    
+                    // First pass - generate all non-formula fields
+                    customFields.forEach(field => {
+                        if (field.type !== 'formula') {
+                            record[field.id] = generateCustomFieldValue(field);
+                        }
+                    });
+                    
+                    // Second pass - calculate formula fields
+                    customFields.forEach(field => {
+                        if (field.type === 'formula') {
+                            try {
+                                // Create a safe context for formula evaluation
+                                const context = {};
+                                customFields.forEach(f => {
+                                    if (f.type !== 'formula' && record[f.id] !== undefined) {
+                                        context[f.id] = record[f.id];
+                                    }
+                                });
+                                
+                                // Evaluate the formula
+                                const result = new Function('record', `return ${field.formula}`)(context);
+                                
+                                // Format the result based on type
+                                if (field.resultType === 'integer') {
+                                    record[field.id] = Math.round(result);
+                                } else if (field.resultType === 'number') {
+                                    record[field.id] = parseFloat(result.toFixed(2));
+                                } else {
+                                    record[field.id] = String(result);
+                                }
+                            } catch (e) {
+                                record[field.id] = `Error: ${e.message}`;
+                            }
+                        }
+                    });
+                    
+                    customGeneratedData.push(record);
+                }
+                
+                // Update UI
+                updateCustomPreview();
+                
+                // Hide loading spinner, show preview
+                document.getElementById('customLoadingSpinner').style.display = 'none';
+                document.getElementById('customPreviewSection').style.display = 'block';
+                
+                // Update badge
+                document.getElementById('customRecordCountBadge').textContent = `${recordCount} records`;
+            }, 300);
+        }
+
+        function generateCustomFieldValue(field) {
+            switch(field.type) {
+                case 'number':
+                    const numValue = field.min + Math.random() * (field.max - field.min);
+                    return parseFloat(numValue.toFixed(field.decimals));
+                case 'integer':
+                    return Math.floor(field.min + Math.random() * (field.max - field.min + 1));
+                case 'text':
+                    let textValue = '';
+                    switch(field.pattern) {
+                        case 'name':
+                            textValue = faker.name.findName();
+                            break;
+                        case 'city':
+                            textValue = faker.address.city();
+                            break;
+                        case 'company':
+                            textValue = faker.company.companyName();
+                            break;
+                        case 'email':
+                            textValue = faker.internet.email();
+                            break;
+                        default:
+                            textValue = faker.lorem.words();
+                    }
+                    return (field.prefix || '') + textValue;
+                case 'date':
+                    const start = new Date(field.startDate).getTime();
+                    const end = new Date(field.endDate).getTime();
+                    const randomDate = new Date(start + Math.random() * (end - start));
+                    
+                    switch(field.format) {
+                        case 'yyyy-mm-dd':
+                            return randomDate.toISOString().split('T')[0];
+                        case 'mm/dd/yyyy':
+                            return `${randomDate.getMonth() + 1}/${randomDate.getDate()}/${randomDate.getFullYear()}`;
+                        case 'dd-mm-yyyy':
+                            return `${randomDate.getDate()}-${randomDate.getMonth() + 1}-${randomDate.getFullYear()}`;
+                        case 'timestamp':
+                            return randomDate.getTime();
+                        default:
+                            return randomDate.toISOString();
+                    }
+                case 'boolean':
+                    return Math.random() * 100 < field.trueProbability ? field.trueLabel : field.falseLabel;
+                case 'selection':
+                    if (field.weights && field.weights.length === field.options.length) {
+                        // Weighted selection
+                        const totalWeight = field.weights.reduce((a, b) => a + b, 0);
+                        let random = Math.random() * totalWeight;
+                        let weightSum = 0;
+                        
+                        for (let i = 0; i < field.options.length; i++) {
+                            weightSum += field.weights[i];
+                            if (random <= weightSum) {
+                                return field.options[i];
+                            }
+                        }
+                    }
+                    // Default to uniform random selection
+                    return field.options[Math.floor(Math.random() * field.options.length)];
+                default:
+                    return '';
+            }
+        }
+
+        function updateCustomPreview() {
+            const tableHeader = document.getElementById('customTableHeader');
+            const tableBody = document.getElementById('customTableBody');
+            
+            // Clear existing content
+            tableHeader.innerHTML = '';
+            tableBody.innerHTML = '';
+            
+            // Add headers
+            customFields.forEach(field => {
+                const th = document.createElement('th');
+                th.textContent = field.name;
+                tableHeader.appendChild(th);
+            });
+            
+            // Add sample rows (first 10 records)
+            const displayCount = Math.min(10, customGeneratedData.length);
+            for (let i = 0; i < displayCount; i++) {
+                const row = document.createElement('tr');
+                customFields.forEach(field => {
+                    const td = document.createElement('td');
+                    td.textContent = customGeneratedData[i][field.id];
+                    row.appendChild(td);
+                });
+                tableBody.appendChild(row);
+            }
+        }
+
+        function exportCustomData(format) {
+            if (customGeneratedData.length === 0) {
+                alert('No data to export. Please generate data first.');
+                return;
+            }
+            
+            let content, mimeType, fileName, extension;
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+            
+            switch(format) {
+                case 'csv':
+                    content = convertCustomToCSV();
+                    mimeType = 'text/csv';
+                    extension = 'csv';
+                    break;
+                case 'excel':
+                    content = convertCustomToExcel();
+                    mimeType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+                    extension = 'xlsx';
+                    break;
+                case 'json':
+                    content = JSON.stringify(customGeneratedData, null, 2);
+                    mimeType = 'application/json';
+                    extension = 'json';
+                    break;
+                case 'sql':
+                    content = convertCustomToSQL();
+                    mimeType = 'application/sql';
+                    extension = 'sql';
+                    break;
+                default:
+                    return;
+            }
+            
+            fileName = `CustomData_${timestamp}.${extension}`;
+            
+            if (format === 'excel') {
+                // Special handling for Excel
+                XLSX.writeFile(content, fileName);
+            } else {
+                // For other formats
+                const blob = new Blob([content], { type: mimeType });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+        }
+
+        function convertCustomToCSV() {
+            let csv = '';
+            
+            // Headers
+            csv += customFields.map(field => `"${field.name}"`).join(',') + '\n';
+            
+            // Data rows
+            customGeneratedData.forEach(record => {
+                csv += customFields.map(field => {
+                    let value = record[field.id];
+                    return `"${String(value).replace(/"/g, '""')}"`;
+                }).join(',') + '\n';
+            });
+            
+            return csv;
+        }
+
+        function convertCustomToExcel() {
+            const wb = XLSX.utils.book_new();
+            
+            // Prepare data for worksheet
+            const excelData = [
+                customFields.map(field => field.name) // Header row
+            ];
+            
+            customGeneratedData.forEach(record => {
+                const row = customFields.map(field => record[field.id]);
+                excelData.push(row);
+            });
+            
+            const ws = XLSX.utils.aoa_to_sheet(excelData);
+            XLSX.utils.book_append_sheet(wb, ws, 'CustomData');
+            
+            return wb;
+        }
+
+        function convertCustomToSQL() {
+            const tableName = 'custom_data';
+            let sql = `-- Custom Data SQL Export\n`;
+            sql += `-- Records: ${customGeneratedData.length}\n`;
+            sql += `-- Generated: ${new Date().toISOString()}\n\n`;
+            sql += `CREATE TABLE IF NOT EXISTS ${tableName} (\n`;
+            
+            // Column definitions
+            sql += customFields.map(field => {
+                let columnDef = `    ${field.id} `;
+                
+                switch(field.type) {
+                    case 'number':
+                    case 'integer':
+                    case 'formula':
+                        if (field.resultType === 'integer') {
+                            columnDef += 'INTEGER';
+                        } else if (field.resultType === 'text' || 
+                                   (field.type === 'formula' && field.resultType === 'text')) {
+                            columnDef += 'VARCHAR(255)';
+                        } else {
+                            columnDef += 'DECIMAL(15,2)';
+                        }
+                        break;
+                    case 'text':
+                        columnDef += 'VARCHAR(255)';
+                        break;
+                    case 'date':
+                        if (field.format === 'timestamp') {
+                            columnDef += 'BIGINT';
+                        } else {
+                            columnDef += 'VARCHAR(20)';
+                        }
+                        break;
+                    case 'boolean':
+                        columnDef += 'VARCHAR(10)';
+                        break;
+                    case 'selection':
+                        columnDef += 'VARCHAR(100)';
+                        break;
+                    default:
+                        columnDef += 'VARCHAR(255)';
+                }
+                
+                return columnDef;
+            }).join(',\n') + '\n);\n\n';
+            
+            // INSERT statements
+            customGeneratedData.forEach(record => {
+                sql += `INSERT INTO ${tableName} (`;
+                sql += customFields.map(field => field.id).join(', ');
+                sql += ') VALUES (';
+                sql += customFields.map(field => {
+                    let value = record[field.id];
+                    
+                    // Format for SQL
+                    if (['text', 'boolean', 'selection'].includes(field.type) || 
+                        (field.type === 'date' && field.format !== 'timestamp') ||
+                        (field.type === 'formula' && field.resultType === 'text')) {
+                        return `'${String(value).replace(/'/g, "''")}'`;
+                    } else {
+                        return value;
+                    }
+                }).join(', ');
+                sql += ');\n';
+            });
+            
+            return sql;
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
