@@ -394,23 +394,35 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
   
+// Add this near the top of your script, with other utility functions
+function formatDate(dateString) {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  });
+}
+
   function generatePDF() {
-    // Validate required fields
-    if (!document.getElementById('company-name').value) {
-      showToast('Please enter your company name');
-      return;
-    }
-    
-    if (!document.getElementById('client-name').value) {
-      showToast('Please enter client name');
-      return;
-    }
-    
-    if (!document.getElementById('invoice-number').value) {
-      showToast('Please enter invoice number');
-      return;
-    }
-    
+  // Validate required fields
+  if (!document.getElementById('company-name').value) {
+    showToast('Please enter your company name');
+    return;
+  }
+  
+  if (!document.getElementById('client-name').value) {
+    showToast('Please enter client name');
+    return;
+  }
+  
+  if (!document.getElementById('invoice-number').value) {
+    showToast('Please enter invoice number');
+    return;
+  }
+
+  try {
     // Get all values
     const currencyCode = currencySelect.value;
     const companyName = document.getElementById('company-name').value;
@@ -460,7 +472,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     const total = subtotal + totalTax - discountAmount;
     
-    // Create new PDF with landscape orientation for more space
+    // Create new PDF
     const doc = new jsPDF({
       orientation: 'portrait',
       unit: 'mm',
@@ -472,29 +484,54 @@ document.addEventListener('DOMContentLoaded', function() {
     const pageWidth = doc.internal.pageSize.getWidth();
     const margin = 15;
     const contentWidth = pageWidth - (margin * 2);
+    const pageHeight = doc.internal.pageSize.getHeight();
+    
+    // Track current Y position
+    let currentY = margin;
     
     // Add watermark
-    doc.setFontSize(80);
-    doc.setTextColor(240, 240, 240);
-    doc.setFont('helvetica', 'normal');
-    doc.text(companyName, pageWidth / 2, 140, { angle: -30, align: 'center' });
+    const addWatermark = () => {
+      doc.setFontSize(80);
+      doc.setTextColor(240, 240, 240);
+      doc.setFont('helvetica', 'normal');
+      doc.text(companyName, pageWidth / 2, pageHeight / 2, { angle: -30, align: 'center' });
+      doc.setFontSize(10);
+      doc.setTextColor(60, 60, 60);
+    };
     
-    // Reset styles
-    doc.setFontSize(10);
-    doc.setTextColor(60, 60, 60);
+    // Check if we need a new page
+    const checkForNewPage = (requiredSpace) => {
+      if (currentY + requiredSpace > pageHeight - margin) {
+        doc.addPage();
+        currentY = margin;
+        addWatermark();
+        return true;
+      }
+      return false;
+    };
+    
+    // Add watermark to first page
+    addWatermark();
     
     // Header with logo and company info
-    let headerY = margin;
-    
     if (logoDataUrl) {
-      doc.addImage(logoDataUrl, 'JPEG', margin, headerY, 40, 25);
-      headerY += 30;
+      try {
+        doc.addImage(logoDataUrl, 'JPEG', margin, currentY, 40, 25);
+        currentY += 30;
+      } catch (e) {
+        console.error('Error adding logo:', e);
+        doc.setFontSize(18);
+        doc.setTextColor(primaryColor);
+        doc.setFont('helvetica', 'bold');
+        doc.text(companyName, margin, currentY + 10);
+        currentY += 15;
+      }
     } else {
       doc.setFontSize(18);
       doc.setTextColor(primaryColor);
       doc.setFont('helvetica', 'bold');
-      doc.text(companyName, margin, headerY + 10);
-      headerY += 15;
+      doc.text(companyName, margin, currentY + 10);
+      currentY += 15;
     }
     
     // Company details
@@ -510,15 +547,16 @@ document.addEventListener('DOMContentLoaded', function() {
     ].filter(Boolean);
     
     companyDetails.forEach((detail, index) => {
-      doc.text(detail, margin, headerY + (index * 5));
+      doc.text(detail, margin, currentY + (index * 5));
     });
     
-    // Invoice header
-    const invoiceHeaderY = margin;
+    currentY += companyDetails.length * 5;
+    
+    // Invoice header (right side)
     doc.setFontSize(24);
     doc.setTextColor(primaryColor);
     doc.setFont('helvetica', 'bold');
-    doc.text('INVOICE', pageWidth - margin, invoiceHeaderY + 10, { align: 'right' });
+    doc.text('INVOICE', pageWidth - margin, margin + 10, { align: 'right' });
     
     doc.setFontSize(10);
     doc.setTextColor(100);
@@ -532,19 +570,21 @@ document.addEventListener('DOMContentLoaded', function() {
     ].filter(Boolean);
     
     invoiceDetails.forEach((detail, index) => {
-      doc.text(detail, pageWidth - margin, invoiceHeaderY + 20 + (index * 5), { align: 'right' });
+      doc.text(detail, pageWidth - margin, margin + 20 + (index * 5), { align: 'right' });
     });
     
     // Client section
-    const clientY = logoDataUrl ? margin + 60 : margin + 40;
+    checkForNewPage(30);
+    currentY += 10; // Add space
+    
     doc.setFontSize(12);
     doc.setTextColor(primaryColor);
     doc.setFont('helvetica', 'bold');
-    doc.text('BILL TO:', margin, clientY);
+    doc.text('BILL TO:', margin, currentY);
     
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(60, 60, 60);
-    doc.text(clientName, margin, clientY + 5);
+    doc.text(clientName, margin, currentY + 5);
     
     const clientDetails = [
       clientAddress,
@@ -554,11 +594,13 @@ document.addEventListener('DOMContentLoaded', function() {
     ].filter(Boolean);
     
     clientDetails.forEach((detail, index) => {
-      doc.text(detail, margin, clientY + 10 + (index * 5));
+      doc.text(detail, margin, currentY + 10 + (index * 5));
     });
     
+    currentY += 10 + (clientDetails.length * 5);
+    
     // Items table
-    const tableY = clientY + 30 + (clientDetails.length * 5);
+    checkForNewPage(50); // Ensure enough space for table header
     
     // Prepare table data
     const tableData = items.map(item => {
@@ -576,9 +618,9 @@ document.addEventListener('DOMContentLoaded', function() {
       ];
     });
     
-    // Add table
+    // Add table with automatic page breaks
     doc.autoTable({
-      startY: tableY,
+      startY: currentY,
       head: [['Description', 'Qty', 'Unit Price', 'Tax', 'Total']],
       body: tableData,
       margin: { left: margin, right: margin },
@@ -608,45 +650,51 @@ document.addEventListener('DOMContentLoaded', function() {
         // Footer on each page
         doc.setFontSize(8);
         doc.setTextColor(100);
-        doc.text(`Page ${data.pageNumber}`, pageWidth / 2, doc.internal.pageSize.getHeight() - 10, { align: 'center' });
+        doc.text(`Page ${data.pageNumber}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
       }
     });
     
+    currentY = doc.lastAutoTable.finalY + 10;
+    
     // Totals section
-    const finalY = doc.lastAutoTable.finalY + 10;
+    checkForNewPage(40);
     
     doc.setFontSize(10);
     doc.setTextColor(60);
     
     // Subtotal
-    doc.text('Subtotal:', pageWidth - margin - 70, finalY);
-    doc.text(formatCurrency(subtotal, currencyCode), pageWidth - margin, finalY, { align: 'right' });
+    doc.text('Subtotal:', pageWidth - margin - 70, currentY);
+    doc.text(formatCurrency(subtotal, currencyCode), pageWidth - margin, currentY, { align: 'right' });
     
     // Tax
-    doc.text('Tax:', pageWidth - margin - 70, finalY + 5);
-    doc.text(formatCurrency(totalTax, currencyCode), pageWidth - margin, finalY + 5, { align: 'right' });
+    doc.text('Tax:', pageWidth - margin - 70, currentY + 5);
+    doc.text(formatCurrency(totalTax, currencyCode), pageWidth - margin, currentY + 5, { align: 'right' });
     
     // Discount
     if (discountAmount > 0) {
       const discountText = discountType === 'percentage' ? 
         `Discount (${discountValue}%)` : 'Discount';
-      doc.text(discountText, pageWidth - margin - 70, finalY + 10);
-      doc.text(`-${formatCurrency(discountAmount, currencyCode)}`, pageWidth - margin, finalY + 10, { align: 'right' });
+      doc.text(discountText, pageWidth - margin - 70, currentY + 10);
+      doc.text(`-${formatCurrency(discountAmount, currencyCode)}`, pageWidth - margin, currentY + 10, { align: 'right' });
+      currentY += 5;
     }
     
     // Total
     doc.setFontSize(12);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(primaryColor);
-    doc.text('TOTAL:', pageWidth - margin - 70, finalY + 20);
-    doc.text(formatCurrency(total, currencyCode), pageWidth - margin, finalY + 20, { align: 'right' });
+    doc.text('TOTAL:', pageWidth - margin - 70, currentY + 15);
+    doc.text(formatCurrency(total, currencyCode), pageWidth - margin, currentY + 15, { align: 'right' });
+    
+    currentY += 25;
     
     // Payment instructions
-    const paymentY = finalY + 30;
+    checkForNewPage(40);
+    
     doc.setFontSize(10);
     doc.setTextColor(primaryColor);
     doc.setFont('helvetica', 'bold');
-    doc.text('PAYMENT INSTRUCTIONS:', margin, paymentY);
+    doc.text('PAYMENT INSTRUCTIONS:', margin, currentY);
     
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(60);
@@ -662,60 +710,83 @@ document.addEventListener('DOMContentLoaded', function() {
     
     paymentDetails.push(`Amount Due: ${formatCurrency(total, currencyCode)}`);
     
-    if (paymentDetails.length > 1) { // More than just amount due
-      doc.text('Please make payment using the following details:', margin, paymentY + 5);
+    if (paymentDetails.length > 1) {
+      doc.text('Please make payment using the following details:', margin, currentY + 5);
       paymentDetails.forEach((detail, index) => {
-        doc.text(detail, margin, paymentY + 10 + (index * 5));
+        // Check if we need a new page for each detail line
+        if (currentY + 10 + (index * 5) > pageHeight - margin) {
+          doc.addPage();
+          currentY = margin;
+          addWatermark();
+        }
+        doc.text(detail, margin, currentY + 10 + (index * 5));
       });
+      currentY += 10 + (paymentDetails.length * 5);
     } else {
-      doc.text(paymentDetails[0], margin, paymentY + 5);
+      doc.text(paymentDetails[0], margin, currentY + 5);
+      currentY += 10;
     }
-
+    
     // Notes
     if (notes) {
-      const notesY = paymentY + 10 + (paymentDetails.length * 5) + 5;
+      checkForNewPage(30);
+      
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(primaryColor);
-      doc.text('NOTES:', margin, notesY);
+      doc.text('NOTES:', margin, currentY);
       
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(60);
       const splitNotes = doc.splitTextToSize(notes, contentWidth);
-      doc.text(splitNotes, margin, notesY + 5);
+      
+      splitNotes.forEach((line, index) => {
+        if (currentY + 10 + (index * 5) > pageHeight - margin) {
+          doc.addPage();
+          currentY = margin;
+          addWatermark();
+        }
+        doc.text(line, margin, currentY + 5 + (index * 5));
+      });
+      
+      currentY += 5 + (splitNotes.length * 5);
     }
     
     // Terms
     if (terms) {
-      const termsY = notes ? doc.lastAutoTable.finalY + 20 : doc.lastAutoTable.finalY + 10;
+      checkForNewPage(30);
+      
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(primaryColor);
-      doc.text('TERMS & CONDITIONS:', margin, termsY);
+      doc.text('TERMS & CONDITIONS:', margin, currentY);
       
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(60);
       const splitTerms = doc.splitTextToSize(terms, contentWidth);
-      doc.text(splitTerms, margin, termsY + 5);
+      
+      splitTerms.forEach((line, index) => {
+        if (currentY + 10 + (index * 5) > pageHeight - margin) {
+          doc.addPage();
+          currentY = margin;
+          addWatermark();
+        }
+        doc.text(line, margin, currentY + 5 + (index * 5));
+      });
     }
     
     // Footer
     doc.setFontSize(8);
     doc.setTextColor(100);
-    doc.text('Thank you for your business!', pageWidth / 2, doc.internal.pageSize.getHeight() - 20, { align: 'center' });
-    doc.text('This is a computer generated invoice. No signature required.', pageWidth / 2, doc.internal.pageSize.getHeight() - 15, { align: 'center' });
+    doc.text('Thank you for your business!', pageWidth / 2, pageHeight - 20, { align: 'center' });
+    doc.text('This is a computer generated invoice. No signature required.', pageWidth / 2, pageHeight - 15, { align: 'center' });
     
     // Save the PDF
     doc.save(`invoice_${invoiceNumber}.pdf`);
+    
+  } catch (error) {
+    console.error('Error generating PDF:', error);
+    showToast('Error generating PDF. Please check the console for details.');
   }
-  
-  function formatDate(dateString) {
-    if (!dateString) return '';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
-  }
+}
 });
 
 // Add toast notification styles
