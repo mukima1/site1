@@ -540,6 +540,7 @@ function formatDate(dateString) {
     
     const companyDetails = [
       companyAddress,
+      `Name: ${companyName}`,
       `Email: ${companyEmail}`,
       `Phone: ${companyPhone}`,
       companyTax && `Tax ID: ${companyTax}`,
@@ -636,10 +637,10 @@ function formatDate(dateString) {
       },
       columnStyles: {
         0: { cellWidth: 'auto', fontStyle: 'bold' },
-        1: { cellWidth: 15, halign: 'right' },
-        2: { cellWidth: 25, halign: 'right' },
-        3: { cellWidth: 15, halign: 'center' },
-        4: { cellWidth: 25, halign: 'right', fontStyle: 'bold' }
+        1: { cellWidth: 'auto', halign: 'right' },
+        2: { cellWidth: 'auto', halign: 'right' },
+        3: { cellWidth: 'auto', halign: 'center' },
+        4: { cellWidth: 'auto', halign: 'right', fontStyle: 'bold' }
       },
       styles: {
         cellPadding: 4,
