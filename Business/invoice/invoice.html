@@ -1,202 +1,248 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-FKNNWBVZ6V"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-FKNNWBVZ6V');
-  </script>
-
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pro Invoice Generator</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Invoice Type</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --accent-color: #e74c3c;
+            --light-color: #f8f9fa;
+            --dark-color: #2c3e50;
+            --success-color: #2ecc71;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark-color);
+            background-color: #f5f7fa;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 20px;
+            flex: 1;
+        }
+        
+        .invoice-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .invoice-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .invoice-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        
+        .card-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .card-header h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .card-body p {
+            margin-bottom: 1.5rem;
+            color: #555;
+        }
+        
+        .features {
+            margin-bottom: 1.5rem;
+            flex: 1;
+        }
+        
+        .features li {
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+            list-style-type: none;
+        }
+        
+        .features li:before {
+            content: "✓";
+            color: var(--success-color);
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            text-align: center;
+            transition: background-color 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: auto;
+        }
+        
+        .btn:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .btn-secondary {
+            background-color: var(--light-color);
+            color: var(--dark-color);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #e9ecef;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 1.5rem;
+            background-color: var(--dark-color);
+            color: white;
+            margin-top: 2rem;
+        }
+        
+        .demo-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .highlight {
+            background-color: rgba(255,255,0,0.2);
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        @media (max-width: 768px) {
+            .invoice-types {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="app-container">
-    <header>
-      <h1>Pro Invoice Generator</h1>
-      <div class="header-controls">
-        <div class="theme-selector">
-          <label for="theme-color">Brand Color:</label>
-          <input type="color" id="theme-color" value="#4F46E5">
-        </div>
-        <div class="currency-selector">
-          <label for="currency">Currency:</label>
-          <select id="currency">
-            <option value="USD">US Dollar ($)</option>
-            <option value="EUR">Euro (€)</option>
-            <option value="GBP">British Pound (£)</option>
-            <option value="UGX" selected>Uganda Shilling (USh)</option>
-            <option value="KES">Kenya Shilling (KSh)</option>
-            <option value="TZS">Tanzania Shilling (TSh)</option>
-            <option value="ZAR">South Africa Rand (R)</option>
-          </select>
-        </div>
-      </div>
+    <header class="header">
+        <h1>Invoice Generator</h1>
+        <p>Choose the invoice type that best fits your needs</p>
     </header>
-
-    <div class="main-content">
-      <!-- Company Details Section -->
-      <section class="form-section">
-        <h2>Your Company Details</h2>
-        <div class="logo-upload">
-          <label for="logo-input">Upload Logo:</label>
-          <input type="file" id="logo-input" accept="image/*">
-          <div id="logo-preview" class="logo-preview"></div>
-        </div>
-        <div class="form-group">
-          <input type="text" id="company-name" placeholder="Company Name" required>
-          <input type="text" id="company-address" placeholder="Address">
-          <input type="text" id="company-email" placeholder="Email">
-          <input type="text" id="company-phone" placeholder="Phone">
-          <input type="text" id="company-tax" placeholder="Tax ID/VAT">
-          <input type="text" id="company-website" placeholder="Website">
-        </div>
-      </section>
-
-      <!-- Add this section before the Notes section -->
-      <section class="form-section">
-        <h2>Payment Instructions</h2>
-        <div class="form-group">
-          <input type="text" id="bank-name" placeholder="Bank Name">
-          <input type="text" id="account-name" placeholder="Account Name">
-          <input type="text" id="account-number" placeholder="Account Number">
-          <input type="text" id="branch" placeholder="Branch">
-          <input type="text" id="swift-code" placeholder="SWIFT Code">
-          <input type="text" id="other-details" placeholder="Other Payment Details">
-        </div>
-      </section>
-
-      <!-- Client Details Section -->
-      <section class="form-section">
-        <h2>Client Details</h2>
-        <div class="form-group">
-          <input type="text" id="client-name" placeholder="Client Name" required>
-          <input type="text" id="client-address" placeholder="Address">
-          <input type="text" id="client-email" placeholder="Email">
-          <input type="text" id="client-phone" placeholder="Phone">
-          <input type="text" id="client-tax" placeholder="Tax ID/VAT">
-        </div>
-      </section>
-
-      <!-- Invoice Details Section -->
-      <section class="form-section">
-        <h2>Invoice Details</h2>
-        <div class="form-group row">
-          <div>
-            <label for="invoice-number">Invoice #</label>
-            <input type="text" id="invoice-number" required>
-          </div>
-          <div>
-            <label for="invoice-date">Date</label>
-            <input type="date" id="invoice-date" required>
-          </div>
-          <div>
-            <label for="due-date">Due Date</label>
-            <input type="date" id="due-date">
-          </div>
-          <div>
-            <label for="payment-terms">Payment Terms</label>
-            <select id="payment-terms">
-              <option value="Due on receipt">Due on receipt</option>
-              <option value="Net 7">Net 7</option>
-              <option value="Net 15">Net 15</option>
-              <option value="Net 30" selected>Net 30</option>
-            </select>
-          </div>
-        </div>
-      </section>
-
-      <!-- Items Table -->
-      <section class="form-section">
-        <h2>Items</h2>
-        <table id="items-table">
-          <thead>
-            <tr>
-              <th>Description</th>
-              <th>Qty</th>
-              <th>Price</th>
-              <th>Tax</th>
-              <th>Total</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Rows will be added dynamically -->
-          </tbody>
-          <tfoot>
-            <tr>
-              <td colspan="6">
-                <button id="add-item" class="btn">+ Add Item</button>
-              </td>
-            </tr>
-          </tfoot>
-        </table>
-      </section>
-
-      <!-- Totals Section -->
-      <section class="form-section">
-        <div class="totals-grid">
-          <div class="subtotal">
-            <label>Subtotal:</label>
-            <span id="subtotal">USh 0.00</span>
-          </div>
-          <div class="tax-row">
-            <div>
-              <label>Tax Amount:</label>
-              <span id="tax-amount">USh 0.00</span>
+    
+    <div class="container">
+        <div class="invoice-types">
+            <!-- Service-Based Invoice Card -->
+            <div class="invoice-card">
+                <div class="card-header">
+                    <h2>Service-Based Invoice</h2>
+                    <p>Ideal for professional services</p>
+                </div>
+                <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Service Invoice" class="demo-image">
+                <div class="card-body">
+                    <p>Perfect for freelancers, consultants, and service providers who bill by project or service rather than physical items.</p>
+                    
+                    <ul class="features">
+                        <li>List services with descriptions</li>
+                        <li>Show total amount for each service</li>
+                        <li>Clean, professional layout</li>
+                        <li>Payment details section</li>
+                        <li>Multiple currency support</li>
+                    </ul>
+                    
+                    <a href="personal/index.html" class="btn">Select Service Invoice</a>
+                </div>
             </div>
-          </div>
-          <div class="discount-row">
-            <div>
-              <label for="discount-type">Discount Type</label>
-              <select id="discount-type">
-                <option value="none">None</option>
-                <option value="percentage">Percentage</option>
-                <option value="fixed">Fixed Amount</option>
-              </select>
+            
+            <!-- Item-Based Invoice Card -->
+            <div class="invoice-card">
+                <div class="card-header" style="background-color: #e74c3c;">
+                    <h2>Item-Based Invoice</h2>
+                    <p>Ideal for product sales</p>
+                </div>
+                <img src="https://images.unsplash.com/photo-1556740738-b6a63e27c4df?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Item Invoice" class="demo-image">
+                <div class="card-body">
+                    <p>Designed for businesses that sell physical or digital products and need to list items with quantities and prices.</p>
+                    
+                    <ul class="features">
+                        <li>List items with quantities</li>
+                        <li>Show unit price and total</li>
+                        <li>Itemized calculations</li>
+                        <li>Payment details section</li>
+                        <li>Multiple currency support</li>
+                    </ul>
+                    
+                    <a href="personal/items.html" class="btn" style="background-color: #e74c3c;">Select Item Invoice</a>
+                </div>
             </div>
-            <div>
-              <label for="discount-value">Discount Value</label>
-              <input type="number" id="discount-value" min="0" value="0">
-            </div>
-            <div>
-              <label>Discount Amount:</label>
-              <span id="discount-amount">USh 0.00</span>
-            </div>
-          </div>
-          <div class="total">
-            <label>Total Amount:</label>
-            <span id="total">USh 0.00</span>
-          </div>
         </div>
-      </section>
-
-      <!-- Notes Section -->
-      <section class="form-section">
-        <h2>Notes & Terms</h2>
-        <div class="form-group">
-          <textarea id="notes" placeholder="Additional notes..."></textarea>
-          <textarea id="terms" placeholder="Payment terms and conditions..."></textarea>
+        
+        <div style="text-align: center; margin-top: 2rem;">
+            <p>Not sure which to choose? <span class="highlight">Service invoices</span> are best for time-based or project-based work, while <span class="highlight">item invoices</span> are better for product sales.</p>
         </div>
-      </section>
-
-      <!-- Action Buttons -->
-      <section class="action-buttons">
-        <button id="save-draft" class="btn secondary">Save Draft</button>
-        <button id="clear-form" class="btn secondary">Clear</button>
-        <button id="generate-pdf" class="btn primary">Generate PDF</button>
-      </section>
     </div>
-  </div>
-
-  <script src="script.js"></script>
+    
+    <footer class="footer">
+        <p>&copy; 2025 Professional Invoice Generator at Ultimate100freetools.com. All rights reserved.</p>
+    </footer>
 </body>
 </html>

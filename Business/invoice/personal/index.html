@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Invoice Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f7fa;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #2980b9;
+        }
+        
+        .service-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            border-left: 4px solid #3498db;
+            position: relative;
+        }
+        
+        .remove-service {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .add-service {
+            margin-top: 20px;
+        }
+        
+        .invoice-preview {
+            margin-top: 40px;
+            padding: 30px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        
+        .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .invoice-title {
+            font-size: 20px;
+            color: #2c3e50;
+            font-weight: 700;
+        }
+        
+        .invoice-details {
+            text-align: right;
+        }
+        
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        .invoice-table th {
+            background: #3498db;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .invoice-table td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .invoice-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .invoice-total {
+            margin-top: 20px;
+            text-align: right;
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .payment-method {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        
+        .account-details {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f1f8fe;
+            border-radius: 4px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .your-details {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Professional Invoice Generator</h1>
+        
+        <div class="your-details">
+            <h3>Your Details</h3>
+            <div class="form-group">
+                <label for="your-name">Your/Company Name</label>
+                <input type="text" id="your-name" placeholder="Your name or company name">
+            </div>
+            
+            <div class="form-group">
+                <label for="your-address">Your Address</label>
+                <textarea id="your-address" rows="2" placeholder="Your address"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="your-email">Your Email</label>
+                <input type="email" id="your-email" placeholder="Your email address">
+            </div>
+            
+            <div class="form-group">
+                <label for="your-phone">Your Phone</label>
+                <input type="tel" id="your-phone" placeholder="Your phone number">
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="invoice-type">Invoice Type</label>
+            <input type="text" id="invoice-type" placeholder="e.g., Web Development, Consulting, Services">
+        </div>
+        
+        <div class="form-group">
+            <label for="client-name">Client Name</label>
+            <input type="text" id="client-name" placeholder="Institution/Client Name">
+        </div>
+        
+        <div class="form-group">
+            <label for="client-address">Client Address</label>
+            <textarea id="client-address" rows="2" placeholder="Client's address"></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="invoice-number">Invoice Number</label>
+            <input type="text" id="invoice-number" placeholder="INV-001">
+        </div>
+        
+        <div class="form-group">
+            <label for="invoice-date">Invoice Date</label>
+            <input type="date" id="invoice-date">
+        </div>
+        
+        <div class="form-group">
+            <label for="due-date">Due Date</label>
+            <input type="date" id="due-date">
+        </div>
+        
+        <div class="form-group">
+            <label for="currency">Currency</label>
+            <select id="currency">
+                <option value="USD">US Dollar (USD)</option>
+                <option value="UGX">Ugandan Shilling (UGX)</option>
+                <option value="EUR">Euro (EUR)</option>
+                <option value="GBP">British Pound (GBP)</option>
+                <option value="KES">Kenyan Shilling (KES)</option>
+                <option value="TZS">Tanzanian Shilling (TZS)</option>
+            </select>
+        </div>
+        
+        <h3>Services</h3>
+        <div id="services-container">
+            <div class="service-item">
+                <button class="remove-service" onclick="removeService(this)">×</button>
+                <div class="form-group">
+                    <label for="service-1">Service Description</label>
+                    <input type="text" id="service-1" class="service-desc" placeholder="Website Design & Development">
+                </div>
+                <div class="form-group">
+                    <label for="price-1">Amount</label>
+                    <input type="number" id="price-1" class="service-price" value="0" min="0" step="0.01">
+                </div>
+            </div>
+        </div>
+        
+        <button id="add-service" class="add-service">+ Add Service</button>
+        
+        <div class="account-details">
+            <h3>Payment Details</h3>
+            <div class="form-group">
+                <label for="payment-method">Payment Method</label>
+                <select id="payment-method">
+                    <option value="Bank Transfer">Bank Transfer</option>
+                    <option value="Mobile Money">Mobile Money</option>
+                    <option value="Credit Card">Credit Card</option>
+                    <option value="PayPal">PayPal</option>
+                    <option value="Cash">Cash</option>
+                </select>
+            </div>
+            
+            <div id="bank-details">
+                <div class="form-group">
+                    <label for="bank-name">Bank Name</label>
+                    <input type="text" id="bank-name" placeholder="Bank name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="account-name">Account Name</label>
+                    <input type="text" id="account-name" placeholder="Account name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="account-number">Account Number</label>
+                    <input type="text" id="account-number" placeholder="Account number">
+                </div>
+                
+                <div class="form-group">
+                    <label for="swift-code">SWIFT/BIC Code</label>
+                    <input type="text" id="swift-code" placeholder="SWIFT or BIC code">
+                </div>
+            </div>
+            
+            <div id="mobile-money-details" style="display: none;">
+                <div class="form-group">
+                    <label for="mobile-provider">Mobile Provider</label>
+                    <select id="mobile-provider">
+                        <option value="MTN">MTN</option>
+                        <option value="Airtel">Airtel</option>
+                        <option value="Africell">Africell</option>
+                        <option value="Vodafone">Vodafone</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="mobile-number">Mobile Number</label>
+                    <input type="tel" id="mobile-number" placeholder="Mobile money number">
+                </div>
+                
+                <div class="form-group">
+                    <label for="mobile-name">Account Name</label>
+                    <input type="text" id="mobile-name" placeholder="Name on mobile money account">
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="notes">Additional Notes</label>
+            <textarea id="notes" rows="3" placeholder="Payment terms, deliverables, etc."></textarea>
+        </div>
+    </div>
+    
+    <div class="invoice-preview" id="invoice-preview">
+        <div class="invoice-header">
+            <div>
+                <div class="invoice-title" id="preview-your-name">Your Company</div>
+                <div id="preview-your-address">Your Address</div>
+                <div id="preview-your-email">Email: your@email.com</div>
+                <div id="preview-your-phone">Phone: +256 XXX XXX XXX</div>
+            </div>
+            <div class="invoice-details">
+                <div class="invoice-title" id="preview-invoice-type">INVOICE</div>
+                <div><strong>Invoice #:</strong> <span id="preview-invoice-number">INV-001</span></div>
+                <div><strong>Date:</strong> <span id="preview-invoice-date">2023-11-15</span></div>
+                <div><strong>Due Date:</strong> <span id="preview-due-date">2023-12-15</span></div>
+            </div>
+        </div>
+        
+        <div>
+            <strong>Bill To:</strong>
+            <div id="preview-client-name">Client Name</div>
+            <div id="preview-client-address">Client Address</div>
+        </div>
+        
+        <div class="payment-method">
+            <strong>Payment Method:</strong> <span id="preview-payment-method">Bank Transfer</span>
+            <div id="preview-payment-details">
+                <!-- Payment details will be added here -->
+            </div>
+        </div>
+        
+        <table class="invoice-table">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody id="preview-services">
+                <!-- Services will be added here dynamically -->
+            </tbody>
+        </table>
+        
+        <div class="invoice-total">
+            <strong>Total: <span id="preview-currency">USD</span> <span id="preview-total">0.00</span></strong>
+        </div>
+        
+        <div id="preview-notes" style="margin-top: 30px; font-style: italic;">
+            <!-- Notes will be added here -->
+        </div>
+    </div>
+    
+    <div class="actions">
+        <button id="update-preview">Update Preview</button>
+        <button id="generate-pdf">Generate PDF Invoice</button>
+    </div>
+
+    <script>
+        // Initialize jsPDF
+        const { jsPDF } = window.jspdf;
+        
+        // Service counter
+        let serviceCount = 1;
+        
+        // Add service button
+        document.getElementById('add-service').addEventListener('click', function() {
+            serviceCount++;
+            const newService = `
+                <div class="service-item">
+                    <button class="remove-service" onclick="removeService(this)">×</button>
+                    <div class="form-group">
+                        <label for="service-${serviceCount}">Service Description</label>
+                        <input type="text" id="service-${serviceCount}" class="service-desc" placeholder="Service description">
+                    </div>
+                    <div class="form-group">
+                        <label for="price-${serviceCount}">Amount</label>
+                        <input type="number" id="price-${serviceCount}" class="service-price" value="0" min="0" step="0.01">
+                    </div>
+                </div>
+            `;
+            document.getElementById('services-container').insertAdjacentHTML('beforeend', newService);
+        });
+        
+        // Remove service function
+        function removeService(button) {
+            // Don't allow removing the last service
+            if (document.querySelectorAll('.service-item').length > 1) {
+                button.parentElement.remove();
+            } else {
+                alert("You need to have at least one service item.");
+            }
+        }
+        
+        // Payment method change handler
+        document.getElementById('payment-method').addEventListener('change', function() {
+            const method = this.value;
+            document.getElementById('bank-details').style.display = 'none';
+            document.getElementById('mobile-money-details').style.display = 'none';
+            
+            if (method === 'Bank Transfer') {
+                document.getElementById('bank-details').style.display = 'block';
+            } else if (method === 'Mobile Money') {
+                document.getElementById('mobile-money-details').style.display = 'block';
+            }
+            
+            updatePreview();
+        });
+        
+        // Update preview button
+        document.getElementById('update-preview').addEventListener('click', updatePreview);
+        
+        // Generate PDF button
+        document.getElementById('generate-pdf').addEventListener('click', generatePDF);
+        
+        // Initialize with default values
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set default dates
+            const today = new Date();
+            const dueDate = new Date();
+            dueDate.setDate(today.getDate() + 30);
+            
+            document.getElementById('invoice-date').value = today.toISOString().split('T')[0];
+            document.getElementById('due-date').value = dueDate.toISOString().split('T')[0];
+            
+            document.getElementById('preview-invoice-date').textContent = today.toISOString().split('T')[0];
+            document.getElementById('preview-due-date').textContent = dueDate.toISOString().split('T')[0];
+            
+            updatePreview();
+        });
+        
+        // Format currency
+        function formatCurrency(amount, currency) {
+            if (currency === 'UGX' || currency === 'KES' || currency === 'TZS') {
+                return new Intl.NumberFormat('en-US', {
+                    style: 'decimal',
+                    maximumFractionDigits: 0
+                }).format(amount);
+            } else {
+                return new Intl.NumberFormat('en-US', {
+                    style: 'decimal',
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }).format(amount);
+            }
+        }
+        
+        // Update preview function
+        function updatePreview() {
+            // Your details
+            document.getElementById('preview-your-name').textContent = 
+                document.getElementById('your-name').value || 'Your Company';
+            document.getElementById('preview-your-address').textContent = 
+                document.getElementById('your-address').value || 'Your Address';
+            document.getElementById('preview-your-email').textContent = 
+                document.getElementById('your-email').value ? `Email: ${document.getElementById('your-email').value}` : 'Email: your@email.com';
+            document.getElementById('preview-your-phone').textContent = 
+                document.getElementById('your-phone').value ? `Phone: ${document.getElementById('your-phone').value}` : 'Phone: +256 XXX XXX XXX';
+            
+            // Invoice type
+            const invoiceType = document.getElementById('invoice-type').value || 'INVOICE';
+            document.getElementById('preview-invoice-type').textContent = invoiceType.toUpperCase();
+            
+            // Client info
+            document.getElementById('preview-client-name').textContent = 
+                document.getElementById('client-name').value || 'Client Name';
+            document.getElementById('preview-client-address').textContent = 
+                document.getElementById('client-address').value || 'Client Address';
+            
+            // Invoice details
+            document.getElementById('preview-invoice-number').textContent = 
+                document.getElementById('invoice-number').value || 'INV-001';
+            document.getElementById('preview-invoice-date').textContent = 
+                document.getElementById('invoice-date').value || new Date().toISOString().split('T')[0];
+            document.getElementById('preview-due-date').textContent = 
+                document.getElementById('due-date').value || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+            
+            // Currency
+            const currency = document.getElementById('currency').value;
+            document.getElementById('preview-currency').textContent = currency;
+            
+            // Payment method
+            const paymentMethod = document.getElementById('payment-method').value || 'Bank Transfer';
+            document.getElementById('preview-payment-method').textContent = paymentMethod;
+            
+            // Payment details
+            const paymentDetails = document.getElementById('preview-payment-details');
+            paymentDetails.innerHTML = '';
+            
+            if (paymentMethod === 'Bank Transfer') {
+                const bankName = document.getElementById('bank-name').value;
+                const accountName = document.getElementById('account-name').value;
+                const accountNumber = document.getElementById('account-number').value;
+                const swiftCode = document.getElementById('swift-code').value;
+                
+                if (bankName || accountName || accountNumber || swiftCode) {
+                    paymentDetails.innerHTML = `
+                        <div><strong>Bank Name:</strong> ${bankName || 'N/A'}</div>
+                        <div><strong>Account Name:</strong> ${accountName || 'N/A'}</div>
+                        <div><strong>Account Number:</strong> ${accountNumber || 'N/A'}</div>
+                        <div><strong>SWIFT/BIC:</strong> ${swiftCode || 'N/A'}</div>
+                    `;
+                }
+            } else if (paymentMethod === 'Mobile Money') {
+                const provider = document.getElementById('mobile-provider').value;
+                const mobileNumber = document.getElementById('mobile-number').value;
+                const mobileName = document.getElementById('mobile-name').value;
+                
+                if (provider || mobileNumber || mobileName) {
+                    paymentDetails.innerHTML = `
+                        <div><strong>Provider:</strong> ${provider || 'N/A'}</div>
+                        <div><strong>Mobile Number:</strong> ${mobileNumber || 'N/A'}</div>
+                        <div><strong>Account Name:</strong> ${mobileName || 'N/A'}</div>
+                    `;
+                }
+            }
+            
+            // Services
+            const servicesContainer = document.getElementById('preview-services');
+            servicesContainer.innerHTML = '';
+            
+            const serviceDescs = document.getElementsByClassName('service-desc');
+            const servicePrices = document.getElementsByClassName('service-price');
+            
+            let total = 0;
+            
+            for (let i = 0; i < serviceDescs.length; i++) {
+                const desc = serviceDescs[i].value || 'Service';
+                const price = parseFloat(servicePrices[i].value) || 0;
+                total += price;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${desc}</td>
+                    <td>${currency} ${formatCurrency(price, currency)}</td>
+                `;
+                servicesContainer.appendChild(row);
+            }
+            
+            // Total
+            document.getElementById('preview-total').textContent = formatCurrency(total, currency);
+            
+            // Notes
+            const notes = document.getElementById('notes').value;
+            document.getElementById('preview-notes').innerHTML = notes ? 
+                `<strong>Notes:</strong> ${notes.replace(/\n/g, '<br>')}` : '';
+        }
+        
+        // Generate PDF function
+        function generatePDF() {
+            updatePreview();
+            
+            // Use html2canvas to capture the invoice preview
+            html2canvas(document.getElementById('invoice-preview')).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF({
+                    orientation: 'portrait',
+                    unit: 'mm'
+                });
+                
+                // Calculate the PDF dimensions to maintain aspect ratio
+                const imgWidth = 210; // A4 width in mm
+                const imgHeight = canvas.height * imgWidth / canvas.width;
+                
+                pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+                
+                // Save the PDF
+                const clientName = document.getElementById('client-name').value || 'invoice';
+                const invoiceType = document.getElementById('invoice-type').value || 'invoice';
+                pdf.save(`${invoiceType.replace(/\s+/g, '_')}_${clientName.replace(/\s+/g, '_')}.pdf`);
+            });
+        }
+    </script>
+</body>
+</html>
