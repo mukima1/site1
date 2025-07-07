@@ -876,78 +876,92 @@
         // Generate PDF function
          // Generate PDF function - Improved for mobile
         function generatePDF() {
-            if (!validateForm()) {
-                document.getElementById('loading').style.display = 'none';
-                return;
+        if (!validateForm()) {
+            document.getElementById('loading').style.display = 'none';
+            return;
+        }
+        
+        updatePreview();
+        
+        // Show loading indicator
+        document.getElementById('loading').style.display = 'block';
+        
+        // Get the invoice preview element
+        const element = document.getElementById('invoice-preview');
+        
+        // Set some styles for better PDF output
+        element.style.padding = '20px';
+        element.style.boxSizing = 'border-box';
+        
+        // Use html2canvas with improved settings
+        html2canvas(element, {
+            scale: 2, // Higher quality
+            logging: false,
+            useCORS: true,
+            allowTaint: true,
+            scrollX: 0,
+            scrollY: 0,
+            windowWidth: element.scrollWidth,
+            windowHeight: element.scrollHeight,
+            backgroundColor: '#ffffff' // Ensure white background
+        }).then(canvas => {
+            // Create PDF in A4 format (210x297mm)
+            const pdf = new jspdf.jsPDF({
+                orientation: 'portrait', // Standard A4 orientation
+                unit: 'mm',
+                format: 'a4'
+            });
+            
+            // Calculate dimensions
+            const pageWidth = pdf.internal.pageSize.getWidth();
+            const pageHeight = pdf.internal.pageSize.getHeight();
+            
+            // Calculate image dimensions to fit A4 with margins
+            const margin = 10; // 10mm margins on all sides
+            const contentWidth = pageWidth - margin * 2;
+            const contentHeight = pageHeight - margin * 2;
+            
+            // Calculate proportional height
+            const imgWidth = contentWidth;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            
+            // Add first page
+            pdf.addImage(canvas, 'PNG', margin, margin, imgWidth, imgHeight, undefined, 'FAST');
+            
+            // Check if we need additional pages
+            let heightLeft = imgHeight;
+            let position = margin; // Start position
+            let pageCount = 1;
+            
+            while (heightLeft >= contentHeight) {
+                pdf.addPage();
+                position -= contentHeight;
+                pdf.addImage(canvas, 'PNG', margin, position, imgWidth, imgHeight, undefined, 'FAST');
+                heightLeft -= contentHeight;
+                pageCount++;
             }
             
-            updatePreview();
+            // Restore original styles
+            element.style.padding = '';
+            element.style.boxSizing = '';
             
-            // Show loading indicator
-            document.getElementById('loading').style.display = 'block';
+            // Generate filename
+            const clientName = document.getElementById('client-name').value || 'invoice';
+            const invoiceType = document.getElementById('invoice-type').value || 'invoice';
+            const fileName = `${invoiceType.replace(/\s+/g, '_')}_${clientName.replace(/\s+/g, '_')}.pdf`;
             
-            // Get the invoice preview element
-            const element = document.getElementById('invoice-preview');
-            const options = {
-                scale: 2, // Higher quality
-                logging: false,
-                useCORS: true,
-                allowTaint: true,
-                scrollX: 0,
-                scrollY: 0,
-                windowWidth: element.scrollWidth,
-                windowHeight: element.scrollHeight
-            };
+            // Hide loading indicator
+            document.getElementById('loading').style.display = 'none';
             
-            // Use html2canvas to capture the invoice preview
-            html2canvas(element, options).then(canvas => {
-                const imgData = canvas.toDataURL('image/png');
-                const pdf = new jspdf.jsPDF({
-                    orientation: element.offsetWidth > element.offsetHeight ? 'landscape' : 'portrait',
-                    unit: 'mm'
-                });
-                
-                // Calculate dimensions
-                const pageWidth = pdf.internal.pageSize.getWidth();
-                const pageHeight = pdf.internal.pageSize.getHeight();
-                
-                // Calculate image dimensions to fit the page
-                const imgWidth = pageWidth - 20; // 10mm margins on each side
-                const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                
-                // Add first page
-                pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
-                
-                // Check if content exceeds page height and needs additional pages
-                let heightLeft = imgHeight;
-                let position = 10; // Start 10mm from top
-                const imgHeightOnPage = pageHeight - 20; // Account for margins
-                
-                while (heightLeft >= 0) {
-                    position += imgHeightOnPage;
-                    pdf.addPage();
-                    pdf.addImage(imgData, 'PNG', 10, -position, imgWidth, imgHeight);
-                    heightLeft -= imgHeightOnPage;
-                }
-                
-                // Save the PDF
-                const clientName = document.getElementById('client-name').value || 'invoice';
-                const invoiceType = document.getElementById('invoice-type').value || 'invoice';
-                const fileName = `${invoiceType.replace(/\s+/g, '_')}_${clientName.replace(/\s+/g, '_')}.pdf`;
-                
-                // Hide loading indicator
-                document.getElementById('loading').style.display = 'none';
-                
-                // Show success message
-                alert(`PDF "${fileName}" generated successfully!`);
-                
-                pdf.save(fileName);
-            }).catch(error => {
-                console.error("Error generating PDF:", error);
-                document.getElementById('loading').style.display = 'none';
-                alert("Failed to generate PDF. Please try again.");
-            });
-        }
+            // Save the PDF
+            pdf.save(fileName);
+            
+        }).catch(error => {
+            console.error("Error generating PDF:", error);
+            document.getElementById('loading').style.display = 'none';
+            alert("Failed to generate PDF. Please try again.");
+        });
+    }
     </script>
 </body>
 </html>
