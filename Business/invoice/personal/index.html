@@ -2,181 +2,335 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Professional Invoice Generator</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #3498db;
+            --danger-color: #e74c3c;
+            --success-color: #2ecc71;
+            --text-color: #2c3e50;
+            --light-gray: #f5f7fa;
+            --medium-gray: #ecf0f1;
+            --dark-gray: #bdc3c7;
+            --border-radius: 8px;
+            --box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             line-height: 1.6;
-            color: #333;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f7fa;
+            color: var(--text-color);
+            background-color: var(--light-gray);
+            padding: 15px;
+            -webkit-text-size-adjust: 100%;
         }
         
         .container {
             background: white;
-            border-radius: 8px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            padding: 30px;
-            margin-bottom: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 20px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        h1, h2, h3 {
+            color: var(--text-color);
+            margin-bottom: 15px;
         }
         
         h1 {
-            color: #2c3e50;
             text-align: center;
-            margin-bottom: 30px;
+            font-size: 24px;
+            margin: 15px 0 25px;
+        }
+        
+        h2 {
+            font-size: 20px;
+        }
+        
+        h3 {
+            font-size: 18px;
+            margin-top: 20px;
         }
         
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         
         label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             font-weight: 600;
-            color: #2c3e50;
+            font-size: 14px;
         }
         
         input, select, textarea {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            padding: 12px;
+            border: 1px solid var(--dark-gray);
+            border-radius: 6px;
             font-size: 16px;
+            background-color: white;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+        
+        input[type="date"] {
+            padding: 11px;
+        }
+        
+        textarea {
+            min-height: 80px;
+            resize: vertical;
         }
         
         button {
-            background: #3498db;
+            background: var(--primary-color);
             color: white;
             border: none;
             padding: 12px 20px;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
             font-size: 16px;
             font-weight: 600;
-            transition: background 0.3s;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
         
         button:hover {
             background: #2980b9;
+            transform: translateY(-1px);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button i {
+            font-size: 14px;
         }
         
         .service-item {
-            background: #f8f9fa;
+            background: var(--medium-gray);
             padding: 15px;
-            border-radius: 4px;
+            border-radius: 6px;
             margin-bottom: 15px;
-            border-left: 4px solid #3498db;
+            border-left: 4px solid var(--primary-color);
             position: relative;
+            transition: all 0.3s;
         }
         
         .remove-service {
             position: absolute;
             top: 10px;
             right: 10px;
-            background: #e74c3c;
+            background: var(--danger-color);
             color: white;
             border: none;
-            width: 25px;
-            height: 25px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .remove-service:hover {
+            background: #c0392b;
+            transform: scale(1.1);
         }
         
         .add-service {
-            margin-top: 20px;
+            margin-top: 15px;
+            width: 100%;
         }
         
         .invoice-preview {
-            margin-top: 40px;
-            padding: 30px;
+            margin-top: 30px;
+            padding: 20px;
             background: white;
-            border-radius: 8px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow-x: auto;
         }
         
         .invoice-header {
             display: flex;
-            justify-content: space-between;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #eee;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--medium-gray);
         }
         
         .invoice-title {
-            font-size: 20px;
-            color: #2c3e50;
+            font-size: 18px;
+            color: var(--text-color);
             font-weight: 700;
         }
         
         .invoice-details {
-            text-align: right;
+            text-align: left;
         }
         
         .invoice-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
+            margin: 15px 0;
+            min-width: 400px;
         }
         
         .invoice-table th {
-            background: #3498db;
+            background: var(--primary-color);
             color: white;
-            padding: 12px;
+            padding: 10px;
             text-align: left;
+            font-size: 14px;
         }
         
         .invoice-table td {
-            padding: 12px;
-            border-bottom: 1px solid #eee;
+            padding: 10px;
+            border-bottom: 1px solid var(--medium-gray);
+            font-size: 14px;
         }
         
         .invoice-table tr:nth-child(even) {
-            background: #f8f9fa;
+            background: var(--light-gray);
         }
         
         .invoice-total {
-            margin-top: 20px;
+            margin-top: 15px;
             text-align: right;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 700;
         }
         
         .actions {
             display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 30px;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
         }
         
-        .payment-method {
-            margin-top: 20px;
+        .payment-method, .account-details, .your-details {
+            margin-top: 15px;
             padding: 15px;
-            background: #f8f9fa;
-            border-radius: 4px;
+            background: var(--light-gray);
+            border-radius: 6px;
         }
         
         .account-details {
-            margin-top: 20px;
-            padding: 15px;
-            background: #f1f8fe;
-            border-radius: 4px;
-            border-left: 4px solid #3498db;
+            border-left: 4px solid var(--primary-color);
         }
         
-        .your-details {
+        #preview-payment-details div {
+            margin-top: 8px;
+        }
+        
+        #preview-notes {
             margin-top: 20px;
+            font-style: italic;
+            font-size: 14px;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
             padding: 15px;
-            background: #f8f9fa;
-            border-radius: 4px;
+        }
+        
+        .loading-spinner {
+            border: 3px solid var(--light-gray);
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .input-group .form-group {
+            flex: 1;
+        }
+        
+        /* Responsive adjustments */
+        @media (min-width: 768px) {
+            body {
+                padding: 20px;
+                max-width: 1000px;
+                margin: 0 auto;
+            }
+            
+            .container {
+                padding: 25px;
+            }
+            
+            .invoice-header {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+            
+            .invoice-details {
+                text-align: right;
+            }
+            
+            .actions {
+                flex-direction: row;
+                justify-content: center;
+            }
+            
+            .input-group {
+                gap: 15px;
+            }
+        }
+        
+        /* Print styles */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #invoice-preview, #invoice-preview * {
+                visibility: visible;
+            }
+            #invoice-preview {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                box-shadow: none;
+            }
+            .actions {
+                display: none;
+            }
         }
     </style>
 </head>
@@ -198,18 +352,18 @@
             
             <div class="form-group">
                 <label for="your-email">Your Email</label>
-                <input type="email" id="your-email" placeholder="Your email address">
+                <input type="email" id="your-email" placeholder="your@email.com" inputmode="email">
             </div>
             
             <div class="form-group">
                 <label for="your-phone">Your Phone</label>
-                <input type="tel" id="your-phone" placeholder="Your phone number">
+                <input type="tel" id="your-phone" placeholder="+256 XXX XXX XXX" inputmode="tel">
             </div>
         </div>
         
         <div class="form-group">
             <label for="invoice-type">Invoice Type</label>
-            <input type="text" id="invoice-type" placeholder="e.g., Web Development, Consulting, Services">
+            <input type="text" id="invoice-type" placeholder="e.g., Web Development, Consulting">
         </div>
         
         <div class="form-group">
@@ -222,31 +376,35 @@
             <textarea id="client-address" rows="2" placeholder="Client's address"></textarea>
         </div>
         
-        <div class="form-group">
-            <label for="invoice-number">Invoice Number</label>
-            <input type="text" id="invoice-number" placeholder="INV-001">
+        <div class="input-group">
+            <div class="form-group">
+                <label for="invoice-number">Invoice Number</label>
+                <input type="text" id="invoice-number" placeholder="INV-001">
+            </div>
+            
+            <div class="form-group">
+                <label for="currency">Currency</label>
+                <select id="currency">
+                    <option value="USD">USD</option>
+                    <option value="UGX">UGX</option>
+                    <option value="EUR">EUR</option>
+                    <option value="GBP">GBP</option>
+                    <option value="KES">KES</option>
+                    <option value="TZS">TZS</option>
+                </select>
+            </div>
         </div>
         
-        <div class="form-group">
-            <label for="invoice-date">Invoice Date</label>
-            <input type="date" id="invoice-date">
-        </div>
-        
-        <div class="form-group">
-            <label for="due-date">Due Date</label>
-            <input type="date" id="due-date">
-        </div>
-        
-        <div class="form-group">
-            <label for="currency">Currency</label>
-            <select id="currency">
-                <option value="USD">US Dollar (USD)</option>
-                <option value="UGX">Ugandan Shilling (UGX)</option>
-                <option value="EUR">Euro (EUR)</option>
-                <option value="GBP">British Pound (GBP)</option>
-                <option value="KES">Kenyan Shilling (KES)</option>
-                <option value="TZS">Tanzanian Shilling (TZS)</option>
-            </select>
+        <div class="input-group">
+            <div class="form-group">
+                <label for="invoice-date">Invoice Date</label>
+                <input type="date" id="invoice-date">
+            </div>
+            
+            <div class="form-group">
+                <label for="due-date">Due Date</label>
+                <input type="date" id="due-date">
+            </div>
         </div>
         
         <h3>Services</h3>
@@ -259,12 +417,14 @@
                 </div>
                 <div class="form-group">
                     <label for="price-1">Amount</label>
-                    <input type="number" id="price-1" class="service-price" value="0" min="0" step="0.01">
+                    <input type="number" id="price-1" class="service-price" value="0" min="0" step="0.01" inputmode="decimal">
                 </div>
             </div>
         </div>
         
-        <button id="add-service" class="add-service">+ Add Service</button>
+        <button id="add-service" class="add-service">
+            <i class="fas fa-plus"></i> Add Service
+        </button>
         
         <div class="account-details">
             <h3>Payment Details</h3>
@@ -290,14 +450,16 @@
                     <input type="text" id="account-name" placeholder="Account name">
                 </div>
                 
-                <div class="form-group">
-                    <label for="account-number">Account Number</label>
-                    <input type="text" id="account-number" placeholder="Account number">
-                </div>
-                
-                <div class="form-group">
-                    <label for="swift-code">SWIFT/BIC Code</label>
-                    <input type="text" id="swift-code" placeholder="SWIFT or BIC code">
+                <div class="input-group">
+                    <div class="form-group">
+                        <label for="account-number">Account Number</label>
+                        <input type="text" id="account-number" placeholder="Account number" inputmode="numeric">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="swift-code">SWIFT/BIC Code</label>
+                        <input type="text" id="swift-code" placeholder="SWIFT or BIC code">
+                    </div>
                 </div>
             </div>
             
@@ -312,14 +474,16 @@
                     </select>
                 </div>
                 
-                <div class="form-group">
-                    <label for="mobile-number">Mobile Number</label>
-                    <input type="tel" id="mobile-number" placeholder="Mobile money number">
-                </div>
-                
-                <div class="form-group">
-                    <label for="mobile-name">Account Name</label>
-                    <input type="text" id="mobile-name" placeholder="Name on mobile money account">
+                <div class="input-group">
+                    <div class="form-group">
+                        <label for="mobile-number">Mobile Number</label>
+                        <input type="tel" id="mobile-number" placeholder="Mobile money number" inputmode="tel">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="mobile-name">Account Name</label>
+                        <input type="text" id="mobile-name" placeholder="Name on account">
+                    </div>
                 </div>
             </div>
         </div>
@@ -375,22 +539,30 @@
             <strong>Total: <span id="preview-currency">USD</span> <span id="preview-total">0.00</span></strong>
         </div>
         
-        <div id="preview-notes" style="margin-top: 30px; font-style: italic;">
+        <div id="preview-notes">
             <!-- Notes will be added here -->
         </div>
     </div>
     
+    <div class="loading" id="loading">
+        <div class="loading-spinner"></div>
+        <p>Generating PDF...</p>
+    </div>
+    
     <div class="actions">
-        <button id="update-preview">Update Preview</button>
-        <button id="generate-pdf">Generate PDF Invoice</button>
+        <button id="update-preview">
+            <i class="fas fa-sync-alt"></i> Update Preview
+        </button>
+        <button id="generate-pdf">
+            <i class="fas fa-file-pdf"></i> Generate PDF
+        </button>
     </div>
 
+    <!-- Load libraries only when needed -->
     <script>
-        // Initialize jsPDF
-        const { jsPDF } = window.jspdf;
-        
         // Service counter
         let serviceCount = 1;
+        let librariesLoaded = false;
         
         // Add service button
         document.getElementById('add-service').addEventListener('click', function() {
@@ -404,7 +576,7 @@
                     </div>
                     <div class="form-group">
                         <label for="price-${serviceCount}">Amount</label>
-                        <input type="number" id="price-${serviceCount}" class="service-price" value="0" min="0" step="0.01">
+                        <input type="number" id="price-${serviceCount}" class="service-price" value="0" min="0" step="0.01" inputmode="decimal">
                     </div>
                 </div>
             `;
@@ -416,6 +588,7 @@
             // Don't allow removing the last service
             if (document.querySelectorAll('.service-item').length > 1) {
                 button.parentElement.remove();
+                updatePreview();
             } else {
                 alert("You need to have at least one service item.");
             }
@@ -440,7 +613,24 @@
         document.getElementById('update-preview').addEventListener('click', updatePreview);
         
         // Generate PDF button
-        document.getElementById('generate-pdf').addEventListener('click', generatePDF);
+        document.getElementById('generate-pdf').addEventListener('click', function() {
+            if (!validateForm()) {
+                return;
+            }
+            
+            if (!librariesLoaded) {
+                loadLibraries().then(() => {
+                    librariesLoaded = true;
+                    generatePDF();
+                }).catch(error => {
+                    console.error("Error loading libraries:", error);
+                    alert("Failed to load required libraries. Please check your internet connection and try again.");
+                    document.getElementById('loading').style.display = 'none';
+                });
+            } else {
+                generatePDF();
+            }
+        });
         
         // Initialize with default values
         document.addEventListener('DOMContentLoaded', function() {
@@ -449,17 +639,46 @@
             const dueDate = new Date();
             dueDate.setDate(today.getDate() + 30);
             
-            document.getElementById('invoice-date').value = today.toISOString().split('T')[0];
-            document.getElementById('due-date').value = dueDate.toISOString().split('T')[0];
+            document.getElementById('invoice-date').valueAsDate = today;
+            document.getElementById('due-date').valueAsDate = dueDate;
             
-            document.getElementById('preview-invoice-date').textContent = today.toISOString().split('T')[0];
-            document.getElementById('preview-due-date').textContent = dueDate.toISOString().split('T')[0];
+            document.getElementById('preview-invoice-date').textContent = formatDate(today);
+            document.getElementById('preview-due-date').textContent = formatDate(dueDate);
+            
+            // Add input event listeners for real-time updates
+            const inputs = document.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    // Debounce the updatePreview to avoid performance issues
+                    if (this.type !== 'number' && this.type !== 'date') {
+                        clearTimeout(this._timer);
+                        this._timer = setTimeout(updatePreview, 500);
+                    } else {
+                        updatePreview();
+                    }
+                });
+            });
             
             updatePreview();
         });
         
+        // Format date as YYYY-MM-DD
+        function formatDate(date) {
+            const d = new Date(date);
+            let month = '' + (d.getMonth() + 1);
+            let day = '' + d.getDate();
+            const year = d.getFullYear();
+            
+            if (month.length < 2) month = '0' + month;
+            if (day.length < 2) day = '0' + day;
+            
+            return [year, month, day].join('-');
+        }
+        
         // Format currency
         function formatCurrency(amount, currency) {
+            amount = parseFloat(amount) || 0;
+            
             if (currency === 'UGX' || currency === 'KES' || currency === 'TZS') {
                 return new Intl.NumberFormat('en-US', {
                     style: 'decimal',
@@ -499,10 +718,16 @@
             // Invoice details
             document.getElementById('preview-invoice-number').textContent = 
                 document.getElementById('invoice-number').value || 'INV-001';
-            document.getElementById('preview-invoice-date').textContent = 
-                document.getElementById('invoice-date').value || new Date().toISOString().split('T')[0];
-            document.getElementById('preview-due-date').textContent = 
-                document.getElementById('due-date').value || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+            
+            // Handle dates
+            const invoiceDateInput = document.getElementById('invoice-date');
+            const dueDateInput = document.getElementById('due-date');
+            
+            const invoiceDate = invoiceDateInput.valueAsDate || new Date();
+            const dueDate = dueDateInput.valueAsDate || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+            
+            document.getElementById('preview-invoice-date').textContent = formatDate(invoiceDate);
+            document.getElementById('preview-due-date').textContent = formatDate(dueDate);
             
             // Currency
             const currency = document.getElementById('currency').value;
@@ -527,7 +752,7 @@
                         <div><strong>Bank Name:</strong> ${bankName || 'N/A'}</div>
                         <div><strong>Account Name:</strong> ${accountName || 'N/A'}</div>
                         <div><strong>Account Number:</strong> ${accountNumber || 'N/A'}</div>
-                        <div><strong>SWIFT/BIC:</strong> ${swiftCode || 'N/A'}</div>
+                        ${swiftCode ? `<div><strong>SWIFT/BIC:</strong> ${swiftCode}</div>` : ''}
                     `;
                 }
             } else if (paymentMethod === 'Mobile Money') {
@@ -539,7 +764,7 @@
                     paymentDetails.innerHTML = `
                         <div><strong>Provider:</strong> ${provider || 'N/A'}</div>
                         <div><strong>Mobile Number:</strong> ${mobileNumber || 'N/A'}</div>
-                        <div><strong>Account Name:</strong> ${mobileName || 'N/A'}</div>
+                        ${mobileName ? `<div><strong>Account Name:</strong> ${mobileName}</div>` : ''}
                     `;
                 }
             }
@@ -575,14 +800,100 @@
                 `<strong>Notes:</strong> ${notes.replace(/\n/g, '<br>')}` : '';
         }
         
+        // Validate form before generating PDF
+        function validateForm() {
+            const requiredFields = [
+                'your-name', 'your-email', 'client-name', 
+                'invoice-number', 'invoice-date', 'due-date'
+            ];
+            
+            let isValid = true;
+            let firstInvalidField = null;
+            
+            requiredFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.style.borderColor = 'var(--danger-color)';
+                    if (!firstInvalidField) {
+                        firstInvalidField = field;
+                    }
+                } else {
+                    field.style.borderColor = '';
+                }
+            });
+            
+            // Validate at least one service has a description and amount > 0
+            const serviceDescs = document.getElementsByClassName('service-desc');
+            const servicePrices = document.getElementsByClassName('service-price');
+            let hasValidService = false;
+            
+            for (let i = 0; i < serviceDescs.length; i++) {
+                if (serviceDescs[i].value.trim() && parseFloat(servicePrices[i].value)) {
+                    hasValidService = true;
+                    break;
+                }
+            }
+            
+            if (!hasValidService) {
+                isValid = false;
+                alert("Please add at least one service with description and amount greater than 0.");
+            }
+            
+            if (!isValid && firstInvalidField) {
+                firstInvalidField.focus();
+                alert("Please fill in all required fields marked in red.");
+            }
+            
+            return isValid;
+        }
+        
+        // Load required libraries dynamically
+        function loadLibraries() {
+            document.getElementById('loading').style.display = 'block';
+            
+            return new Promise((resolve, reject) => {
+                const script1 = document.createElement('script');
+                script1.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+                script1.onload = function() {
+                    const script2 = document.createElement('script');
+                    script2.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+                    script2.onload = function() {
+                        resolve();
+                    };
+                    script2.onerror = function() {
+                        reject(new Error('Failed to load html2canvas'));
+                    };
+                    document.head.appendChild(script2);
+                };
+                script1.onerror = function() {
+                    reject(new Error('Failed to load jsPDF'));
+                };
+                document.head.appendChild(script1);
+            });
+        }
+        
         // Generate PDF function
         function generatePDF() {
+            if (!validateForm()) {
+                document.getElementById('loading').style.display = 'none';
+                return;
+            }
+            
             updatePreview();
             
+            // Show loading indicator
+            document.getElementById('loading').style.display = 'block';
+            
             // Use html2canvas to capture the invoice preview
-            html2canvas(document.getElementById('invoice-preview')).then(canvas => {
+            html2canvas(document.getElementById('invoice-preview'), {
+                scale: 2, // Higher quality
+                logging: false,
+                useCORS: true,
+                allowTaint: true
+            }).then(canvas => {
                 const imgData = canvas.toDataURL('image/png');
-                const pdf = new jsPDF({
+                const pdf = new jspdf.jsPDF({
                     orientation: 'portrait',
                     unit: 'mm'
                 });
@@ -596,7 +907,19 @@
                 // Save the PDF
                 const clientName = document.getElementById('client-name').value || 'invoice';
                 const invoiceType = document.getElementById('invoice-type').value || 'invoice';
-                pdf.save(`${invoiceType.replace(/\s+/g, '_')}_${clientName.replace(/\s+/g, '_')}.pdf`);
+                const fileName = `${invoiceType.replace(/\s+/g, '_')}_${clientName.replace(/\s+/g, '_')}.pdf`;
+                
+                // Hide loading indicator
+                document.getElementById('loading').style.display = 'none';
+                
+                // Show success message
+                alert(`PDF "${fileName}" generated successfully!`);
+                
+                pdf.save(fileName);
+            }).catch(error => {
+                console.error("Error generating PDF:", error);
+                document.getElementById('loading').style.display = 'none';
+                alert("Failed to generate PDF. Please try again.");
             });
         }
     </script>
