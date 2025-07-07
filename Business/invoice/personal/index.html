@@ -874,6 +874,7 @@
         }
         
         // Generate PDF function
+         // Generate PDF function - Improved for mobile
         function generatePDF() {
             if (!validateForm()) {
                 document.getElementById('loading').style.display = 'none';
@@ -885,24 +886,49 @@
             // Show loading indicator
             document.getElementById('loading').style.display = 'block';
             
-            // Use html2canvas to capture the invoice preview
-            html2canvas(document.getElementById('invoice-preview'), {
+            // Get the invoice preview element
+            const element = document.getElementById('invoice-preview');
+            const options = {
                 scale: 2, // Higher quality
                 logging: false,
                 useCORS: true,
-                allowTaint: true
-            }).then(canvas => {
+                allowTaint: true,
+                scrollX: 0,
+                scrollY: 0,
+                windowWidth: element.scrollWidth,
+                windowHeight: element.scrollHeight
+            };
+            
+            // Use html2canvas to capture the invoice preview
+            html2canvas(element, options).then(canvas => {
                 const imgData = canvas.toDataURL('image/png');
                 const pdf = new jspdf.jsPDF({
-                    orientation: 'portrait',
+                    orientation: element.offsetWidth > element.offsetHeight ? 'landscape' : 'portrait',
                     unit: 'mm'
                 });
                 
-                // Calculate the PDF dimensions to maintain aspect ratio
-                const imgWidth = 210; // A4 width in mm
-                const imgHeight = canvas.height * imgWidth / canvas.width;
+                // Calculate dimensions
+                const pageWidth = pdf.internal.pageSize.getWidth();
+                const pageHeight = pdf.internal.pageSize.getHeight();
                 
-                pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+                // Calculate image dimensions to fit the page
+                const imgWidth = pageWidth - 20; // 10mm margins on each side
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                
+                // Add first page
+                pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
+                
+                // Check if content exceeds page height and needs additional pages
+                let heightLeft = imgHeight;
+                let position = 10; // Start 10mm from top
+                const imgHeightOnPage = pageHeight - 20; // Account for margins
+                
+                while (heightLeft >= 0) {
+                    position += imgHeightOnPage;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 10, -position, imgWidth, imgHeight);
+                    heightLeft -= imgHeightOnPage;
+                }
                 
                 // Save the PDF
                 const clientName = document.getElementById('client-name').value || 'invoice';
