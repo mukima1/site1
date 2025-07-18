@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Homepage -->
+  <url>
+    <loc>https://ultimate100freetools.com/</loc>
+    <lastmod>2025-07-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- Document Tools -->
+  <url>
+    <loc>https://ultimate100freetools.com/document/document.html</loc>
+    <lastmod>2025-07-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- Image Converter -->
+  <url>
+    <loc>https://ultimate100freetools.com/image/image.html</loc>
+    <lastmod>2025-07-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- Business Tools -->
+  <url>
+    <loc>https://ultimate100freetools.com/Business/Business.html</loc>
+    <lastmod>2025-07-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- QR & Barcode -->
+  <url>
+    <loc>https://ultimate100freetools.com/qr/qr.html</loc>
+    <lastmod>2025-07-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Design Suite -->
+  <url>
+    <loc>https://ultimate100freetools.com/design/design.html</loc>
+    <lastmod>2025-07-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Office Tools -->
+  <url>
+    <loc>https://ultimate100freetools.com/office-tools/office.html</loc>
+    <lastmod>2025-07-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Code Utilities -->
+  <url>
+    <loc>https://ultimate100freetools.com/language/language.html</loc>
+    <lastmod>2025-07-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Creator Tools -->
+  <url>
+    <loc>https://ultimate100freetools.com/creaters/index.html</loc>
+    <lastmod>2025-07-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Buy Coffee -->
+  <url>
+    <loc>https://ultimate100freetools.com/Buy%20Coffee/buyCoffee.html</loc>
+    <lastmod>2025-07-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <!-- About Page -->
+  <url>
+    <loc>https://ultimate100freetools.com/about.html</loc>
+    <lastmod>2025-07-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <!-- Privacy Policy -->
+  <url>
+    <loc>https://ultimate100freetools.com/privacy-policy.html</loc>
+    <lastmod>2025-07-18</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  
+  <!-- Terms of Service -->
+  <url>
+    <loc>https://ultimate100freetools.com/terms-of-service.html</loc>
+    <lastmod>2025-07-18</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  
+  <!-- Contact Page -->
+  <url>
+    <loc>https://ultimate100freetools.com/contact.html</loc>
+    <lastmod>2025-07-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+</urlset>
