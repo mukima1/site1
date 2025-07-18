@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
   <script id="mcjs">!function(c,h,i,m,p){m=c.createElement(h),p=c.getElementsByTagName(h)[0],m.async=1,m.src=i,p.parentNode.insertBefore(m,p)}(document,"script","https://chimpstatic.com/mcjs-connected/js/users/39e71a6436f96370cce6a8e11/2cf83fa059b7a81dc1a390288.js");</script>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17239815199"></script>
@@ -82,6 +81,7 @@
       background-color: #f8f9fa;
       position: relative;
       overflow-x: hidden;
+      line-height: 1.6;
     }
     
     /* 3D Animated Background */
@@ -139,7 +139,7 @@
       width: 100%;
       max-width: 1400px;
       margin: 0 auto;
-      padding: 2rem;
+      padding: 1.5rem;
       flex: 1;
     }
     
@@ -150,11 +150,12 @@
     }
     
     h1 {
-      font-size: 2.5rem;
+      font-size: 2.2rem;
       font-weight: 700;
       color: var(--dark-color);
       margin-bottom: 0.5rem;
       font-family: 'Montserrat', sans-serif;
+      line-height: 1.2;
     }
     
     .tagline {
@@ -202,14 +203,14 @@
     /* App Grid */
     .grid {
       display: grid;
-      gap: 2rem;
+      gap: 1.5rem;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       margin-bottom: 3rem;
     }
     
     .card {
       background: white;
-      border-radius: 16px;
+      border-radius: 12px;
       box-shadow: var(--card-shadow);
       transition: all var(--transition-speed) ease;
       overflow: hidden;
@@ -218,6 +219,7 @@
       border: 1px solid rgba(0,0,0,0.05);
       position: relative;
       cursor: pointer;
+      min-height: 280px;
     }
     
     .card-content {
@@ -255,10 +257,13 @@
       background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
       color: white;
       text-align: center;
-      border-radius: 0 0 16px 16px;
+      border-radius: 0 0 12px 12px;
       font-weight: 500;
       transition: all var(--transition-speed) ease;
       text-decoration: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
     }
     
     .card:hover {
@@ -270,19 +275,21 @@
       background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
     }
     
-    /* Newsletter Form */
+    /* Custom Mailchimp Form Styles */
     .newsletter-section {
       background: white;
       border-radius: 16px;
-      padding: 2.5rem;
+      padding: 2rem;
       margin: 3rem auto;
-      max-width: 800px;
+      max-width: 600px;
       box-shadow: var(--card-shadow);
       text-align: center;
+      position: relative;
+      overflow: hidden;
     }
     
     .newsletter-section h2 {
-      font-size: 1.8rem;
+      font-size: 1.5rem;
       margin-bottom: 1rem;
       color: var(--dark-color);
     }
@@ -290,51 +297,91 @@
     .newsletter-section p {
       color: var(--text-light);
       margin-bottom: 1.5rem;
-      max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
+      font-size: 0.95rem;
     }
     
-    .newsletter-form {
-      display: flex;
-      max-width: 500px;
-      margin: 0 auto;
+    #mc_embed_signup {
+      background: transparent !important;
+      clear: left;
+      font: inherit;
+      width: 100%;
+      padding: 0;
     }
     
-    .newsletter-input {
-      flex: 1;
+    #mc_embed_signup .mc-field-group {
+      margin-bottom: 1rem;
+      text-align: left;
+    }
+    
+    #mc_embed_signup label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--dark-color);
+    }
+    
+    #mc_embed_signup input {
+      width: 100%;
       padding: 0.8rem 1rem;
       border: 1px solid #ddd;
-      border-radius: 8px 0 0 8px;
+      border-radius: 8px;
       font-family: 'Poppins', sans-serif;
-    }
-    
-    .newsletter-input:focus {
-      outline: none;
-      border-color: var(--primary-color);
-    }
-    
-    .newsletter-btn {
-      padding: 0.8rem 1.5rem;
-      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-      color: white;
-      border: none;
-      border-radius: 0 8px 8px 0;
-      cursor: pointer;
-      font-family: 'Poppins', sans-serif;
-      font-weight: 500;
       transition: all var(--transition-speed) ease;
     }
     
-    .newsletter-btn:hover {
+    #mc_embed_signup input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(75, 108, 183, 0.2);
+    }
+    
+    #mc_embed_signup .button {
+      width: 100%;
+      padding: 0.8rem;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--transition-speed) ease;
+      margin-top: 0.5rem;
+    }
+    
+    #mc_embed_signup .button:hover {
       background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+    }
+    
+    #mc_embed_signup .indicates-required,
+    #mc_embed_signup .asterisk {
+      color: #e74c3c;
+    }
+    
+    #mc_embed_signup .response {
+      margin: 1rem 0;
+      padding: 0.5rem;
+      border-radius: 8px;
+    }
+    
+    #mc_embed_signup .mce_inline_error {
+      background-color: transparent !important;
+      color: #e74c3c !important;
+      font-weight: normal !important;
+      padding: 0.3rem 0 0 0 !important;
+    }
+    
+    /* Hide Mailchimp branding */
+    #mc_embed_signup .optionalParent,
+    #mc_embed_signup .refferal_badge {
+      display: none !important;
     }
     
     /* Footer */
     footer {
       background: var(--dark-color);
       color: white;
-      padding: 2rem;
+      padding: 2rem 1.5rem;
       text-align: center;
     }
     
@@ -357,6 +404,7 @@
       color: white;
       text-decoration: none;
       transition: color var(--transition-speed) ease;
+      font-size: 0.95rem;
     }
     
     .footer-links a:hover {
@@ -367,6 +415,7 @@
       display: flex;
       justify-content: center;
       gap: 1rem;
+      flex-wrap: wrap;
     }
     
     .social-icon {
@@ -404,6 +453,7 @@
       font-weight: 500;
       margin-top: 1rem;
       transition: all var(--transition-speed) ease;
+      font-size: 0.95rem;
     }
     
     .coffee-btn:hover {
@@ -455,33 +505,32 @@
       h1 {
         font-size: 2rem;
       }
+      
+      .newsletter-section {
+        padding: 1.5rem;
+      }
     }
     
     @media (max-width: 768px) {
       .grid {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 1.5rem;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 1.2rem;
       }
       
       .card-content {
         padding: 1.2rem;
       }
       
+      .card {
+        min-height: 260px;
+      }
+      
       .newsletter-section {
         padding: 1.5rem;
       }
       
-      .newsletter-form {
-        flex-direction: column;
-      }
-      
-      .newsletter-input {
-        border-radius: 8px;
-        margin-bottom: 0.5rem;
-      }
-      
-      .newsletter-btn {
-        border-radius: 8px;
+      #mc_embed_signup .mc-field-group {
+        margin-bottom: 0.8rem;
       }
     }
     
@@ -498,9 +547,30 @@
         grid-template-columns: 1fr;
       }
       
+      .card {
+        min-height: auto;
+      }
+      
       .footer-links {
         flex-direction: column;
         gap: 0.8rem;
+      }
+      
+      .search-bar {
+        padding: 0.8rem 1.2rem;
+        padding-right: 3rem;
+      }
+      
+      .search-icon {
+        right: 1.2rem;
+      }
+      
+      .newsletter-section {
+        padding: 1.2rem;
+      }
+      
+      .newsletter-section h2 {
+        font-size: 1.3rem;
       }
     }
   </style>
@@ -534,7 +604,7 @@
           <h2>Document Tools</h2>
           <p>Convert PDF to Word, Excel, PPT. Merge, split, compress PDFs with advanced features</p>
         </div>
-        <a class="card-btn">Convert Now</a>
+        <button class="card-btn">Convert Now</button>
       </div>
       
       <div class="card" tabindex="0" role="button" aria-label="Image Converter" onclick="navigateTo('images')">
@@ -543,7 +613,7 @@
           <h2>Image Converter</h2>
           <p>Convert between JPG, PNG, WebP, SVG. Resize, compress, optimize images for web</p>
         </div>
-        <a class="card-btn">Convert Now</a>
+        <button class="card-btn">Convert Now</button>
       </div>
       
       <div class="card" tabindex="0" role="button" aria-label="Business Tools" onclick="navigateTo('business')">
@@ -552,7 +622,7 @@
           <h2>Business Tools</h2>
           <p>Invoice generator, receipt maker, business card designer, financial documents</p>
         </div>
-        <a class="card-btn">Explore Now</a>
+        <button class="card-btn">Explore Now</button>
       </div>
       
       <div class="card" tabindex="0" role="button" aria-label="QR & Barcode" onclick="navigateTo('qr-barcode')">
@@ -561,7 +631,7 @@
           <h2>QR & Barcode</h2>
           <p>Generate customizable QR codes, barcodes with tracking and analytics options</p>
         </div>
-        <a class="card-btn">Generate Now</a>
+        <button class="card-btn">Generate Now</button>
       </div>
       
       <div class="card" tabindex="0" role="button" aria-label="Design Suite" onclick="navigateTo('web-design')">
@@ -570,7 +640,7 @@
           <h2>Design Suite</h2>
           <p>Color pickers, CSS generators, UI tools, and premium design resources</p>
         </div>
-        <a class="card-btn">Design Now</a>
+        <button class="card-btn">Design Now</button>
       </div>
       
       <div class="card" tabindex="0" role="button" aria-label="Office Tools" onclick="navigateTo('office')">
@@ -579,7 +649,7 @@
           <h2>Office Tools</h2>
           <p>Word to PDF/TXT/HTML, document to Markdown, resume builder, templates</p>
         </div>
-        <a class="card-btn">Convert Now</a>
+        <button class="card-btn">Convert Now</button>
       </div>
       
       <div class="card" tabindex="0" role="button" aria-label="Code Utilities" onclick="navigateTo('language')">
@@ -588,7 +658,7 @@
           <h2>Utilities</h2>
           <p>Encoding converters, code formatters, syntax highlighters, validation tools</p>
         </div>
-        <a class="card-btn">Transform Now</a>
+        <button class="card-btn">Transform Now</button>
       </div>
       
       <div class="card" tabindex="0" role="button" aria-label="Creator Tools" onclick="navigateTo('creator')">
@@ -597,18 +667,45 @@
           <h2>Creator Tools</h2>
           <p>Content templates, thumbnail generators, social media design tools</p>
         </div>
-        <a class="card-btn">Create Now</a>
+        <button class="card-btn">Create Now</button>
       </div>
     </div>
 
     <!-- Newsletter Section -->
     <div class="newsletter-section">
-      <h2>Stay Updated</h2>
-      <p>Subscribe to our newsletter for new tools, updates, and productivity tips.</p>
-      <form class="newsletter-form" id="subscribeForm">
-        <input type="email" class="newsletter-input" placeholder="Your email address" required>
-        <button type="submit" class="newsletter-btn">Subscribe</button>
-      </form>
+      <h2>Stay Updated With Our Latest Tools</h2>
+      <p>Subscribe to our newsletter to get notified about new features and updates.</p>
+      
+      <div id="mc_embed_signup">
+        <form action="https://gmail.us18.list-manage.com/subscribe/post?u=39e71a6436f96370cce6a8e11&amp;id=050a4f12d4&amp;f_id=004cb1e6f0" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+          <div id="mc_embed_signup_scroll">
+            <div class="indicates-required"><span class="asterisk">*</span> indicates required</div>
+            
+            <div class="mc-field-group">
+              <label for="mce-EMAIL">Email Address <span class="asterisk">*</span></label>
+              <input type="email" name="EMAIL" class="required email" id="mce-EMAIL" required value="">
+            </div>
+            
+            <div class="mc-field-group">
+              <label for="mce-MMERGE7">Name</label>
+              <input type="text" name="MMERGE7" class="text" id="mce-MMERGE7" value="">
+            </div>
+            
+            <div id="mce-responses" class="clear">
+              <div class="response" id="mce-error-response" style="display:none"></div>
+              <div class="response" id="mce-success-response" style="display:none"></div>
+            </div>
+            
+            <div style="position: absolute; left: -5000px;" aria-hidden="true">
+              <input type="text" name="b_39e71a6436f96370cce6a8e11_050a4f12d4" tabindex="-1" value="">
+            </div>
+            
+            <div class="clear">
+              <input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button">
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 
@@ -616,10 +713,10 @@
   <footer>
     <div class="footer-content">
       <div class="footer-links">
-        <a href="/privacy">Privacy Policy</a>
-        <a href="/terms">Terms of Service</a>
-        <a href="/contact">Contact Us</a>
-        <a href="/about">About</a>
+        <a href="about.html">About</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="terms.html">Terms of Service</a>
+        <a href="contact.html">Contact</a>
       </div>
       
       <div class="social-links">
@@ -659,11 +756,13 @@
     function navigateTo(category) {
       try {
         // Track the navigation event for analytics
-        gtag('event', 'tool_click', {
-          'event_category': 'Navigation',
-          'event_label': category,
-          'value': 1
-        });
+        if (typeof gtag !== 'undefined') {
+          gtag('event', 'tool_click', {
+            'event_category': 'Navigation',
+            'event_label': category,
+            'value': 1
+          });
+        }
 
         // Map categories to their file paths
         const pagePaths = {
@@ -671,7 +770,7 @@
           'web-design': 'design/design.html',
           'documents': 'document/document.html',
           'language': 'language/language.html',
-          'office': 'office tools/office.html',
+          'office': 'office-tools/office.html',
           'images': 'image/image.html',
           'business': 'Business/Business.html',
           'creator': 'creaters/index.html'
@@ -714,27 +813,11 @@
       });
       
       // Track search events for analytics
-      if (searchTerm.length > 2) {
+      if (typeof gtag !== 'undefined' && searchTerm.length > 2) {
         gtag('event', 'search', {
           'search_term': searchTerm
         });
       }
-    });
-    
-    // Newsletter form submission
-    document.getElementById('subscribeForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const email = this.querySelector('input').value;
-      
-      // Track subscription event
-      gtag('event', 'subscribe', {
-        'event_category': 'Engagement',
-        'event_label': 'Newsletter'
-      });
-      
-      // Show success message
-      alert('Thank you for subscribing! We\'ll keep you updated with our latest tools and features.');
-      this.querySelector('input').value = '';
     });
     
     // Add keyboard navigation to cards
