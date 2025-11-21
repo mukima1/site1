@@ -71,6 +71,38 @@
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
+
+  <!-- NEW: Machine Learning Dataset Generator -->
+  <url>
+    <loc>https://ultimate100freetools.com/language/encode/fake.html</loc>
+    <lastmod>2025-07-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- NEW: Business Card Generator -->
+  <url>
+    <loc>https://ultimate100freetools.com/Business/Business-Card/businessCard.html</loc>
+    <lastmod>2025-07-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- NEW: Invoice Generator -->
+  <url>
+    <loc>https://ultimate100freetools.com/Business/invoice/invoice.html</loc>
+    <lastmod>2025-07-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- NEW: vCard QR Code Generator -->
+  <url>
+    <loc>https://ultimate100freetools.com/qr/tools/vCard.html</loc>
+    <lastmod>2025-07-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
   
   <!-- Buy Coffee -->
   <url>
