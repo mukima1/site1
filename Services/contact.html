@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Support - Ultimate 100 Free Tools</title>
+    <meta name="description" content="Get help with Ultimate 100 Free Tools. Contact support for assistance with our free online tools.">
+    
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-light: #818cf8;
+            --primary-dark: #3730a3;
+            --secondary: #f8fafc;
+            --accent: #f1f5f9;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --success: #10b981;
+            --error: #ef4444;
+            --border: #e2e8f0;
+            --radius-lg: 12px;
+            --radius: 8px;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .site-header {
+            padding: 25px 0;
+            margin-bottom: 40px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 20px 30px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            font-size: 1.6rem;
+        }
+
+        .home-link {
+            background: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: var(--radius);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .home-link:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* Main Content */
+        .page-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .page-title {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            background: linear-gradient(to right, var(--primary), var(--primary-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        .page-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Two Column Layout */
+        .contact-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        @media (max-width: 900px) {
+            .contact-layout {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+        }
+
+        /* Enhanced Cards */
+        .contact-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .contact-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.8rem;
+            color: var(--text);
+            margin: 0;
+        }
+
+        /* Enhanced Form */
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 1rem;
+            font-family: inherit;
+            background: var(--secondary);
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        textarea.form-control {
+            min-height: 140px;
+            resize: vertical;
+        }
+
+        select.form-control {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%234f46e5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            background-size: 20px;
+            padding-right: 50px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(to right, var(--primary), var(--primary-light));
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: var(--radius);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            background: linear-gradient(to right, var(--primary-dark), var(--primary));
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Contact Info Items */
+        .contact-info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid var(--accent);
+        }
+
+        .contact-info-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .contact-info-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--accent);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .contact-info-content h3 {
+            font-size: 1.1rem;
+            margin-bottom: 6px;
+            color: var(--text);
+        }
+
+        .contact-info-content p {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+
+        .contact-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.3s ease;
+        }
+
+        .contact-link:hover {
+            color: var(--primary-dark);
+        }
+
+        /* Email Highlight */
+        .email-highlight {
+            background: var(--accent);
+            border: 2px solid var(--primary-light);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .email-highlight .contact-link {
+            font-size: 1.1rem;
+        }
+
+        /* Messages */
+        .alert-message {
+            padding: 18px 24px;
+            border-radius: var(--radius);
+            margin-bottom: 25px;
+            font-weight: 500;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            border: 2px solid var(--success);
+            color: #065f46;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            border: 2px solid var(--error);
+            color: #991b1b;
+        }
+
+        .alert-loading {
+            background: #dbeafe;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        /* Company Badge */
+        .company-badge {
+            background: linear-gradient(135deg, var(--accent) 0%, #e0e7ff 100%);
+            border-radius: var(--radius);
+            padding: 25px;
+            margin-top: 30px;
+            text-align: center;
+            border: 2px solid var(--border);
+        }
+
+        .company-badge h4 {
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-size: 1.2rem;
+        }
+
+        .company-badge p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        /* Footer */
+        .site-footer {
+            background: white;
+            padding: 40px 0;
+            margin-top: 60px;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .footer-copyright {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+                padding: 25px;
+            }
+            
+            .page-title {
+                font-size: 2.2rem;
+            }
+            
+            .contact-card {
+                padding: 30px;
+            }
+            
+            .card-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+            
+            .contact-info-item {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .page-title {
+                font-size: 1.8rem;
+            }
+            
+            .contact-card {
+                padding: 25px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <div class="header-content">
+                <a href="https://ultimate100freetools.com" class="logo">
+                    <span class="logo-icon">🛠️</span>
+                    Ultimate 100 Free Tools
+                </a>
+                <a href="https://ultimate100freetools.com" class="home-link">
+                    ← Back to All Tools
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Contact Our Support Team</h1>
+            <p class="page-subtitle">Get help with our tools, report issues, or share your feedback. We're here to assist you!</p>
+        </div>
+
+        <!-- Alert Messages -->
+        <div id="successAlert" class="alert-message alert-success" style="display: none;"></div>
+        <div id="errorAlert" class="alert-message alert-error" style="display: none;"></div>
+        <div id="loadingAlert" class="alert-message alert-loading" style="display: none;">
+            Sending your message... Please wait a moment.
+        </div>
+
+        <!-- Two Column Layout -->
+        <div class="contact-layout">
+            <!-- Contact Form -->
+            <div class="contact-card">
+                <div class="card-header">
+                    <div class="card-icon">✉️</div>
+                    <h2 class="card-title">Send Message</h2>
+                </div>
+                
+                <form id="contactForm" action="https://formsubmit.co/ashirafssenkima@gmail.com" method="POST">
+                    <!-- FormSubmit Configuration -->
+                    <input type="hidden" name="_subject" value="New Support Message - Ultimate 100 Free Tools">
+                    <input type="hidden" name="_template" value="table">
+                    <input type="hidden" name="_captcha" value="false">
+                    <input type="hidden" name="_autoresponse" value="Thank you for contacting Ultimate 100 Free Tools support. We have received your message and will get back to you within 24-48 hours.">
+                    
+                    <div class="form-group">
+                        <label for="name" class="form-label">Your Name *</label>
+                        <input type="text" id="name" name="name" class="form-control" placeholder="John Smith" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email" class="form-label">Your Email *</label>
+                        <input type="email" id="email" name="email" class="form-control" placeholder="you@example.com" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="category" class="form-label">What do you need help with? *</label>
+                        <select id="category" name="category" class="form-control" required>
+                            <option value="">Select a topic</option>
+                            <option value="Tool Support">Using a specific tool</option>
+                            <option value="Bug Report">Reporting a bug or issue</option>
+                            <option value="Feature Request">Suggesting a new feature</option>
+                            <option value="Account Help">Account or access help</option>
+                            <option value="Business Inquiry">Business partnership</option>
+                            <option value="Other">Something else</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message" class="form-label">Your Message *</label>
+                        <textarea id="message" name="message" class="form-control" placeholder="Please describe your issue or question in detail..." required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        <span id="btnText">Send Message</span>
+                        <span id="btnSpinner" style="display: none;">⏳</span>
+                    </button>
+                </form>
+                
+                <div class="email-highlight">
+                    <p style="margin-bottom: 8px; color: var(--text-light);">Prefer to email directly?</p>
+                    <a href="mailto:support@vexovin.com" class="contact-link">
+                        ✉️ support@vexovin.com
+                    </a>
+                </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="contact-card">
+                <div class="card-header">
+                    <div class="card-icon">📞</div>
+                    <h2 class="card-title">Contact Info</h2>
+                </div>
+                
+                <div class="contact-info-item">
+                    <div class="contact-info-icon">✉️</div>
+                    <div class="contact-info-content">
+                        <h3>Email Support</h3>
+                        <p>For all inquiries and support</p>
+                        <a href="mailto:support@vexovin.com" class="contact-link">
+                            support@vexovin.com
+                        </a>
+                        <p style="font-size: 0.85rem; color: var(--text-light); margin-top: 5px;">
+                            (Form submissions go to ashirafssenkima@gmail.com)
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="contact-info-item">
+                    <div class="contact-info-icon">📱</div>
+                    <div class="contact-info-content">
+                        <h3>Phone / WhatsApp</h3>
+                        <p>Available during business hours</p>
+                        <a href="tel:+256758442257" class="contact-link">
+                            +256 758 442 257
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="contact-info-item">
+                    <div class="contact-info-icon">📍</div>
+                    <div class="contact-info-content">
+                        <h3>Location & Operations</h3>
+                        <p>Headquartered in Kampala, Uganda</p>
+                        <p><strong>Remote Operations Worldwide</strong></p>
+                        <p style="font-size: 0.9rem; color: var(--text-light);">
+                            Serving users globally with our free tools
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="contact-info-item">
+                    <div class="contact-info-icon">⏰</div>
+                    <div class="contact-info-content">
+                        <h3>Response Time</h3>
+                        <p><strong>Email:</strong> Within 24-48 hours</p>
+                        <p><strong>Urgent:</strong> Call or WhatsApp for immediate assistance</p>
+                        <p><strong>Business Hours:</strong> Mon-Fri, 9AM-6PM EAT</p>
+                    </div>
+                </div>
+                
+                <div class="company-badge">
+                    <h4>Owned by Vexovin LLC</h4>
+                    <p>Ultimate 100 Free Tools is proudly created and maintained by Vexovin LLC, delivering free, high-quality software solutions since 2025.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="https://ultimate100freetools.com">Home</a>
+                    <a href="about.html">About</a>
+                    <a href="contact.html">Contact</a>
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms of Service</a>
+                </div>
+                <div class="footer-copyright">
+                    <p>© <span id="currentYear">2025</span> Ultimate 100 Free Tools | A Vexovin LLC Product</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // DOM Elements
+        const contactForm = document.getElementById('contactForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const btnText = document.getElementById('btnText');
+        const btnSpinner = document.getElementById('btnSpinner');
+        const successAlert = document.getElementById('successAlert');
+        const errorAlert = document.getElementById('errorAlert');
+        const loadingAlert = document.getElementById('loadingAlert');
+
+        // Hide all alerts initially
+        hideAllAlerts();
+
+        // Form submission handler
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const formData = {
+                name: document.getElementById('name').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                category: document.getElementById('category').value,
+                message: document.getElementById('message').value.trim()
+            };
+
+            // Validate form
+            if (!validateForm(formData)) {
+                return;
+            }
+
+            // Show loading state
+            showLoading();
+
+            // Set a timeout to simulate processing (for user feedback)
+            setTimeout(() => {
+                // Submit form to FormSubmit.co
+                contactForm.submit();
+                
+                // Show success message
+                showSuccess('Message sent successfully! You will receive a confirmation email shortly.');
+                
+                // Reset form after a delay
+                setTimeout(() => {
+                    contactForm.reset();
+                    hideAllAlerts();
+                }, 5000);
+                
+            }, 1500);
+        });
+
+        // Form validation
+        function validateForm(data) {
+            // Hide any existing alerts
+            hideAllAlerts();
+            
+            // Check all required fields
+            if (!data.name || !data.email || !data.category || !data.message) {
+                showError('Please fill in all required fields marked with *.');
+                return false;
+            }
+
+            // Validate email format
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(data.email)) {
+                showError('Please enter a valid email address.');
+                return false;
+            }
+
+            return true;
+        }
+
+        // Show loading state
+        function showLoading() {
+            loadingAlert.style.display = 'block';
+            successAlert.style.display = 'none';
+            errorAlert.style.display = 'none';
+            submitBtn.disabled = true;
+            btnText.textContent = 'Sending...';
+            btnSpinner.style.display = 'inline';
+        }
+
+        // Show success message
+        function showSuccess(message) {
+            loadingAlert.style.display = 'none';
+            successAlert.textContent = message;
+            successAlert.style.display = 'block';
+            submitBtn.disabled = false;
+            btnText.textContent = 'Send Message';
+            btnSpinner.style.display = 'none';
+            
+            // Scroll to success message
+            successAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        // Show error message
+        function showError(message) {
+            loadingAlert.style.display = 'none';
+            errorAlert.textContent = message;
+            errorAlert.style.display = 'block';
+            submitBtn.disabled = false;
+            btnText.textContent = 'Send Message';
+            btnSpinner.style.display = 'none';
+            
+            // Scroll to error message
+            errorAlert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        // Hide all alerts
+        function hideAllAlerts() {
+            successAlert.style.display = 'none';
+            errorAlert.style.display = 'none';
+            loadingAlert.style.display = 'none';
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set current year
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+            
+            // Set form action with your email
+            contactForm.action = 'https://formsubmit.co/ashirafssenkima@gmail.com';
+            
+            // Add click handlers for email links
+            document.querySelectorAll('a[href^="mailto"]').forEach(link => {
+                if (link.textContent.includes('support@vexovin.com')) {
+                    link.href = 'mailto:support@vexovin.com';
+                }
+            });
+            
+            // Add auto-response message
+            const autoResponseInput = contactForm.querySelector('input[name="_autoresponse"]');
+            if (autoResponseInput) {
+                autoResponseInput.value = 'Thank you for contacting Ultimate 100 Free Tools support. We have received your message and will get back to you within 24-48 hours.';
+            }
+        });
+
+        // Real-time form validation
+        document.querySelectorAll('.form-control').forEach(field => {
+            field.addEventListener('input', function() {
+                if (this.value.trim()) {
+                    this.style.borderColor = '';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

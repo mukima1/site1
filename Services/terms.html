@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service - Ultimate 100 Free Tools</title>
+    <meta name="description" content="Terms of Service for Ultimate 100 Free Tools. Read the rules and agreements for using our free online tools.">
+    
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --background: #ffffff;
+            --background-alt: #f8fafc;
+            --border: #e2e8f0;
+            --radius: 8px;
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --warning: #fef3c7;
+            --warning-border: #f59e0b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.7;
+            color: var(--text);
+            background: var(--background-alt);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .site-header {
+            padding: 25px 0;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border);
+            background: white;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .home-link {
+            background: var(--background-alt);
+            color: var(--text);
+            padding: 8px 16px;
+            border-radius: var(--radius);
+            text-decoration: none;
+            font-size: 0.9rem;
+            border: 1px solid var(--border);
+        }
+
+        .home-link:hover {
+            background: var(--border);
+        }
+
+        /* Page Header */
+        .page-header {
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .page-title {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+
+        .last-updated {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        /* Important Notice */
+        .important-notice {
+            background: var(--warning);
+            border: 2px solid var(--warning-border);
+            border-radius: var(--radius);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .notice-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #92400e;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .notice-content {
+            color: #92400e;
+        }
+
+        .notice-content p {
+            margin-bottom: 10px;
+        }
+
+        /* Terms Content */
+        .terms-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow);
+        }
+
+        /* Table of Contents */
+        .toc-container {
+            background: var(--background-alt);
+            border-radius: var(--radius);
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border);
+        }
+
+        .toc-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--text);
+        }
+
+        .toc-list {
+            list-style: none;
+            padding-left: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 10px;
+        }
+
+        .toc-item {
+            margin-bottom: 8px;
+        }
+
+        .toc-link {
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 0;
+        }
+
+        .toc-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Terms Sections */
+        .terms-section {
+            margin-bottom: 35px;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: var(--text);
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .section-content {
+            color: var(--text);
+            font-size: 1rem;
+        }
+
+        .section-content p {
+            margin-bottom: 15px;
+        }
+
+        .section-content ul, .section-content ol {
+            margin: 15px 0 15px 25px;
+        }
+
+        .section-content li {
+            margin-bottom: 10px;
+            padding-left: 5px;
+        }
+
+        /* Definition Lists */
+        .definition-list {
+            background: var(--background-alt);
+            padding: 20px;
+            border-radius: var(--radius);
+            margin: 20px 0;
+        }
+
+        .definition-item {
+            margin-bottom: 15px;
+        }
+
+        .definition-term {
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 5px;
+        }
+
+        .definition-desc {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        /* File Upload Warning */
+        .file-warning {
+            background: #fee2e2;
+            border-left: 4px solid #ef4444;
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: var(--radius);
+        }
+
+        .file-warning strong {
+            color: #991b1b;
+        }
+
+        /* Age Requirement */
+        .age-requirement {
+            background: #dbeafe;
+            border-left: 4px solid var(--primary);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: var(--radius);
+        }
+
+        /* Prohibited Uses */
+        .prohibited-list {
+            background: #fef3c7;
+            padding: 20px;
+            border-radius: var(--radius);
+            margin: 20px 0;
+        }
+
+        .prohibited-list li {
+            margin-bottom: 8px;
+        }
+
+        /* Footer */
+        .site-footer {
+            background: white;
+            padding: 30px 0;
+            margin-top: 50px;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .copyright {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        /* Print Button */
+        .print-button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: var(--radius);
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .print-button:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .terms-card {
+                padding: 25px 20px;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .page-title {
+                font-size: 1.8rem;
+            }
+            
+            .toc-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-title {
+                font-size: 1.6rem;
+            }
+            
+            .section-title {
+                font-size: 1.2rem;
+            }
+            
+            .toc-container {
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <div class="header-content">
+                <a href="https://ultimate100freetools.com" class="logo">
+                    🛠️ Ultimate 100 Free Tools
+                </a>
+                <a href="https://ultimate100freetools.com" class="home-link">
+                    ← Back to Home
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Important Notice -->
+        <div class="important-notice">
+            <h2 class="notice-title">⚠️ Important Legal Notice</h2>
+            <div class="notice-content">
+                <p><strong>By using Ultimate 100 Free Tools, you agree to these Terms of Service.</strong> Please read them carefully before using our services.</p>
+                <p>If you do not agree to these terms, please do not use our website or services. These terms contain important information about your legal rights, including limitations of liability and dispute resolution.</p>
+            </div>
+        </div>
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">Terms of Service</h1>
+            <p class="last-updated"><strong>Last Updated:</strong> <span id="currentDate"></span></p>
+            <p class="last-updated"><strong>Effective Date:</strong> <span id="effectiveDate"></span></p>
+        </div>
+
+        <!-- Table of Contents -->
+        <div class="toc-container">
+            <h2 class="toc-title">Table of Contents</h2>
+            <ul class="toc-list">
+                <li class="toc-item"><a href="#acceptance" class="toc-link">1. Acceptance of Terms</a></li>
+                <li class="toc-item"><a href="#description" class="toc-link">2. Description of Service</a></li>
+                <li class="toc-item"><a href="#eligibility" class="toc-link">3. Eligibility & Age Requirements</a></li>
+                <li class="toc-item"><a href="#user-responsibilities" class="toc-link">4. User Responsibilities</a></li>
+                <li class="toc-item"><a href="#prohibited-uses" class="toc-link">5. Prohibited Uses</a></li>
+                <li class="toc-item"><a href="#file-uploads" class="toc-link">6. File Uploads & Processing</a></li>
+                <li class="toc-item"><a href="#intellectual-property" class="toc-link">7. Intellectual Property</a></li>
+                <li class="toc-item"><a href="#disclaimer" class="toc-link">8. Disclaimer of Warranties</a></li>
+                <li class="toc-item"><a href="#limitation-liability" class="toc-link">9. Limitation of Liability</a></li>
+                <li class="toc-item"><a href="#indemnification" class="toc-link">10. Indemnification</a></li>
+                <li class="toc-item"><a href="#termination" class="toc-link">11. Termination</a></li>
+                <li class="toc-item"><a href="#governing-law" class="toc-link">12. Governing Law</a></li>
+                <li class="toc-item"><a href="#changes" class="toc-link">13. Changes to Terms</a></li>
+                <li class="toc-item"><a href="#contact" class="toc-link">14. Contact Information</a></li>
+            </ul>
+        </div>
+
+        <!-- Terms Content -->
+        <div class="terms-card">
+            <!-- Section 1: Acceptance -->
+            <section id="acceptance" class="terms-section">
+                <h2 class="section-title">1. Acceptance of Terms</h2>
+                <div class="section-content">
+                    <p>These Terms of Service ("Terms") govern your access to and use of the Ultimate 100 Free Tools website ("Service") operated by Vexovin LLC ("we," "us," or "our").</p>
+                    <p>By accessing or using our Service, you agree to be bound by these Terms. If you disagree with any part of the terms, you may not access the Service.</p>
+                    <p>These Terms apply to all visitors, users, and others who access or use the Service. Your continued use of the Service after any changes to these Terms constitutes acceptance of those changes.</p>
+                </div>
+            </section>
+
+            <!-- Section 2: Description -->
+            <section id="description" class="terms-section">
+                <h2 class="section-title">2. Description of Service</h2>
+                <div class="section-content">
+                    <p>Ultimate 100 Free Tools provides a collection of online tools and utilities including but not limited to:</p>
+                    <ul>
+                        <li>Document conversion tools (PDF to Word, Excel, etc.)</li>
+                        <li>Image conversion and optimization tools</li>
+                        <li>Business tools (invoice generators, receipt makers)</li>
+                        <li>Design and office utilities</li>
+                        <li>QR code and barcode generators</li>
+                        <li>Other productivity tools</li>
+                    </ul>
+                    
+                    <div class="definition-list">
+                        <div class="definition-item">
+                            <div class="definition-term">Free Service</div>
+                            <div class="definition-desc">Our Service is provided free of charge. We do not currently charge fees for using our tools, but we reserve the right to introduce paid features in the future with appropriate notice.</div>
+                        </div>
+                        
+                        <div class="definition-item">
+                            <div class="definition-term">No Registration Required</div>
+                            <div class="definition-desc">You can use our Service without creating an account or providing personal information, except when contacting us via our contact form.</div>
+                        </div>
+                        
+                        <div class="definition-item">
+                            <div class="definition-term">Ad-Supported</div>
+                            <div class="definition-desc">We use advertising, including Google AdSense, to support the free operation of our Service. By using our Service, you acknowledge and consent to the display of advertisements.</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 3: Eligibility -->
+            <section id="eligibility" class="terms-section">
+                <h2 class="section-title">3. Eligibility & Age Requirements</h2>
+                <div class="section-content">
+                    <div class="age-requirement">
+                        <p><strong>You must be at least 13 years old to use our Service.</strong> If you are under 13, you may not use our Service under any circumstances.</p>
+                        <p>If you are between 13 and 18 years old (or the age of majority in your jurisdiction), you may only use our Service with the consent and supervision of a parent or legal guardian who agrees to be bound by these Terms.</p>
+                    </div>
+                    
+                    <p>By using our Service, you represent and warrant that:</p>
+                    <ul>
+                        <li>You are at least 13 years old</li>
+                        <li>You have the legal capacity to enter into these Terms</li>
+                        <li>Your use of the Service complies with all applicable laws and regulations</li>
+                        <li>You will not use the Service for any illegal or unauthorized purpose</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Section 4: User Responsibilities -->
+            <section id="user-responsibilities" class="terms-section">
+                <h2 class="section-title">4. User Responsibilities</h2>
+                <div class="section-content">
+                    <p>As a user of our Service, you agree to:</p>
+                    <ul>
+                        <li>Use the Service only for lawful purposes</li>
+                        <li>Not upload any malicious, harmful, or illegal content</li>
+                        <li>Not attempt to disrupt or interfere with the Service's operation</li>
+                        <li>Not use automated systems or bots to access the Service</li>
+                        <li>Respect the intellectual property rights of others</li>
+                        <li>Not use the Service to violate any third-party rights</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Section 5: Prohibited Uses -->
+            <section id="prohibited-uses" class="terms-section">
+                <h2 class="section-title">5. Prohibited Uses</h2>
+                <div class="section-content">
+                    <p>You are strictly prohibited from using the Service for any of the following:</p>
+                    
+                    <div class="prohibited-list">
+                        <ul>
+                            <li>Any illegal activity or to promote illegal activities</li>
+                            <li>Infringing upon the intellectual property rights of others</li>
+                            <li>Uploading viruses, malware, or other harmful code</li>
+                            <li>Attempting to gain unauthorized access to our systems</li>
+                            <li>Interfering with or disrupting the Service or servers</li>
+                            <li>Using the Service to harass, abuse, or harm others</li>
+                            <li>Uploading content that is offensive, defamatory, or obscene</li>
+                            <li>Commercial exploitation of the Service without our permission</li>
+                            <li>Data mining, scraping, or harvesting without permission</li>
+                            <li>Circumventing any security or access controls</li>
+                        </ul>
+                    </div>
+                    
+                    <p>We reserve the right to investigate and prosecute violations of these prohibitions to the fullest extent of the law.</p>
+                </div>
+            </section>
+
+            <!-- Section 6: File Uploads -->
+            <section id="file-uploads" class="terms-section">
+                <h2 class="section-title">6. File Uploads & Processing</h2>
+                <div class="section-content">
+                    <div class="file-warning">
+                        <p><strong>⚠️ Important Security Warning:</strong> Do not upload sensitive, confidential, or personal files that you would not want to be potentially accessed. While we implement security measures, no online service is 100% secure.</p>
+                    </div>
+                    
+                    <p><strong>File Handling Policy:</strong></p>
+                    <ul>
+                        <li>Files uploaded for processing are stored temporarily on our servers</li>
+                        <li>Files are automatically deleted after processing (typically within 1 hour)</li>
+                        <li>We do not access file content except as necessary to provide the requested service</li>
+                        <li>We do not permanently store or archive uploaded files</li>
+                        <li>Files are transmitted over HTTPS encrypted connections</li>
+                    </ul>
+                    
+                    <p><strong>You are responsible for:</strong></p>
+                    <ul>
+                        <li>Ensuring you have the right to upload and process any files</li>
+                        <li>Not uploading files containing sensitive personal information</li>
+                        <li>Backing up important files before uploading</li>
+                        <li>Verifying the output of conversions meets your needs</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Section 7: Intellectual Property -->
+            <section id="intellectual-property" class="terms-section">
+                <h2 class="section-title">7. Intellectual Property</h2>
+                <div class="section-content">
+                    <p><strong>Our Content:</strong> All content on the Service, including but not limited to text, graphics, logos, images, software, and the compilation thereof, is the property of Vexovin LLC or its content suppliers and is protected by copyright and other intellectual property laws.</p>
+                    
+                    <p><strong>Your Content:</strong> You retain ownership of any files you upload to our Service. However, by uploading files, you grant us a limited, non-exclusive, worldwide license to process those files solely to provide the Service to you.</p>
+                    
+                    <p><strong>Limited License:</strong> We grant you a limited, non-exclusive, non-transferable, revocable license to use the Service for your personal or internal business purposes in accordance with these Terms.</p>
+                </div>
+            </section>
+
+            <!-- Section 8: Disclaimer -->
+            <section id="disclaimer" class="terms-section">
+                <h2 class="section-title">8. Disclaimer of Warranties</h2>
+                <div class="section-content">
+                    <p><strong>THE SERVICE IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED.</strong></p>
+                    
+                    <p>To the fullest extent permissible pursuant to applicable law, we disclaim all warranties, express or implied, including but not limited to:</p>
+                    <ul>
+                        <li>Implied warranties of merchantability</li>
+                        <li>Fitness for a particular purpose</li>
+                        <li>Non-infringement of intellectual property</li>
+                        <li>Accuracy, reliability, or completeness of content</li>
+                        <li>That the Service will be uninterrupted, timely, or error-free</li>
+                        <li>That defects will be corrected</li>
+                    </ul>
+                    
+                    <p>We do not warrant that the Service will meet your requirements or that the quality of any conversions or outputs will meet your expectations.</p>
+                </div>
+            </section>
+
+            <!-- Section 9: Limitation of Liability -->
+            <section id="limitation-liability" class="terms-section">
+                <h2 class="section-title">9. Limitation of Liability</h2>
+                <div class="section-content">
+                    <p><strong>IN NO EVENT SHALL VEXOVIN LLC, ITS DIRECTORS, EMPLOYEES, OR AGENTS BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING WITHOUT LIMITATION:</strong></p>
+                    <ul>
+                        <li>Loss of profits</li>
+                        <li>Loss of data</li>
+                        <li>Loss of use</li>
+                        <li>Business interruption</li>
+                        <li>Personal injury</li>
+                        <li>Property damage</li>
+                    </ul>
+                    
+                    <p>This limitation applies whether the alleged liability is based on contract, tort, negligence, strict liability, or any other basis, even if we have been advised of the possibility of such damage.</p>
+                    
+                    <p><strong>Total Liability:</strong> Our total liability to you for all claims arising from or related to the Service shall not exceed the amount of $100 USD or the amount you paid us in the last 12 months, whichever is greater.</p>
+                </div>
+            </section>
+
+            <!-- Section 10: Indemnification -->
+            <section id="indemnification" class="terms-section">
+                <h2 class="section-title">10. Indemnification</h2>
+                <div class="section-content">
+                    <p>You agree to indemnify, defend, and hold harmless Vexovin LLC and its affiliates, officers, directors, employees, and agents from and against any and all claims, damages, obligations, losses, liabilities, costs, or debt, and expenses (including but not limited to attorney's fees) arising from:</p>
+                    <ul>
+                        <li>Your use of and access to the Service</li>
+                        <li>Your violation of any term of these Terms</li>
+                        <li>Your violation of any third-party right, including any copyright, property, or privacy right</li>
+                        <li>Any claim that your content caused damage to a third party</li>
+                        <li>Your violation of any applicable law or regulation</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Section 11: Termination -->
+            <section id="termination" class="terms-section">
+                <h2 class="section-title">11. Termination</h2>
+                <div class="section-content">
+                    <p>We may terminate or suspend your access to the Service immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach these Terms.</p>
+                    
+                    <p>Upon termination, your right to use the Service will immediately cease. If you wish to terminate your agreement with us, you may simply discontinue using the Service.</p>
+                    
+                    <p>All provisions of these Terms which by their nature should survive termination shall survive termination, including without limitation, ownership provisions, warranty disclaimers, indemnity, and limitations of liability.</p>
+                </div>
+            </section>
+
+            <!-- Section 12: Governing Law -->
+            <section id="governing-law" class="terms-section">
+                <h2 class="section-title">12. Governing Law</h2>
+                <div class="section-content">
+                    <p>These Terms shall be governed and construed in accordance with the laws of Uganda, without regard to its conflict of law provisions.</p>
+                    
+                    <p>You agree to submit to the personal jurisdiction of the courts located in Kampala, Uganda for any legal actions arising from these Terms or your use of the Service.</p>
+                    
+                    <p>If any provision of these Terms is held to be invalid or unenforceable by a court, the remaining provisions will remain in effect.</p>
+                </div>
+            </section>
+
+            <!-- Section 13: Changes -->
+            <section id="changes" class="terms-section">
+                <h2 class="section-title">13. Changes to Terms</h2>
+                <div class="section-content">
+                    <p>We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material, we will try to provide at least 30 days' notice prior to any new terms taking effect.</p>
+                    
+                    <p>What constitutes a material change will be determined at our sole discretion. We will notify you of any changes by posting the new Terms on this page and updating the "Last Updated" date.</p>
+                    
+                    <p>By continuing to access or use our Service after those revisions become effective, you agree to be bound by the revised terms. If you do not agree to the new terms, please stop using the Service.</p>
+                </div>
+            </section>
+
+            <!-- Section 14: Contact -->
+            <section id="contact" class="terms-section">
+                <h2 class="section-title">14. Contact Information</h2>
+                <div class="section-content">
+                    <p>If you have any questions about these Terms, please contact us:</p>
+                    <ul>
+                        <li><strong>By email:</strong> support@vexovin.com</li>
+                        <li><strong>Through our website:</strong> <a href="https://ultimate100freetools.com/contact">Contact Page</a></li>
+                        <li><strong>Company:</strong> Vexovin LLC</li>
+                        <li><strong>Address:</strong> Kampala, Uganda (Remote Operations)</li>
+                    </ul>
+                    
+                    <p>These Terms of Service constitute the entire agreement between you and Vexovin LLC regarding our Service and supersede any prior agreements.</p>
+                    
+                    <button class="print-button" onclick="window.print()">
+                        🖨️ Print These Terms
+                    </button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="https://ultimate100freetools.com">Home</a>
+                    <a href="about.html">About</a>
+                    <a href="contact.html">Contact</a>
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="terms.html">Terms of Service</a>
+                </div>
+                <div class="copyright">
+                    <p>© <span id="currentYear"></span> Ultimate 100 Free Tools | A product by Vexovin LLC</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Set current and effective dates
+        const currentDate = new Date();
+        document.getElementById('currentDate').textContent = currentDate.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+
+        // Set effective date (same as current for initial)
+        document.getElementById('effectiveDate').textContent = currentDate.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+
+        // Set current year
+        document.getElementById('currentYear').textContent = currentDate.getFullYear();
+
+        // Smooth scrolling for table of contents links
+        document.querySelectorAll('.toc-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 100,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Highlight the clicked link
+                    document.querySelectorAll('.toc-link').forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                }
+            });
+        });
+
+        // Highlight current section in view
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('.terms-section');
+            const scrollPosition = window.scrollY + 150;
+            let currentSection = null;
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                
+                if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                    currentSection = section.id;
+                }
+            });
+            
+            if (currentSection) {
+                document.querySelectorAll('.toc-link').forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${currentSection}`) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+        });
+
+        // Add warning for file uploads
+        console.log('⚠️ Terms of Service: Please read our Terms before using file upload features.');
+        console.log('📄 File Security: Uploaded files are automatically deleted after processing.');
+
+        // Print function enhancement
+        window.addEventListener('beforeprint', function() {
+            // Add print-specific styling
+            document.body.classList.add('printing');
+        });
+
+        window.addEventListener('afterprint', function() {
+            document.body.classList.remove('printing');
+        });
+
+        // Accept terms on first visit (optional)
+        document.addEventListener('DOMContentLoaded', function() {
+            const acceptedTerms = localStorage.getItem('termsAccepted');
+            if (!acceptedTerms) {
+                console.log('👋 Welcome! Please review our Terms of Service before using our tools.');
+            }
+        });
+    </script>
+</body>
+</html>
